@@ -1,4 +1,4 @@
-from agent.py import Agent
+from agent import Agent
 
 
 class AgentManager:
