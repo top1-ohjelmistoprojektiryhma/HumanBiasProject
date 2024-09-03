@@ -1,6 +1,3 @@
-from agent_manager import AgentManager
-
-
 class ServiceHandler:
     def __init__(self, io, agent_manager):
         self.io = io
