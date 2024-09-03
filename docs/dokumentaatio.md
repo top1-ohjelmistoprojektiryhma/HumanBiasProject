@@ -1,1 +1,1 @@
-#Tämä on rakennedokumenttis
+#Tämä on päädokumentaatiotiedosto
