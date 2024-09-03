@@ -6,7 +6,26 @@ class ServiceHandler:
         self.create_agents(default_agents)
 
     def start(self):
-        pass
+        self.info()
+        while True:
+            command = self.io.read()
+            if command == 'exit':
+                break
+            elif command == 'prompt':
+                input = self.io.read()
+                output = self.text_in_text_out(input)
+                self.io.write(output)
+            elif command == 'add':
+                role = self.io.read()
+                self.add_agent(role)
+            else:
+                self.io.write('Invalid command')
+
+    def info(self):
+        self.io.write(self.text_in_text_out('Commands:'))
+        self.io.write('add - Add a new agent')
+        self.io.write('prompt - Generate outputs from agents')
+        self.io.write('exit - Exit the program')
 
     def text_in_text_out(self, text):
         return f"{text} {[str(role.name) for role in self.agent_manger.roles]}"

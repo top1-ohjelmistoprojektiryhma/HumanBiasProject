@@ -3,6 +3,7 @@ from .services.io.console_io import ConsoleIO
 from .services.agent_manager import AgentManager
 
 
+
 def main():
     io = ConsoleIO()
     agent_manager = AgentManager()
