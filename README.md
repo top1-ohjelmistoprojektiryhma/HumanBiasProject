@@ -8,3 +8,17 @@
 - Koodi on luettavaa.
 - Testikattavuus 70% ja testit menee läpi.
 - Toimii tuotantoympäristössä.
+
+# Käynnistä sovellus
+
+```bash
+poetry install
+```
+
+```bash
+npm install
+```
+
+```bash
+npm start
+```
