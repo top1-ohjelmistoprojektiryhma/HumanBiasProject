@@ -11,6 +11,10 @@
 
 # Käynnistä sovellus
 
+Mene kansioon ```src/ui```.
+
+Aja komennot
+
 ```bash
 poetry install
 ```
