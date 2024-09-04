@@ -97,7 +97,6 @@ dist/
 
 # Gatsby files
 .cache/
-public/
 
 # GitHub Actions
 .github/
