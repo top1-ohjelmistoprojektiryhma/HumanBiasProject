@@ -3,7 +3,7 @@ class ServiceHandler:
         self.io = io
         self.agent_manager = agent_manager
         self.formatter = formatter
-        default_agents = ["farmer", "elderly", "student"]
+        default_agents = ["farmer", "eld", "student"]
         self.create_agents(default_agents)
 
     def start(self):
