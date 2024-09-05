@@ -5,7 +5,7 @@ yarn-debug.log*
 yarn-error.log*
 
 # Python dependencies
-__pycache__/
+**/__pycache__/
 *.py[cod]
 *.egg
 *.egg-info/
