@@ -9,6 +9,22 @@
 - Testikattavuus 70% ja testit menee läpi.
 - Toimii tuotantoympäristössä.
 
+## Riippuvuudet
+Tarvittava Python versio:
+```bash
+python-versions = "^3.8"
+```
+Asenna Poetry:
+```bash
+pip install poetry
+```
+Jos node.js ei ole asennettuna, asenna sen uusin versio 20.17.0:
+```bash
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.0/install.sh | bash
+nvm install 20
+
+```
+
 # Käynnistysohjeet
 
 Siirry projektin juurihakemistoon
