@@ -21,6 +21,12 @@ Aktivoi virtuaaliympäristö (MacOs, Linux)
 ```bash
 source venv/bin/activate
 ```
+
+Aja
+```bash
+python src/main.py
+```
+
 Siirry kansioon ```src/ui```
 
 Asenna riippuvuudet
