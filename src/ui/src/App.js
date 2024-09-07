@@ -3,6 +3,7 @@ import InputForm from './components/InputForm';
 import PerspectiveSelector from './components/PerspectiveSelector';
 import SubmitButton from './components/SubmitButton';
 import ResponseDisplay from './components/ResponseDisplay';
+import AddPerspectiveForm from './components/AddPerspectiveForm';
 
 const App = () => {
   const [prompt, setPrompt] = useState('');
@@ -42,6 +43,7 @@ const App = () => {
         perspectives={perspectives}  // Nyt käytämme backendistä haettua dataa
         setSelectedPerspective={setSelectedPerspective} 
       />
+      <AddPerspectiveForm perspectives={perspectives} setPerspectives={setPerspectives} />
       <SubmitButton onSubmit={handleSubmit} />
       <ResponseDisplay response={response} />
     </div>
