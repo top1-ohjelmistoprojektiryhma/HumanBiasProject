@@ -1,16 +1,28 @@
 import React from 'react';
 
-const PerspectiveSelector = ({ perspectives, setSelectedPerspective }) => {
+const PerspectiveSelector = ({ perspectives, selectedPerspectives, setSelectedPerspectives }) => {
+  const handleCheckboxChange = (perspective) => {
+    if (selectedPerspectives.includes(perspective)) {
+      setSelectedPerspectives(selectedPerspectives.filter(p => p !== perspective));
+    } else {
+      setSelectedPerspectives([...selectedPerspectives, perspective]);
+    }
+  };
+
   return (
     <div>
-      <label>Select a perspective:</label>
-      <select onChange={(e) => setSelectedPerspective(e.target.value)}>
-        {perspectives.map((perspective, index) => (
-          <option key={index} value={perspective}>
-            {perspective}
-          </option>
-        ))}
-      </select>
+      <label>Select perspectives:</label>
+      {perspectives.map((perspective, index) => (
+        <div key={index}>
+          <input
+            type="checkbox"
+            value={perspective}
+            checked={selectedPerspectives.includes(perspective)}
+            onChange={() => handleCheckboxChange(perspective)}
+          />
+          {perspective}
+        </div>
+      ))}
     </div>
   );
 };

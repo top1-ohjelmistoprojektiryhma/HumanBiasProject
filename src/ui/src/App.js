@@ -7,7 +7,7 @@ import AddPerspectiveForm from './components/AddPerspectiveForm';
 
 const App = () => {
   const [prompt, setPrompt] = useState('');
-  const [selectedPerspective, setSelectedPerspective] = useState('');
+  const [selectedPerspectives, setSelectedPerspectives] = useState([]);
   const [response, setResponse] = useState('');
   const [perspectives, setPerspectives] = useState([]);
 
@@ -31,7 +31,7 @@ const App = () => {
 
   const handleSubmit = () => {
     // Mock dataa käytetään tässä vaiheessa, koska backend ei ole vielä valmis
-    const mockResponse = `You submitted: "${prompt}" with perspective: "${selectedPerspective}"`;
+    const mockResponse = `You submitted: "${prompt}" with perspective: "${selectedPerspectives}"`;
     setResponse(mockResponse);
   };
 
@@ -40,8 +40,9 @@ const App = () => {
       <h1>Human Bias Project</h1>
       <InputForm prompt={prompt} setPrompt={setPrompt} />
       <PerspectiveSelector 
-        perspectives={perspectives}  // Nyt käytämme backendistä haettua dataa
-        setSelectedPerspective={setSelectedPerspective} 
+        perspectives={perspectives} 
+        selectedPerspectives={selectedPerspectives} 
+        setSelectedPerspectives={setSelectedPerspectives} 
       />
       <AddPerspectiveForm perspectives={perspectives} setPerspectives={setPerspectives} />
       <SubmitButton onSubmit={handleSubmit} />
