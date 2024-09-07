@@ -43,6 +43,7 @@ const App = () => {
         perspectives={perspectives} 
         selectedPerspectives={selectedPerspectives} 
         setSelectedPerspectives={setSelectedPerspectives} 
+        setPerspectives={setPerspectives} 
       />
       <AddPerspectiveForm perspectives={perspectives} setPerspectives={setPerspectives} />
       <SubmitButton onSubmit={handleSubmit} />
