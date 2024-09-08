@@ -12,6 +12,9 @@ flask-cors = "^5.0.0"
 
 
 
+[tool.poetry.group.dev.dependencies]
+pylint = "^3.2.7"
+
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
