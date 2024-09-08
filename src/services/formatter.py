@@ -9,5 +9,9 @@ class Formatter:
         return response_list
 
     def format_single(self, role, prompt):
-        return f"""Take on the following role '{str(role)}'.
-        Give a brief anwser on the plausability of the following statement: '{str(prompt)}'"""
+        if role[0].lower() in "aioue":
+            role_name = f"an {str(role)}"
+        else:
+            role_name = f"a {str(role)}"
+        return f"""You are {str(role_name)}.
+        Give your own thoughts on how probable following statement is: '{str(prompt)}'"""
