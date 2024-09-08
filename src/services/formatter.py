@@ -9,4 +9,5 @@ class Formatter:
         return response_list
 
     def format_single(self, role, prompt):
-        return f"Take on the following role '{str(role)}'. Give a brief anwser on the plausability of the following statement: '{str(prompt)}'"
+        return f"""Take on the following role '{str(role)}'.
+        Give a brief anwser on the plausability of the following statement: '{str(prompt)}'"""

@@ -37,7 +37,7 @@ class ServiceHandler:
 
     def text_in_text_out(self, text):
         prompt_list = self.format_prompt_list(text)
-        return f"prompts:\n" + "\n".join([str(prompt) for prompt in prompt_list])
+        return "prompts:\n" + "\n".join([str(prompt) for prompt in prompt_list])
 
     def format_prompt_list(self, text):
         agent_list = [agent.role for agent in self.agent_manager.list_of_agents]
@@ -48,5 +48,5 @@ class ServiceHandler:
         for role in list_of_roles:
             self.add_agent(role)
 
-    def add_agent(self, input):
-        self.agent_manager.add_agent(input)
+    def add_agent(self, user_input):
+        self.agent_manager.add_agent(user_input)
