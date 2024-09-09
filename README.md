@@ -1,3 +1,5 @@
+[![GHA workflow badge](https://github.com/top1-ohjelmistoprojektiryhma/HumanBiasProject/actions/workflows/main.yml/badge.svg)](https://github.com/top1-ohjelmistoprojektiryhma/HumanBiasProject/actions/workflows/main.yml)
+
 # Dokumentaatio:
 
 ## Definition of Done
