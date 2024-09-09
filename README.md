@@ -58,3 +58,9 @@ Käynnistä sovellus
 ```bash
 npm start
 ```
+## Pylint
+
+Pylintin voi ajaa komennolla
+```bash
+poetry run pylint src
+```
