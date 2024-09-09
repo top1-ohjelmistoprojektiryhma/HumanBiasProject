@@ -74,6 +74,8 @@ node_modules/
 # Test coverage files
 coverage/
 .nyc_output/
+htmlcov/
+.coverage
 
 # Optional npm cache directory
 .npm/

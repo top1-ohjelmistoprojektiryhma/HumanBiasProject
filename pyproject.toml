@@ -10,10 +10,10 @@ python = "^3.8"
 flask = "^3.0.3"
 flask-cors = "^5.0.0"
 
-
-
 [tool.poetry.group.dev.dependencies]
 pylint = "^3.2.7"
+pytest = "^8.3.2"
+coverage = "^7.6.1"
 
 [build-system]
 requires = ["poetry-core"]
