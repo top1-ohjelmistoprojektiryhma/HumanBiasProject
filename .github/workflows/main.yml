@@ -24,3 +24,5 @@ jobs:
         run: poetry run pylint src
       - name: Run tests
         run: poetry run coverage run --branch -m pytest
+      - name: Coverage report
+        run: poetry run coverage report
