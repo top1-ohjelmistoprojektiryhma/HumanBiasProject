@@ -20,7 +20,7 @@ Asenna Poetry:
 ```bash
 pip install poetry
 ```
-Jos node.js ei ole asennettuna, asenna sen uusin versio 20.17.0:
+Jos node.js ei ole asennettuna, asenna sen uusin versio 20.17.0 (MacOs, Linux):
 ```bash
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.0/install.sh | bash
 export NVM_DIR="$HOME/.nvm"
