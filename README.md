@@ -1,4 +1,5 @@
 [![GHA workflow badge](https://github.com/top1-ohjelmistoprojektiryhma/HumanBiasProject/actions/workflows/main.yml/badge.svg)](https://github.com/top1-ohjelmistoprojektiryhma/HumanBiasProject/actions/workflows/main.yml)
+[![codecov](https://codecov.io/gh/top1-ohjelmistoprojektiryhma/HumanBiasProject/graph/badge.svg?token=6QQXK7UA5D)](https://codecov.io/gh/top1-ohjelmistoprojektiryhma/HumanBiasProject)
 
 # Dokumentaatio:
 
