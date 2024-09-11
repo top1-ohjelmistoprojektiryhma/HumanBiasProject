@@ -8,7 +8,7 @@
 - Dokumentaatio suomeksi ja koodi englanniksi.
 - Docstring-kommentointi kaikkeen.
 - Koodi on luettavaa.
-- Testikattavuus 70% ja testit menee läpi.
+- Testikattavuus 70% ja testit menee läpi. Web-käyttöliittymää testataan vain manuaalisesti.
 - Toimii tuotantoympäristössä.
 
 ## Riippuvuudet
