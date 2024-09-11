@@ -1,5 +1,4 @@
 import google.generativeai as genai
-import os
 
 
 class ApiManager:
@@ -15,10 +14,11 @@ class ApiManager:
         return False
 
     def send_gemini_prompt(self, prompt):
-        if self.gemini_key is not None and prompt is not "":
-            try:
-                model = genai.GenerativeModel("gemini-1.5-flash")
-                response = model.generate_content(string(prompt))
-            except:
-                response = "key_error"
+        response = ""
+        if self.gemini_key is not None and prompt != "":
+            # try:
+            model = genai.GenerativeModel("gemini-1.5-flash")
+            response = model.generate_content(str(prompt))
+            # except:
+            #     response = "key_error"
         return response
