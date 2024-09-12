@@ -2,6 +2,7 @@ import google.generativeai as genai
 
 
 class ApiManager:
+    """Class for managing interaction with multiple APIs"""
     def __init__(self, gemini_key=None, gemini_api=None) -> None:
         self.gemini_key = gemini_key
         self.gemini_api = gemini_api
@@ -15,6 +16,16 @@ class ApiManager:
         return False
 
     def send_prompts(self, prompt_list):
+        """Sends any number of prompts to available or selected models
+
+        Args:
+            prompt_list (list): List of dictionaries: 
+            [{"text": "prompt text", "model": "model name"}]
+
+        Returns:
+            list: List of dictionaries containing given prompt, model name, and the model's response
+        """
+
         model_map = {
             "gemini": self.gemini_api.get_chat_response
         }
