@@ -30,10 +30,30 @@ const App = () => {
   
 
   const handleSubmit = () => {
-    // Mock dataa käytetään tässä vaiheessa, koska backend ei ole vielä valmis
-    const mockResponse = `You submitted: "${prompt}" with perspective: "${selectedPerspectives}"`;
-    setResponse(mockResponse);
+    // Create an object with the prompt and selected perspectives
+    const requestData = {
+      prompt: prompt,
+      perspective: selectedPerspectives.length > 0 ? selectedPerspectives[0] : null, // sending only the first selected perspective for simplicity
+    };
+  
+    // Send the data to the Flask backend
+    fetch('/api/process', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(requestData),  // Convert the data to JSON
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        // Set the response from the backend in the state
+        setResponse(data.response);
+      })
+      .catch((error) => {
+        console.error('Error processing the statement:', error);
+      });
   };
+  
 
   return (
     <div>

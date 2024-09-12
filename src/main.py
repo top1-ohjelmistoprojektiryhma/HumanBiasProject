@@ -35,20 +35,21 @@ def get_agents():
     return jsonify(agents)
 
 
-# Reitti väitteen käsittelyyn
+# Reitti väitteen käsittelyyn (processing the prompt)
 @app.route("/api/process", methods=["POST"])
 def process_statement():
-    data = request.json
-    prompt = data.get("prompt")
-    perspective = data.get("perspective")
+    data = request.json  # Get JSON data from the request body
+    prompt = data.get("prompt")  # Extract 'prompt' from the JSON
+    perspective = data.get("perspective")  # Extract 'perspective' from the JSON
 
-    # Lisää agentti, jos se ei ole vielä olemassa
+    # Add the agent if it does not exist
     if perspective not in [agent.role for agent in agent_manager.list_of_agents]:
         service_handler.add_agent(perspective)
 
-    # Käytä ServiceHandleria syötteen käsittelyyn
+    # Use the ServiceHandler to process the prompt
     response = service_handler.text_in_text_out(prompt)
     return jsonify({"response": response})
+
 
 
 if __name__ == "__main__":
