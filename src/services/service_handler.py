@@ -8,7 +8,7 @@ class ServiceHandler:
         self.create_agents(default_agents)
 
     def text_in_text_out(self, text):
-        "generates text for display"
+        """generates text for display"""
         prompt_list = self.format_prompt_list(text)
         # generate default output if api keys are not configured
         output = "prompts:\n" + "\n".join([str(prompt) for prompt in prompt_list])
@@ -16,9 +16,8 @@ class ServiceHandler:
             output = "\n"
             for agent_num, agent_prompt in enumerate(prompt_list):
                 agent = self.agent_manager.list_of_agents[agent_num]
-                agent_name = agent.role
                 agent_response = self.get_gemini_prompt(agent_prompt)
-                output.join(f"{agent_name} Thinks: {agent_response} \n")
+                output = output + f"{agent.role} Thinks: {agent_response}\n"
         return output
 
     def format_prompt_list(self, text):
