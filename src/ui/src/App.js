@@ -33,7 +33,7 @@ const App = () => {
     // Create an object with the prompt and selected perspectives
     const requestData = {
       prompt: prompt,
-      perspective: selectedPerspectives.length > 0 ? selectedPerspectives[0] : null, // sending only the first selected perspective for simplicity
+      perspective: selectedPerspectives
     };
   
     // Send the data to the Flask backend

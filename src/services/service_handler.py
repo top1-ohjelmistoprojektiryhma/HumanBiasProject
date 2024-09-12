@@ -14,14 +14,18 @@ class ServiceHandler:
         output = "prompts:\n" + "\n".join([str(prompt) for prompt in prompt_list])
         if self.api_manager.gemini_key is not None:
             output = "\n"
-            for agent_num, agent_prompt in enumerate(prompt_list):
-                agent = self.agent_manager.list_of_agents[agent_num]
-                agent_response = self.get_gemini_prompt(agent_prompt)
-                output = output + f"{agent.role} Thinks: {agent_response}\n"
+            input_list = [{"text": prompt, "model": None} for prompt in prompt_list]
+            responses = [
+                response["output"]
+                for response in self.api_manager.send_prompts(input_list)
+                ]
+            for i, response in enumerate(responses):
+                agent = self.agent_manager.selected_agents[i]
+                output = output + f"{agent.role} Thinks: {response}\n"
         return output
 
     def format_prompt_list(self, text):
-        agent_list = [agent.role for agent in self.agent_manager.list_of_agents]
+        agent_list = [agent.role for agent in self.agent_manager.selected_agents]
         prompt_list = self.formatter.format_multiple(agent_list, text)
         return prompt_list
 
@@ -35,5 +39,5 @@ class ServiceHandler:
     def set_gemini_api_key(self, api_key):
         self.api_manager.add_gemini_key(api_key)
 
-    def get_gemini_prompt(self, prompt):
-        return self.api_manager.send_gemini_prompt(prompt)
+    def set_selected_agents(self, agent_list):
+        self.agent_manager.set_selected_agents(agent_list)

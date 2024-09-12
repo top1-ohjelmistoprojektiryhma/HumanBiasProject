@@ -6,6 +6,7 @@ from services.service_handler import ServiceHandler
 from services.agent_manager import AgentManager
 from services.formatter import Formatter
 from services.api_manager import ApiManager
+from services.api import gemini
 
 
 app = Flask(__name__)
@@ -18,7 +19,8 @@ GEMINI_KEY = os.getenv('GEMINI_KEY')
 # Alustetaan AgentManager ja ServiceHandler
 agent_manager = AgentManager()
 formatter = Formatter()
-api_manager = ApiManager()
+gemini_api = gemini.GeminiApi(gemini_key=GEMINI_KEY)
+api_manager = ApiManager(gemini_key=GEMINI_KEY, gemini_api=gemini_api)
 service_handler = ServiceHandler(
     io=None, agent_manager=agent_manager, formatter=formatter, api_manager=api_manager
 )
@@ -41,10 +43,12 @@ def process_statement():
     data = request.json  # Get JSON data from the request body
     prompt = data.get("prompt")  # Extract 'prompt' from the JSON
     perspective = data.get("perspective")  # Extract 'perspective' from the JSON
+    print(f"Prompt: {prompt}, Perspective: {perspective}")
 
     # Add the agent if it does not exist
     if perspective not in [agent.role for agent in agent_manager.list_of_agents]:
         service_handler.add_agent(perspective)
+    service_handler.set_selected_agents(perspective)
 
     # Use the ServiceHandler to process the prompt
     response = service_handler.text_in_text_out(prompt)
