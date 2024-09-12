@@ -1,12 +1,19 @@
+import os
 from flask import Flask, jsonify, request
 from flask_cors import CORS
+from dotenv import load_dotenv
 from services.service_handler import ServiceHandler
 from services.agent_manager import AgentManager
 from services.formatter import Formatter
 from services.api_manager import ApiManager
 
+
 app = Flask(__name__)
 CORS(app)  # Mahdollistaa CORS-pyynnöt frontendistä
+
+# Lataa ympäristömuuttujat
+load_dotenv()
+GEMINI_KEY = os.getenv("GEMINI_KEY")
 
 # Alustetaan AgentManager ja ServiceHandler
 agent_manager = AgentManager()
