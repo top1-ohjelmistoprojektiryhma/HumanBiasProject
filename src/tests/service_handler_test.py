@@ -88,3 +88,8 @@ class TestServiceHandler(unittest.TestCase):
             'You are a \"Student\".Give your own thoughts on how probable the following statement is: 123',
         ]
         self.assertListEqual(return_value, expected)
+
+    def test_set_selected_agents_works(self):
+        test_agent_list = ["Student", "Farmer"]
+        self._handler.set_selected_agents(test_agent_list)
+        self._mock_agent_manager.set_selected_agents.assert_called_with(test_agent_list)
