@@ -3,7 +3,7 @@ import google.generativeai as genai
 
 class ApiManager:
     def __init__(self, gemini_key=None) -> None:
-        self.gemini_key = None
+        self.gemini_key = gemini_key
 
     def add_gemini_key(self, key):
         "If input key is not None, add new key"
