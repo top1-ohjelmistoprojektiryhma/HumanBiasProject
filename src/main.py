@@ -3,6 +3,7 @@ from flask_cors import CORS
 from services.service_handler import ServiceHandler
 from services.agent_manager import AgentManager
 from services.formatter import Formatter
+from services.api_manager import ApiManager
 
 app = Flask(__name__)
 CORS(app)  # Mahdollistaa CORS-pyynnöt frontendistä
@@ -10,8 +11,9 @@ CORS(app)  # Mahdollistaa CORS-pyynnöt frontendistä
 # Alustetaan AgentManager ja ServiceHandler
 agent_manager = AgentManager()
 formatter = Formatter()
+api_manager = ApiManager()
 service_handler = ServiceHandler(
-    io=None, agent_manager=agent_manager, formatter=formatter
+    io=None, agent_manager=agent_manager, formatter=formatter, api_manager=api_manager
 )
 
 
