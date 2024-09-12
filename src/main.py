@@ -22,6 +22,8 @@ api_manager = ApiManager()
 service_handler = ServiceHandler(
     io=None, agent_manager=agent_manager, formatter=formatter, api_manager=api_manager
 )
+if GEMINI_KEY is not None:
+    service_handler.set_gemini_api_key(GEMINI_KEY)
 
 
 # Reitti agenttien listan palauttamiseksi
