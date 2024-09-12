@@ -13,7 +13,7 @@ CORS(app)  # Mahdollistaa CORS-pyynnöt frontendistä
 
 # Lataa ympäristömuuttujat
 load_dotenv()
-GEMINI_KEY = os.getenv("GEMINI_KEY")
+GEMINI_KEY = os.getenv('GEMINI_KEY')
 
 # Alustetaan AgentManager ja ServiceHandler
 agent_manager = AgentManager()

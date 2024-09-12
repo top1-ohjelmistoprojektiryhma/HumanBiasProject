@@ -2,6 +2,7 @@ body {
     font-family: Arial, sans-serif;
     padding: 20px;
     margin: 0;
+    white-space: pre-line;
   }
   
   h1 {
