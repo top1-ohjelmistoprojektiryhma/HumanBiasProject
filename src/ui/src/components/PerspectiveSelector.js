@@ -9,9 +9,22 @@ const PerspectiveSelector = ({ perspectives, selectedPerspectives, setSelectedPe
     }
   };
 
-  const handleDeletePerspective = (perspective) => {
+  const handleDeletePerspective = async (perspective) => {
     setPerspectives(perspectives.filter(p => p !== perspective));
     setSelectedPerspectives(selectedPerspectives.filter(p => p !== perspective));
+    try {
+      const response = await fetch('/api/delete-perspective', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ perspective: perspective })
+      });
+      const result = await response.json();
+      console.log('Deleted perspective:', result);
+    } catch (error) {
+      console.error('Error deleting perspective:', error);
+    }
   };
 
   return (

@@ -14,7 +14,7 @@ CORS(app)  # Mahdollistaa CORS-pyynnöt frontendistä
 
 # Lataa ympäristömuuttujat
 load_dotenv()
-GEMINI_KEY = os.getenv('GEMINI_KEY')
+GEMINI_KEY = os.getenv("GEMINI_KEY")
 
 # Alustetaan AgentManager ja ServiceHandler
 agent_manager = AgentManager()
@@ -42,18 +42,21 @@ def get_agents():
 def process_statement():
     data = request.json  # Get JSON data from the request body
     prompt = data.get("prompt")  # Extract 'prompt' from the JSON
-    perspective = data.get("perspective")  # Extract 'perspective' from the JSON
-    print(f"Prompt: {prompt}, Perspective: {perspective}")
-
-    # Add the agent if it does not exist
-    if perspective not in [agent.role for agent in agent_manager.list_of_agents]:
-        service_handler.add_agent(perspective)
-    service_handler.set_selected_agents(perspective)
-
+    perspectives = data.get("perspective")  # Extract 'perspective' from the JSON
+    print(f"Prompt: {prompt}, Perspective: {perspectives}")
+    agent_manager.set_selected_agents(perspectives)
     # Use the ServiceHandler to process the prompt
     response = service_handler.text_in_text_out(prompt)
     return jsonify({"response": response})
 
+
+@app.route("/api/delete-perspective", methods=["POST"])
+def delete_perspective():
+    data = request.json
+    perspective = data.get("perspective")
+    print(f"Deleting perspective: {perspective}")
+    agent_manager.delete_agent(perspective)
+    return jsonify({"response": "Perspective deleted"})
 
 
 if __name__ == "__main__":
