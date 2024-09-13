@@ -9,11 +9,6 @@ class Formatter:
         return response_list
 
     def format_single(self, role, prompt):
-        if role == "" or role is None:
-            role_name = ""
-        elif role[0].lower() in "aioue":
-            role_name = f" an {str(role)}"
-        else:
-            role_name = f" a {str(role)}"
-        return f"""You are{str(role_name)}.
-        Give your own thoughts on how probable the following statement is: '{str(prompt)}'"""
+        role = role if role not in (None, "") else "Yourself"
+        return f"""Embody the following role: {str(role)}.
+        Give briefly your own thoughts on how probable the following statement is: {str(prompt)}"""
