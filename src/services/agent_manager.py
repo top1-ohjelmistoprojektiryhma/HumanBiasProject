@@ -10,5 +10,6 @@ class AgentManager:
         self.list_of_agents.append(Agent(role_text))
 
     def set_selected_agents(self, agent_list):
+        self.selected_agents = []
         for agent in agent_list:
             self.selected_agents.append(Agent(agent))
