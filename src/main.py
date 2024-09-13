@@ -59,5 +59,14 @@ def delete_perspective():
     return jsonify({"response": "Perspective deleted"})
 
 
+@app.route("/api/add-perspective", methods=["POST"])
+def add_perspective():
+    data = request.json
+    perspective = data.get("perspective")
+    print(f"Adding perspective: {perspective}")
+    agent_manager.add_agent(perspective)
+    return jsonify({"response": "Perspective added"})
+
+
 if __name__ == "__main__":
     app.run(debug=True)

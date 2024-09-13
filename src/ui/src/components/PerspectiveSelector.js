@@ -27,6 +27,7 @@ const PerspectiveSelector = ({ perspectives, selectedPerspectives, setSelectedPe
     }
   };
 
+
   return (
     <div>
       <label>Select perspectives:</label>
