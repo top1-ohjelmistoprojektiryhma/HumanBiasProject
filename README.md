@@ -15,7 +15,7 @@
 ## Riippuvuudet
 Tarvittava Python versio:
 ```bash
-python-versions = "^3.8"
+python-versions = "^3.9"
 ```
 Asenna Poetry:
 ```bash
@@ -29,8 +29,7 @@ export NVM_DIR="$HOME/.nvm"
 nvm install 20
 
 ```
-
-# Käynnistysohjeet
+# Asennusohjeet
 
 Siirry projektin juurihakemistoon
 
@@ -42,28 +41,53 @@ Aktivoi virtuaaliympäristö (MacOs, Linux)
 ```bash
 source venv/bin/activate
 ```
-
-Aja
-```bash
-python src/main.py
-```
-
-Siirry kansioon ```src/ui```
-
 Asenna riippuvuudet
 ```bash
 poetry install
 ```
+
+Siirry kansiion ```src/ui```
 ```bash
 npm install
 ```
+
+# Käynnistysohjeet
+
+Siirry projektin juurihakemistoon
+
+```
+Aktivoi virtuaaliympäristö (MacOs, Linux)
+```bash
+source venv/bin/activate
+```
+
+Käynnistä backend
+```bash
+python3 src/main.py
+```
+
+Avaa toinen terminaali/välilehti
+Siirry toisessa terminaalissa kansioon ```src/ui```
+
 Käynnistä sovellus
 ```bash
 npm start
 ```
-## Pylint
+
+## Testit ja pylint
 
 Pylintin voi ajaa komennolla
 ```bash
-poetry run pylint src
+poetry run invoke lint
 ```
+
+Testit komennolla
+```bash
+poetry run invoke test
+```
+
+Testikattavuuden komennolla
+```bash
+poetry run invoke coverage
+```
+Kattavuusraportti tulostuu komentoriville ja selainversio muodostuu kansioon _htmlcov_
