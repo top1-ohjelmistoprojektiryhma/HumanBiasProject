@@ -55,7 +55,6 @@ npm install
 
 Siirry projektin juurihakemistoon
 
-```
 Aktivoi virtuaaliympäristö (MacOs, Linux)
 ```bash
 source venv/bin/activate
