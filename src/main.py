@@ -1,45 +1,55 @@
 import os
-from flask import Flask, jsonify, request
+from flask import Flask, request, jsonify
 from flask_cors import CORS
 from dotenv import load_dotenv
-from services.service_handler import ServiceHandler
 from services.agent_manager import AgentManager
 from services.formatter import Formatter
 from services.api_manager import ApiManager
-from services.api import gemini
-
+from services.service_handler import ServiceHandler
 
 app = Flask(__name__)
-CORS(app)  # Mahdollistaa CORS-pyynnöt frontendistä
+CORS(app)  # Enable CORS for frontend requests
 
-# Lataa ympäristömuuttujat
+# Load environment variables
 load_dotenv()
 GEMINI_KEY = os.getenv("GEMINI_KEY")
 
-# Alustetaan AgentManager ja ServiceHandler
+# Initialize AgentManager and ServiceHandler
 agent_manager = AgentManager()
 formatter = Formatter()
-gemini_api = gemini.GeminiApi(gemini_key=GEMINI_KEY)
-api_manager = ApiManager(gemini_key=GEMINI_KEY, gemini_api=gemini_api)
+api_manager = ApiManager()
 service_handler = ServiceHandler(
     io=None, agent_manager=agent_manager, formatter=formatter, api_manager=api_manager
 )
 if GEMINI_KEY is not None:
     service_handler.set_gemini_api_key(GEMINI_KEY)
+else:
+    print("GEMINI_KEY environment variable not found")
 
 
-# Reitti agenttien listan palauttamiseksi
 @app.route("/api/agents", methods=["GET"])
 def get_agents():
-    agents = [
-        agent.role for agent in agent_manager.list_of_agents
-    ]  # Lista agenttien rooleista
+    """
+    Get the list of agents.
+
+    Returns:
+        JSON response containing a list of agent roles.
+    """
+    agents = [agent.role for agent in agent_manager.list_of_agents]
     return jsonify(agents)
 
 
-# Reitti väitteen käsittelyyn (processing the prompt)
 @app.route("/api/process", methods=["POST"])
 def process_statement():
+    """
+    Process the given prompt with the selected perspectives.
+
+    Expects a JSON payload with 'prompt' and 'perspective'.
+    Sets the selected agents based on the provided perspectives and processes the prompt.
+
+    Returns:
+        JSON response with the processed output.
+    """
     data = request.json  # Get JSON data from the request body
     prompt = data.get("prompt")  # Extract 'prompt' from the JSON
     perspectives = data.get("perspective")  # Extract 'perspective' from the JSON
@@ -52,6 +62,15 @@ def process_statement():
 
 @app.route("/api/delete-perspective", methods=["POST"])
 def delete_perspective():
+    """
+    Delete the specified perspective.
+
+    Expects a JSON payload with 'perspective'.
+    Deletes the agent corresponding to the provided perspective.
+
+    Returns:
+        JSON response confirming the deletion.
+    """
     data = request.json
     perspective = data.get("perspective")
     print(f"Deleting perspective: {perspective}")
@@ -61,6 +80,15 @@ def delete_perspective():
 
 @app.route("/api/add-perspective", methods=["POST"])
 def add_perspective():
+    """
+    Add a new perspective.
+
+    Expects a JSON payload with 'perspective'.
+    Adds a new agent corresponding to the provided perspective.
+
+    Returns:
+        JSON response confirming the addition.
+    """
     data = request.json
     perspective = data.get("perspective")
     print(f"Adding perspective: {perspective}")
