@@ -52,6 +52,18 @@ npm install
 ```
 
 # Käynnistysohjeet
+## Käynnistäminen poetry-taskilla
+Avaa kaksi terminaalia, joilla siirryt projektin juurihakemistoon.
+Aja toisessa terminaalissa komento
+```bash
+poetry run invoke backend
+```
+Ja toisessa terminaalissa komento
+```bash
+poetry run invoke frontend
+```
+
+## Vaihtoehtoinen käynnistystapa:
 
 Siirry projektin juurihakemistoon
 
