@@ -2,11 +2,11 @@ import os
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from dotenv import load_dotenv
-from services.agent_manager import AgentManager  # pylint: disable=import-error
-from services.formatter import Formatter  # pylint: disable=import-error
-from services.api_manager import ApiManager  # pylint: disable=import-error
-from services.service_handler import ServiceHandler  # pylint: disable=import-error
-from services.api import gemini  # pylint: disable=import-error
+from backend.services.agent_manager import AgentManager
+from backend.services.formatter import Formatter
+from backend.services.api_manager import ApiManager
+from backend.services.service_handler import ServiceHandler
+from backend.services.api import gemini
 
 app = Flask(__name__)
 CORS(app)  # Enable CORS for frontend requests
