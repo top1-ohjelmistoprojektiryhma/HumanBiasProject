@@ -1,5 +1,5 @@
 import unittest
-from services.agent_manager import AgentManager
+from backend.services.agent_manager import AgentManager
 
 
 class ExampleAgent:

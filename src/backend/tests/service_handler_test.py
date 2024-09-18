@@ -1,6 +1,6 @@
 import unittest
 from unittest.mock import Mock
-from services.service_handler import ServiceHandler
+from backend.services.service_handler import ServiceHandler
 
 
 class ExampleAgent:
@@ -36,15 +36,15 @@ class TestServiceHandler(unittest.TestCase):
         test_text = "333"
         self._mock_agent_manager.selected_agents = [ExampleAgent(), ExampleAgent()]
         self._mock_formatter.format_multiple.return_value = [
-            'You are a \"Student\".Give your own thoughts on how probable the following statement is: 123',
-            'You are a \"Student\".Give your own thoughts on how probable the following statement is: 123',
+            'You are a "Student".Give your own thoughts on how probable the following statement is: 123',
+            'You are a "Student".Give your own thoughts on how probable the following statement is: 123',
         ]
         self._mock_api_manager.gemini_key = None
         return_value = self._handler.text_in_text_out(test_text)
 
         expected = "prompts:\n"
-        expected += 'You are a \"Student\".Give your own thoughts on how probable the following statement is: 123'
-        expected += '\nYou are a \"Student\".Give your own thoughts on how probable the following statement is: 123'
+        expected += 'You are a "Student".Give your own thoughts on how probable the following statement is: 123'
+        expected += '\nYou are a "Student".Give your own thoughts on how probable the following statement is: 123'
 
         self.assertEqual(return_value, expected)
 
@@ -53,8 +53,8 @@ class TestServiceHandler(unittest.TestCase):
         self._mock_agent_manager.selected_agents = [ExampleAgent(), ExampleAgent()]
         self._mock_api_manager.gemini_key = "1"
         self._mock_formatter.format_multiple.return_value = [
-            'You are a \"Student\".Give your own thoughts on how probable the following statement is: 123',
-            'You are a \"Student\".Give your own thoughts on how probable the following statement is: 123',
+            'You are a "Student".Give your own thoughts on how probable the following statement is: 123',
+            'You are a "Student".Give your own thoughts on how probable the following statement is: 123',
         ]
         self._mock_api_manager.send_prompts.return_value = [
             {"output": "Response1"},
@@ -75,8 +75,8 @@ class TestServiceHandler(unittest.TestCase):
         self._mock_agent_manager.selected_agents = [ExampleAgent(), ExampleAgent()]
 
         self._mock_formatter.format_multiple.return_value = [
-            'You are a \"Student\".Give your own thoughts on how probable the following statement is: 123',
-            'You are a \"Student\".Give your own thoughts on how probable the following statement is: 123',
+            'You are a "Student".Give your own thoughts on how probable the following statement is: 123',
+            'You are a "Student".Give your own thoughts on how probable the following statement is: 123',
         ]
 
         return_value = self._handler.format_prompt_list(test_text)
@@ -84,8 +84,8 @@ class TestServiceHandler(unittest.TestCase):
             ["Student", "Student"], "123"
         )
         expected = [
-            'You are a \"Student\".Give your own thoughts on how probable the following statement is: 123',
-            'You are a \"Student\".Give your own thoughts on how probable the following statement is: 123',
+            'You are a "Student".Give your own thoughts on how probable the following statement is: 123',
+            'You are a "Student".Give your own thoughts on how probable the following statement is: 123',
         ]
         self.assertListEqual(return_value, expected)
 

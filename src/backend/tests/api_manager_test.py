@@ -1,6 +1,6 @@
 import unittest
 from unittest.mock import Mock
-from services.api_manager import ApiManager
+from backend.services.api_manager import ApiManager
 
 
 class TestApiManager(unittest.TestCase):
@@ -20,10 +20,28 @@ class TestApiManager(unittest.TestCase):
         prompt_list = [{"text": "123", "model": None}]
         self._api_manager.gemini_api.get_chat_response = Mock(return_value="Response1")
         response_list = self._api_manager.send_prompts(prompt_list)
-        self.assertEqual(response_list, [{"prompt": {"text": "123", "model": None}, "model": "gemini", "output": "Response1"}])
+        self.assertEqual(
+            response_list,
+            [
+                {
+                    "prompt": {"text": "123", "model": None},
+                    "model": "gemini",
+                    "output": "Response1",
+                }
+            ],
+        )
 
     def test_send_prompts_works_with_model(self):
         prompt_list = [{"text": "123", "model": "gemini"}]
         self._api_manager.gemini_api.get_chat_response = Mock(return_value="Response1")
         response_list = self._api_manager.send_prompts(prompt_list)
-        self.assertEqual(response_list, [{"prompt": {"text": "123", "model": "gemini"}, "model": "gemini", "output": "Response1"}])
+        self.assertEqual(
+            response_list,
+            [
+                {
+                    "prompt": {"text": "123", "model": "gemini"},
+                    "model": "gemini",
+                    "output": "Response1",
+                }
+            ],
+        )
