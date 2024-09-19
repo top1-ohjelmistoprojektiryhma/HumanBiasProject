@@ -3,6 +3,11 @@ from unittest.mock import Mock
 from backend.services.api_manager import ApiManager
 
 
+class Agent():
+    def __init__(self, role):
+        self.role = role
+
+
 class TestApiManager(unittest.TestCase):
     def setUp(self):
         self._api_manager = ApiManager()
@@ -32,16 +37,17 @@ class TestApiManager(unittest.TestCase):
         )
 
     def test_send_prompts_works_with_model(self):
-        prompt_list = [{"text": "123", "model": "gemini"}]
+        agent = Agent("student")
+        prompt_list = [{"text": "123", "model": "gemini", "agent_object": agent}]
         self._api_manager.gemini_api.get_chat_response = Mock(return_value="Response1")
         response_list = self._api_manager.send_prompts(prompt_list)
         self.assertEqual(
             response_list,
             [
                 {
-                    "prompt": {"text": "123", "model": "gemini"},
+                    "prompt": {"text": "123", "model": "gemini", "agent_object": agent},
                     "model": "gemini",
-                    "output": "Response1",
+                    "output": "Response1"
                 }
             ],
         )

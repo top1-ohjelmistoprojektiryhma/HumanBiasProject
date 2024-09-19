@@ -23,16 +23,23 @@ class ServiceHandler:
         output = "prompts:\n" + "\n".join([str(prompt["text"]) for prompt in prompt_list])
         if self.api_manager.gemini_key is not None:
             output = "\n"
-            input_list = [{"text": prompt["text"], "model": None, "agent_object": prompt["agent"]} for prompt in prompt_list]
+            input_list = [
+                {
+                    "text": prompt["text"],
+                    "model": None,
+                    "agent_object": prompt["agent"]
+                }
+                for prompt in prompt_list
+            ]
             # Send prompts to the API and collect responses
             responses = [
                 response["output"]
                 for response in self.api_manager.send_prompts(input_list)
             ]
             # Format the output with agent roles and their responses
-            for i, response in enumerate(responses):
-                agent = self.agent_manager.selected_agents[i]
-                output = output + f"{agent.role} Thinks: {response}\n"
+            for response in responses:
+                role = response["prompt"]["agent_object"].role
+                output += f'{role} Thinks: {response["output"]}\n'
         return output
 
     def format_prompt_list(self, text):

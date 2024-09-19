@@ -50,15 +50,16 @@ class TestServiceHandler(unittest.TestCase):
 
     def test_text_in_text_out_works_with_api_key(self):
         test_text = "222"
-        self._mock_agent_manager.selected_agents = [ExampleAgent(), ExampleAgent()]
+        agents = [ExampleAgent(), ExampleAgent()]
+        self._mock_agent_manager.selected_agents = agents
         self._mock_api_manager.gemini_key = "1"
         self._mock_formatter.format_multiple.return_value = [
             'You are a "Student".Give your own thoughts on how probable the following statement is: 123',
             'You are a "Student".Give your own thoughts on how probable the following statement is: 123',
         ]
         self._mock_api_manager.send_prompts.return_value = [
-            {"output": "Response1"},
-            {"output": "Response2"},
+            {"prompt": {"text": "123", "model": None, "agent_object": agents[0]}, "model": "gemini", "output": "Response1"},
+            {"prompt": {"text": "123", "model": None, "agent_object": agents[1]}, "model": "gemini", "output": "Response2"}
         ]
         return_value = self._handler.text_in_text_out(test_text)
         expected = "\n"
@@ -72,7 +73,8 @@ class TestServiceHandler(unittest.TestCase):
 
     def test_format_prompt_list_works(self):
         test_text = "123"
-        self._mock_agent_manager.selected_agents = [ExampleAgent(), ExampleAgent()]
+        agents = [ExampleAgent(), ExampleAgent()]
+        self._mock_agent_manager.selected_agents = agents
 
         self._mock_formatter.format_multiple.return_value = [
             'You are a "Student".Give your own thoughts on how probable the following statement is: 123',
@@ -84,8 +86,8 @@ class TestServiceHandler(unittest.TestCase):
             ["Student", "Student"], "123"
         )
         expected = [
-            'You are a "Student".Give your own thoughts on how probable the following statement is: 123',
-            'You are a "Student".Give your own thoughts on how probable the following statement is: 123',
+            {"agent": agents[0], "text": 'You are a "Student".Give your own thoughts on how probable the following statement is: 123'},
+            {"agent": agents[1], "text": 'You are a "Student".Give your own thoughts on how probable the following statement is: 123'},
         ]
         self.assertListEqual(return_value, expected)
 
