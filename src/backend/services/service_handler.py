@@ -32,10 +32,7 @@ class ServiceHandler:
                 for prompt in prompt_list
             ]
             # Send prompts to the API and collect responses
-            responses = [
-                response["output"]
-                for response in self.api_manager.send_prompts(input_list)
-            ]
+            responses = self.api_manager.send_prompts(input_list)
             # Format the output with agent roles and their responses
             for response in responses:
                 role = response["prompt"]["agent_object"].role
