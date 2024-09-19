@@ -20,10 +20,10 @@ class ServiceHandler:
         # Format the input text into a list of prompts
         prompt_list = self.format_prompt_list(text)
         # generate default output if api keys are not configured
-        output = "prompts:\n" + "\n".join([str(prompt) for prompt in prompt_list])
+        output = "prompts:\n" + "\n".join([str(prompt["text"]) for prompt in prompt_list])
         if self.api_manager.gemini_key is not None:
             output = "\n"
-            input_list = [{"text": prompt, "model": None} for prompt in prompt_list]
+            input_list = [{"text": prompt["text"], "model": None, "agent_object": prompt["agent"]} for prompt in prompt_list]
             # Send prompts to the API and collect responses
             responses = [
                 response["output"]
@@ -36,8 +36,11 @@ class ServiceHandler:
         return output
 
     def format_prompt_list(self, text):
-        agent_list = [agent.role for agent in self.agent_manager.selected_agents]
-        prompt_list = self.formatter.format_multiple(agent_list, text)
+        agent_list = self.agent_manager.selected_agents
+        prompt_list = self.formatter.format_multiple([agent.role for agent in agent_list], text)
+        # Format the prompts into a list of dictionaries with agent roles and prompts
+        for i, prompt in enumerate(prompt_list):
+            prompt_list[i] = {"agent": agent_list[i], "text": prompt}
         return prompt_list
 
     def create_agents(self, list_of_roles):
