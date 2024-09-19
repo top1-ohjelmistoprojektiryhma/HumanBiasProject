@@ -7,8 +7,7 @@ RUN npm install -g foreman
 
 
 # Asenna Poetry
-RUN pip install poetry
-ENV PATH="/root/.local/bin:$PATH"
+RUN pip3 install poetry
 
 # Kopioi Node.js (frontend) -sovellus ja asenna riippuvuudet
 WORKDIR /src/ui
