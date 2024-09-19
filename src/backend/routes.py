@@ -31,3 +31,11 @@ def initialize_routes(app, agent_manager, service_handler):
         print(f"Adding perspective: {perspective}")
         agent_manager.add_agent(perspective)
         return jsonify({"response": "Perspective added"})
+
+    @app.route("/api/generate-agents", methods=["POST"])
+    def generate_agents():
+        data = request.json
+        prompt = data.get("prompt")
+        print(f"Prompt: {prompt}")
+        response = service_handler.generate_agents(prompt)
+        return jsonify({"response": response})

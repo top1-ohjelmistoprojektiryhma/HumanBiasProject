@@ -51,6 +51,27 @@ class ServiceHandler:
         for role in list_of_roles:
             self.add_agent(role)
 
+    def generate_agents(self, text):
+        generate_agents_prompt = self.formatter.format_generate_agents_prompt(text)
+
+        prompt_list = [{generate_agents_prompt}]
+        # generate default output if api keys are not configured
+        output = ""
+        if self.api_manager.gemini_key is not None:
+            input_list = [{"text": prompt, "model": None} for prompt in prompt_list]
+            # Send prompts to the API and collect responses
+
+            response = self.api_manager.send_prompts(input_list)[0]["output"]
+
+            # Format the output with agent roles and their responses
+            output = f"{response}"
+            output_list = output.split("|")
+            nice_output = ""
+
+            nice_output = [f"{role}  #  " for role in output_list]
+            nice_output = "".join(nice_output)
+        return str(nice_output)
+
     def add_agent(self, user_input):
         self.agent_manager.add_agent(user_input)
 
