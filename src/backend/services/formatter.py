@@ -13,8 +13,8 @@ class Formatter:
         return f"""Embody the following role: {str(role)}.
         Give briefly your own thoughts on how probable the following statement is: {str(prompt)}"""
 
-    def format_generate_agents_prompt(self, prompt):
+    def format_generate_agents_prompt(self, prompt, number_of_agents):
         return f"""{str(prompt)}
-        Give 3 perspectives that might be interested adding their thoughts to this statement. 
+        Give {str(number_of_agents)} perspectives that might be interested adding their thoughts to this statement. 
         Return a list only in this style but replace agents with the actual perspectives: 
-        'agent1|agent2|agent3'"""
+        agent1|agent2|agent3"""
