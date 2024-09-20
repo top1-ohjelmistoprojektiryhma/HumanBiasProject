@@ -95,3 +95,21 @@ class TestServiceHandler(unittest.TestCase):
         test_agent_list = ["Student", "Farmer"]
         self._handler.set_selected_agents(test_agent_list)
         self._mock_agent_manager.set_selected_agents.assert_called_with(test_agent_list)
+
+    def test_generate_agents_with_no_api_key(self):
+        test_text = "Generate new agents based on this input."
+        self._mock_api_manager.gemini_key = None
+        response = self._handler.generate_agents(test_text)
+        self.assertEqual(response, {"response": "", "perspectives": []})
+
+    def test_generate_agents_with_not_enough_agents(self):
+        test_text = "Generate new agents based on this input."
+        self._mock_api_manager.gemini_key = "valid_key"
+        self._mock_formatter.format_generate_agents_prompt.return_value = test_text
+        self._mock_api_manager.send_prompts.return_value = [{"output": "Agent1|Agent2"}]
+    
+        response = self._handler.generate_agents(test_text)
+        self.assertEqual(response['response'], "error in generating agents")
+
+
+    

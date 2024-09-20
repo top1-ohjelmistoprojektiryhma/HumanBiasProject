@@ -50,24 +50,21 @@ class ServiceHandler:
     def create_agents(self, list_of_roles):
         for role in list_of_roles:
             self.add_agent(role)
-
     def generate_agents(self, text):
         number_of_agents = 3
         generate_agents_prompt = self.formatter.format_generate_agents_prompt(text,number_of_agents)
 
-        prompt_list = [{generate_agents_prompt}]
+        prompt_list = [generate_agents_prompt]
         # generate default output if api keys are not configured
         output = ""
+        perspectives = []  # Initialize perspectives to avoid UnboundLocalError
         if self.api_manager.gemini_key is not None:
-
             input_list = [{"text": prompt, "model": None} for prompt in prompt_list]
             # Send prompts to the API and collect responses
-
             response = self.api_manager.send_prompts(input_list)[0]["output"]
 
             # Format the output with agent roles and their responses
             raw_output = f"{response}"
-            # Remove newline from output
             output_no_newline = raw_output.rstrip(' \n')
 
             output_list = output_no_newline.split("|")
@@ -78,11 +75,15 @@ class ServiceHandler:
                 for role in output_list:
                     self.add_agent(str(role))
 
-                output = [agent.role for agent in self.agent_manager.list_of_agents]
+                # Extract perspe<ctives or agents from agent manager
+                perspectives = [agent.role for agent in self.agent_manager.list_of_agents]
+                output = perspectives
             else:
                 output = "error in generating agents"
 
-        return str(output)
+        return {"response": str(output), "perspectives": perspectives}
+
+
 
     def add_agent(self, user_input):
         self.agent_manager.add_agent(user_input)

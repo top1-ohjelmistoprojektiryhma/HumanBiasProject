@@ -36,6 +36,7 @@ def initialize_routes(app, agent_manager, service_handler):
     def generate_agents():
         data = request.json
         prompt = data.get("prompt")
-        print(f"Prompt: {prompt}")
         response = service_handler.generate_agents(prompt)
-        return jsonify({"response": response})
+        if isinstance(response, dict) and 'perspectives' in response:
+            return jsonify(response)
+        return jsonify({"response": response, "perspectives": []})

@@ -95,6 +95,12 @@ const App = () => {
     })
       .then((response) => response.json())
       .then((data) => {
+        if (data.perspectives) {
+          // Update the perspectives state with the generated agents
+          setPerspectives(data.perspectives);
+        } else {
+          console.error('Error generating agents:', data.error);
+        }
         // Set the response from the backend in the state
         setResponse(data.response);
       })
@@ -107,7 +113,7 @@ const App = () => {
     <div>
       <h1>Human Bias Project</h1>
       <InputForm prompt={prompt} setPrompt={setPrompt} />
-      <GenerateAgents onSubmit={handleGenerateAgents} />
+      <GenerateAgents onSubmit={handleGenerateAgents} perspectives={perspectives} setPerspectives={setPerspectives} />
       <PerspectiveSelector
         perspectives={perspectives}
         selectedPerspectives={selectedPerspectives}
