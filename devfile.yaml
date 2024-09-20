@@ -1,0 +1,49 @@
+apiVersion: 1.0.0
+metadata:
+  name: my-app
+  version: 1.0.0
+components:
+  - name: backend
+    container:
+      image: backend-image:latest
+      memoryLimit: 512Mi
+      endpoints:
+        - name: backend
+          targetPort: 8000
+          exposure: public
+      mountSources: true
+      sourceMapping: /app
+    build:
+      dockerfile:
+        uri: ./Dockerfile.backend
+
+  - name: frontend
+    container:
+      image: frontend-image:latest
+      memoryLimit: 512Mi
+      endpoints:
+        - name: frontend
+          targetPort: 3000
+          exposure: public
+      mountSources: true
+      sourceMapping: /app
+    build:
+      dockerfile:
+        uri: ./src/ui/Dockerfile.frontend
+
+commands:
+  - name: build-backend
+    exec:
+      component: backend
+      commandLine: "docker build -t backend-image:latest -f Dockerfile.backend ."
+      group:
+        kind: build
+        isDefault: true
+
+  - name: build-frontend
+    exec:
+      component: frontend
+      commandLine: "docker build -t frontend-image:latest -f src/ui/Dockerfile.frontend ."
+      group:
+        kind: build
+        isDefault: true
