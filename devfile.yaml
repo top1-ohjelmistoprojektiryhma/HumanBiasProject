@@ -10,14 +10,12 @@ components:
       imageName: backend-image:latest
       dockerfile:
         uri: ./Dockerfile.backend
-      memoryLimit: 512Mi
 
   - name: frontend
     image: 
       imageName: frontend-image:latest
       dockerfile:
         uri: ./src/ui/Dockerfile.frontend
-      memoryLimit: 512Mi
 
 commands:
   - id: build-backend
