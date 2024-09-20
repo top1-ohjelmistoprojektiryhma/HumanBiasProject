@@ -42,4 +42,4 @@ commands:
       commandLine: "docker build -t frontend-image:latest -f src/ui/Dockerfile.frontend ."
       group:
         kind: build
-        isDefault: true
+        isDefault: false
