@@ -6,26 +6,18 @@ metadata:
 
 components:
   - name: backend
-    container:
-      image: backend-image:latest
+    image: 
+      imageName: backend-image:latest
+      dockerfile:
+        uri: ./Dockerfile.backend
       memoryLimit: 512Mi
-      endpoints:
-        - name: backend
-          targetPort: 8000
-          exposure: public
-      mountSources: true
-      sourceMapping: /app
 
   - name: frontend
-    container:
-      image: frontend-image:latest
+    image: 
+      imageName: frontend-image:latest
+      dockerfile:
+        uri: ./src/ui/Dockerfile.frontend
       memoryLimit: 512Mi
-      endpoints:
-        - name: frontend
-          targetPort: 3000
-          exposure: public
-      mountSources: true
-      sourceMapping: /app
 
 commands:
   - id: build-backend
@@ -34,7 +26,7 @@ commands:
       commandLine: "docker build -t backend-image:latest -f Dockerfile.backend ."
       group:
         kind: build
-        isDefault: true
+        isDefault: true  
 
   - id: build-frontend
     exec:
@@ -42,4 +34,4 @@ commands:
       commandLine: "docker build -t frontend-image:latest -f src/ui/Dockerfile.frontend ."
       group:
         kind: build
-        isDefault: false
+        isDefault: false  
