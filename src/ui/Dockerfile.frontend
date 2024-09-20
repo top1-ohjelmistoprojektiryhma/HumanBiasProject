@@ -1,0 +1,19 @@
+# Frontendin peruskuva (Node.js)
+FROM node:16
+
+# Työskentelyhakemisto
+WORKDIR /app
+
+# Asenna frontendin riippuvuudet
+COPY package.json package-lock.json /app/
+RUN npm install
+
+# Kopioi frontendin koodi
+COPY . /app
+
+# Rakenna sovellus
+RUN npm run build
+
+# Avaa portti ja käynnistä sovellus
+EXPOSE 3000
+CMD ["npm", "start"]
