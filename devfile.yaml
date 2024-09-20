@@ -1,4 +1,4 @@
-schemaVersion: 2.2.0  # Tärkeä, tämä on oltava heti Devfile-tiedoston alussa
+schemaVersion: 2.2.0
 
 metadata:
   name: my-app
@@ -15,9 +15,6 @@ components:
           exposure: public
       mountSources: true
       sourceMapping: /app
-    build:
-      dockerfile:
-        uri: ./Dockerfile.backend
 
   - name: frontend
     container:
@@ -29,12 +26,9 @@ components:
           exposure: public
       mountSources: true
       sourceMapping: /app
-    build:
-      dockerfile:
-        uri: ./src/ui/Dockerfile.frontend
 
 commands:
-  - name: build-backend
+  - id: build-backend
     exec:
       component: backend
       commandLine: "docker build -t backend-image:latest -f Dockerfile.backend ."
@@ -42,7 +36,7 @@ commands:
         kind: build
         isDefault: true
 
-  - name: build-frontend
+  - id: build-frontend
     exec:
       component: frontend
       commandLine: "docker build -t frontend-image:latest -f src/ui/Dockerfile.frontend ."
