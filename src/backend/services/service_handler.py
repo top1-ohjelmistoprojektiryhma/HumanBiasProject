@@ -39,8 +39,8 @@ class ServiceHandler:
                 role = response["prompt"]["agent_object"].role
                 output += f'{role} Thinks: {response["output"]}\n'
             # Create a new dialog object
-            new_id, new_dialog = self.dialog_manager.new_dialog(text)
-            # Add the round to the dialog object
+            new_id, _ = self.dialog_manager.new_dialog(text)
+            # Add round to dialog object
             round_num = 1
             prompts = [
                 {
