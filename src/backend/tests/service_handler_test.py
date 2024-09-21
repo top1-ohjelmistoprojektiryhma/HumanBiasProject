@@ -13,11 +13,13 @@ class TestServiceHandler(unittest.TestCase):
         self._mock_agent_manager = Mock()
         self._mock_formatter = Mock()
         self._mock_api_manager = Mock()
+        self._mock_dialog_manager = Mock()
         self._handler = ServiceHandler(
             io=None,
             agent_manager=self._mock_agent_manager,
             formatter=self._mock_formatter,
             api_manager=self._mock_api_manager,
+            dialog_manager=self._mock_dialog_manager
         )
 
     def test_create_agents_works(self):
@@ -61,6 +63,7 @@ class TestServiceHandler(unittest.TestCase):
             {"prompt": {"text": "123", "model": None, "agent_object": agents[0]}, "model": "gemini", "output": "Response1"},
             {"prompt": {"text": "123", "model": None, "agent_object": agents[1]}, "model": "gemini", "output": "Response2"}
         ]
+        self._mock_dialog_manager.new_dialog.return_value = (1, "dialog")
         return_value = self._handler.text_in_text_out(test_text)
         expected = "\n"
         expected += "Student Thinks: Response1\n"

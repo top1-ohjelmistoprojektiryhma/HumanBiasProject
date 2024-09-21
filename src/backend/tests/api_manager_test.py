@@ -22,16 +22,17 @@ class TestApiManager(unittest.TestCase):
         self.assertEqual(self._api_manager.gemini_key, None)
 
     def test_send_prompts_works_without_model(self):
-        prompt_list = [{"text": "123", "model": None}]
+        agent = Agent("student")
+        prompt_list = [{"text": "123", "model": "gemini", "agent_object": agent}]
         self._api_manager.gemini_api.get_chat_response = Mock(return_value="Response1")
         response_list = self._api_manager.send_prompts(prompt_list)
         self.assertEqual(
             response_list,
             [
                 {
-                    "prompt": {"text": "123", "model": None},
+                    "prompt": {"text": "123", "model": "gemini", "agent_object": agent},
                     "model": "gemini",
-                    "output": "Response1",
+                    "output": "Response1"
                 }
             ],
         )

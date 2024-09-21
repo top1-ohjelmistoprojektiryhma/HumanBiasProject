@@ -38,6 +38,12 @@ class ApiManager:
             else:
                 model_name = prompt["model"]
             response = model_map[model_name](prompt["text"])
-            response_list.append({"prompt": prompt, "model": model_name, "output": response})
+            response_list.append(
+                {
+                    "prompt": prompt,
+                    "model": model_name,
+                    "output": response
+                }
+            )
 
         return response_list

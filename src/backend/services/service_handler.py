@@ -1,9 +1,10 @@
 class ServiceHandler:
-    def __init__(self, io, agent_manager, formatter, api_manager):
+    def __init__(self, io, agent_manager, formatter, api_manager, dialog_manager):
         self.io = io
         self.agent_manager = agent_manager
         self.formatter = formatter
         self.api_manager = api_manager
+        self.dialog_manager = dialog_manager
         default_agents = ["farmer", "eld", "student"]
         self.create_agents(default_agents)
 
@@ -37,6 +38,24 @@ class ServiceHandler:
             for response in responses:
                 role = response["prompt"]["agent_object"].role
                 output += f'{role} Thinks: {response["output"]}\n'
+            # Create a new dialog object
+            new_id, new_dialog = self.dialog_manager.new_dialog(text)
+            # Add the round to the dialog object
+            round_num = 1
+            prompts = [
+                {
+                    "agent": response["prompt"]["agent_object"],
+                    "model": response["model"],
+                    "input": response["prompt"]["text"],
+                    "output": response["output"]
+                }
+                for response in responses
+            ]
+            self.dialog_manager.add_round_to_dialog(
+                new_id,
+                round_num,
+                prompts
+            )
         return output
 
     def format_prompt_list(self, text):

@@ -5,6 +5,7 @@ from dotenv import load_dotenv
 from services.agent_manager import AgentManager
 from services.formatter import Formatter
 from services.api_manager import ApiManager
+from services.dialog_manager import DialogManager
 from services.service_handler import ServiceHandler
 from services.api import gemini
 
@@ -21,8 +22,13 @@ agent_manager = AgentManager()
 formatter = Formatter()
 gemini_api = gemini.GeminiApi(gemini_key=GEMINI_KEY)
 api_manager = ApiManager(gemini_key=GEMINI_KEY, gemini_api=gemini_api)
+dialog_manager = DialogManager()
 service_handler = ServiceHandler(
-    io=None, agent_manager=agent_manager, formatter=formatter, api_manager=api_manager
+    io=None, 
+    agent_manager=agent_manager, 
+    formatter=formatter, 
+    api_manager=api_manager,
+    dialog_manager=dialog_manager
 )
 
 # Määritä GEMINI_KEY
