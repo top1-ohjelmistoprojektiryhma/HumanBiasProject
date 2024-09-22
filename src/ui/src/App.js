@@ -63,13 +63,20 @@ const App = () => {
       .then((response) => response.json())
       .then((data) => {
         setResponse(data.response);
-        
+        // if no prompt is given, return
+        if (data.response === "Error in processing the prompt") {
+          return;
+        }
+        // if no perspectives are selected, return
+        if (data.response === "Please select perspectives") {
+          return;
+        }
         // Luo uusi dialogi täydellisellä rakenteella ja lisää sen tilaan
-        const newDialogId = Object.keys(dialogs).length; // Uusi dialogin ID
+        const newDialogId = data.dialog_id;
         const newDialog = {
           [newDialogId]: {
             initial_prompt: prompt,
-            rounds: {} // Tyhjä rounds-rakenne
+            rounds: data.dialog.rounds,
           }
         };
         
