@@ -1,15 +1,60 @@
 body {
-    font-family: Arial, sans-serif;
-    padding: 20px;
-    margin: 0;
-    white-space: pre-line;
-  }
-  
-  h1 {
-    color: #333;
-  }
-  
-  input, select, button {
-    margin: 10px 0;
-  }
-  
+  font-family: Arial, sans-serif;
+  margin: 0;
+  white-space: pre-line;
+}
+
+h1 {
+  color: #333;
+}
+
+input, select, button {
+  margin: 10px 0;
+}
+
+/* Flex-asettelu, joka pitää dialogipalkin vasemmalla */
+.app-container {
+  display: flex;
+  height: 100vh; /* Koko ikkunan korkeus */
+}
+
+.dialogs-bar {
+  width: 300px;
+  background-color: #f4f4f4;
+  border-right: 1px solid #ccc; /* Reunaviiva oikealle */
+  padding: 10px;
+  margin: 0; /* Poista marginaali */
+  overflow-y: auto;
+  height: 100vh; /* Koko ikkunan korkeus */
+  position: fixed; /* Kiinnitä vasemmalle */
+  left: 0;
+  top: 0;
+}
+
+.main-content {
+  flex-grow: 1; /* Kasvata pääsisältö lopputilaan */
+  margin-left: 320px; /* Jätä tilaa dialogipalkille */
+  padding: 20px;
+}
+
+.dialogs-bar h2 {
+  font-size: 18px;
+  margin-bottom: 10px;
+}
+
+.dialogs-bar ul {
+  list-style: none;
+  padding: 0;
+}
+
+.dialogs-bar ul ul {
+  padding-left: 20px;
+}
+
+.dialogs-bar li {
+  margin-bottom: 5px;
+}
+
+.dialogs-bar strong {
+  cursor: pointer;
+}
