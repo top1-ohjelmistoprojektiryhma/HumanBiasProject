@@ -16,8 +16,15 @@ class ServiceHandler:
             text (str): The input text to process.
 
         Returns:
-            str: The generated response.
+            The generated response, dialog id, and dialog as dict.
         """
+        # Check if the input text is empty
+        if text == "":
+            return "Please enter a prompt", None, None
+        # Check if any perspectives are selected
+        if self.agent_manager.selected_agents == []:
+            return "Please select perspectives", None, None
+
         # Format the input text into a list of prompts
         prompt_list = self.format_prompt_list(text)
         # generate default output if api keys are not configured
@@ -56,7 +63,8 @@ class ServiceHandler:
                 round_num,
                 prompts
             )
-        return output
+            return output, new_id, self.dialog_manager.get_dialog(new_id).to_dict()
+        return output, None, None
 
     def format_prompt_list(self, text):
         agent_list = self.agent_manager.selected_agents

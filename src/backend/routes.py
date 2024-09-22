@@ -14,8 +14,12 @@ def initialize_routes(app, agent_manager, service_handler):
         perspectives = data.get("perspective")
         print(f"Prompt: {prompt}, Perspective: {perspectives}")
         agent_manager.set_selected_agents(perspectives)
-        response = service_handler.text_in_text_out(prompt)
-        return jsonify({"response": response})
+        response, new_id, new_dialog = service_handler.text_in_text_out(prompt)
+        # send error if new_id is None
+        if new_id is None:
+            return jsonify({"response": response})
+        print(f"Response: {response}, Dialog ID: {new_id}, Dialog: {new_dialog}")
+        return jsonify({"response": response, "dialog_id": new_id, "dialog": new_dialog})
 
     @app.route("/api/delete-perspective", methods=["POST"])
     def delete_perspective():

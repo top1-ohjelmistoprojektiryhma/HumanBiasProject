@@ -42,7 +42,7 @@ class TestServiceHandler(unittest.TestCase):
             'You are a "Student".Give your own thoughts on how probable the following statement is: 123',
         ]
         self._mock_api_manager.gemini_key = None
-        return_value = self._handler.text_in_text_out(test_text)
+        return_value, _, _ = self._handler.text_in_text_out(test_text)
 
         expected = "prompts:\n"
         expected += 'You are a "Student".Give your own thoughts on how probable the following statement is: 123'
@@ -63,12 +63,23 @@ class TestServiceHandler(unittest.TestCase):
             {"prompt": {"text": "123", "model": None, "agent_object": agents[0]}, "model": "gemini", "output": "Response1"},
             {"prompt": {"text": "123", "model": None, "agent_object": agents[1]}, "model": "gemini", "output": "Response2"}
         ]
-        self._mock_dialog_manager.new_dialog.return_value = (1, "dialog")
-        return_value = self._handler.text_in_text_out(test_text)
+        self._mock_dialog_manager.new_dialog.return_value = 1, "dialog"
+        return_value, _, _ = self._handler.text_in_text_out(test_text)
         expected = "\n"
         expected += "Student Thinks: Response1\n"
         expected += "Student Thinks: Response2\n"
         self.assertEqual(return_value, expected)
+
+    def test_text_in_text_out_works_with_no_selected_agents(self):
+        test_text = "222"
+        self._mock_agent_manager.selected_agents = []
+        return_value, _, _ = self._handler.text_in_text_out(test_text)
+        self.assertEqual(return_value, "Please select perspectives")
+
+    def test_text_in_text_out_works_with_no_prompt(self):
+        test_text = ""
+        return_value, _, _ = self._handler.text_in_text_out(test_text)
+        self.assertEqual(return_value, "Please enter a prompt")
 
     def test_set_gemini_api_key_works(self):
         self._handler.set_gemini_api_key("1")
