@@ -40,3 +40,8 @@ def initialize_routes(app, agent_manager, service_handler):
         if isinstance(response, dict) and 'perspectives' in response:
             return jsonify(response)
         return jsonify({"response": response, "perspectives": []})
+
+    @app.route("/api/all-dialogs", methods=["GET"])
+    def get_all_dialogs():
+        dialogs = service_handler.get_all_dialogs()
+        return jsonify(dialogs)

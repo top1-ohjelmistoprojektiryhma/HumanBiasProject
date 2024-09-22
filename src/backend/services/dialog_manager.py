@@ -41,4 +41,5 @@ class DialogManager:
         del self.dialogs[dialog_id]
 
     def all_dialogs(self):
-        return self.dialogs
+        # return a dictionary of dialog objects as dictionaries
+        return {k: v.to_dict() for k, v in self.dialogs.items()}

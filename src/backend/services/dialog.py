@@ -18,6 +18,17 @@ class Dialog:
         """
         self.rounds[round_num] = prompts
 
+    def to_dict(self):
+        init = self.initial_prompt
+        rounds = self.rounds
+        for r in rounds:
+            for p in rounds[r]:
+                p['agent'] = p['agent'].role
+        return {
+            'initial_prompt': init,
+            'rounds': rounds
+        }
+
     def __str__(self):
         def truncate(text, length=30):
             return text[:length] + '...' if len(text) > length else text
