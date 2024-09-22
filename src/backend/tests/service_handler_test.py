@@ -114,5 +114,7 @@ class TestServiceHandler(unittest.TestCase):
         response = self._handler.generate_agents(test_text)
         self.assertEqual(response['response'], "error in generating agents")
 
-
-    
+    def test_get_all_dialogs_works(self):
+        self._mock_dialog_manager.all_dialogs.return_value = {"1": "dialog1", "2": "dialog2"}
+        response = self._handler.get_all_dialogs()
+        self.assertEqual(response, {"1": "dialog1", "2": "dialog2"})
