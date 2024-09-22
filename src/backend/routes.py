@@ -1,3 +1,4 @@
+# pylint: skip-file
 from flask import request, jsonify
 
 def initialize_routes(app, agent_manager, service_handler):

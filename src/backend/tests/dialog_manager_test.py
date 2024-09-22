@@ -27,4 +27,4 @@ class TestDialogManager(unittest.TestCase):
 
     def test_all_dialogs_works(self):
         dialog_id, dialog = self._manager.new_dialog("Initial prompt")
-        self.assertEqual(self._manager.all_dialogs(), {dialog_id: dialog})
+        self.assertEqual(self._manager.all_dialogs(), {dialog_id: dialog.to_dict()})

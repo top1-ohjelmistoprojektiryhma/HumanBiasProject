@@ -20,10 +20,17 @@ class Dialog:
 
     def to_dict(self):
         init = self.initial_prompt
-        rounds = self.rounds
-        for r in rounds:
-            for p in rounds[r]:
-                p['agent'] = p['agent'].role
+        rounds = {}
+        for r, prompts in self.rounds.items():
+            rounds[r] = []
+            for p in prompts:
+                # change agent object to agent role
+                rounds[r].append({
+                    'agent': p['agent'].role,
+                    'model': p['model'],
+                    'input': p['input'],
+                    'output': p['output']
+                })
         return {
             'initial_prompt': init,
             'rounds': rounds
