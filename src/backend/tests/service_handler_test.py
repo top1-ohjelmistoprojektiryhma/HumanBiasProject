@@ -70,6 +70,17 @@ class TestServiceHandler(unittest.TestCase):
         expected += "Student Thinks: Response2\n"
         self.assertEqual(return_value, expected)
 
+    def test_text_in_text_out_works_with_no_selected_agents(self):
+        test_text = "222"
+        self._mock_agent_manager.selected_agents = []
+        return_value, _, _ = self._handler.text_in_text_out(test_text)
+        self.assertEqual(return_value, "Please select perspectives")
+
+    def test_text_in_text_out_works_with_no_prompt(self):
+        test_text = ""
+        return_value, _, _ = self._handler.text_in_text_out(test_text)
+        self.assertEqual(return_value, "Please enter a prompt")
+
     def test_set_gemini_api_key_works(self):
         self._handler.set_gemini_api_key("1")
         self._mock_api_manager.add_gemini_key.assert_called_with("1")
