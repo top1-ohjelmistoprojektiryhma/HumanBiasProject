@@ -11,7 +11,15 @@ class Formatter:
     def format_single(self, role, prompt):
         role = role if role not in (None, "") else "Yourself"
         return f"""Embody the following role: {str(role)}.
-        Give briefly your own thoughts on how probable the following statement is: {str(prompt)}"""
+        Stay grounded and true to character. 
+        You are debating the plausibility of the following statement.
+        Give a conversational opening statement: {str(prompt)}"""
+
+    def format_single_opening_statement_gemini(self, role, prompt):
+        return f"""Embody the following role: {str(role)}.
+        Stay grounded and true to character. 
+        You are debating the plausibility of the following statement. 
+        Give a conversational opening statement: {str(prompt)}"""
 
     def format_generate_agents_prompt(self, prompt, number_of_agents):
         return f"""{str(prompt)}
