@@ -87,7 +87,12 @@ class ServiceHandler:
         output = ""
         perspectives = []  # Initialize perspectives to avoid UnboundLocalError
         if self.api_manager.gemini_key is not None:
-            input_list = [{"text": prompt, "model": None, "history": None} for prompt in prompt_list]
+            input_list = [
+                {
+                    "text": prompt, "model": None, "history": None
+                }
+                for prompt in prompt_list
+            ]
             # Send prompts to the API and collect responses
             response = self.api_manager.send_prompts(input_list)[0]["output"]
 

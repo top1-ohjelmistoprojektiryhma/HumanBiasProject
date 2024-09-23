@@ -28,7 +28,7 @@ class Dialog:
             list: A list of dictionaries representing the dialog history
         """
         history = []
-        for r, prompts in self.rounds.items():
+        for _, prompts in self.rounds.items():
             for p in prompts:
                 if p['agent'] == agent_obj:
                     history.append({"role": "user", "text": p['input']})

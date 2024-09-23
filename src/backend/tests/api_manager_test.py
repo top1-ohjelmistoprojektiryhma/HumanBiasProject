@@ -23,14 +23,14 @@ class TestApiManager(unittest.TestCase):
 
     def test_send_prompts_works_without_model(self):
         agent = Agent("student")
-        prompt_list = [{"text": "123", "model": "gemini", "agent_object": agent}]
+        prompt_list = [{"text": "123", "model": "gemini", "agent_object": agent, "history": None}]
         self._api_manager.gemini_api.get_chat_response = Mock(return_value="Response1")
         response_list = self._api_manager.send_prompts(prompt_list)
         self.assertEqual(
             response_list,
             [
                 {
-                    "prompt": {"text": "123", "model": "gemini", "agent_object": agent},
+                    "prompt": {"text": "123", "model": "gemini", "agent_object": agent, "history": None},
                     "model": "gemini",
                     "output": "Response1"
                 }
@@ -39,14 +39,14 @@ class TestApiManager(unittest.TestCase):
 
     def test_send_prompts_works_with_model(self):
         agent = Agent("student")
-        prompt_list = [{"text": "123", "model": "gemini", "agent_object": agent}]
+        prompt_list = [{"text": "123", "model": "gemini", "agent_object": agent, "history": None}]
         self._api_manager.gemini_api.get_chat_response = Mock(return_value="Response1")
         response_list = self._api_manager.send_prompts(prompt_list)
         self.assertEqual(
             response_list,
             [
                 {
-                    "prompt": {"text": "123", "model": "gemini", "agent_object": agent},
+                    "prompt": {"text": "123", "model": "gemini", "agent_object": agent, "history": None},
                     "model": "gemini",
                     "output": "Response1"
                 }

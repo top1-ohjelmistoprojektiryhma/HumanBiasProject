@@ -20,7 +20,7 @@ class GeminiApi:
         Returns:
             str: The response from the API
         """
-        
+
         chat_history = []
         if history:
             chat_history = self.format_history(history)
@@ -42,5 +42,9 @@ class GeminiApi:
         """
         formatted_history = []
         for message in history:
-            formatted_history.append({"parts": [{"text": message["text"]}], "role": message["role"]})
+            formatted_history.append(
+                {
+                    "parts": [{"text": message["text"]}], "role": message["role"]
+                }
+            )
         return formatted_history
