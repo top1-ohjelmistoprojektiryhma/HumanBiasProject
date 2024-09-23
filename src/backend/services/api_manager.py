@@ -20,7 +20,7 @@ class ApiManager:
 
         Args:
             prompt_list (list): List of dictionaries: 
-            [{"text": "prompt text", "model": "model name"}]
+            [{"text": prompt, "model": model_name, "history": history, "agent_object": agent}]
 
         Returns:
             list: List of dictionaries containing given prompt, model name, and the model's response
@@ -37,7 +37,7 @@ class ApiManager:
                 model_name = model_names[i % len(model_names)]
             else:
                 model_name = prompt["model"]
-            response = model_map[model_name](prompt["text"])
+            response = model_map[model_name](prompt["text"], prompt["history"])
             response_list.append(
                 {
                     "prompt": prompt,

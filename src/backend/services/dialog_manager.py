@@ -44,3 +44,16 @@ class DialogManager:
         # return a dictionary of dialog objects as dictionaries
         dictionary = {k: v.to_dict() for k, v in self.dialogs.items()}
         return dictionary
+
+    def get_agent_dialog_history(self, dialog_id, agent_obj):
+        """ Get the dialog history for a specific agent
+
+        Args:
+            dialog_id (int): The dialog id
+            agent_obj (Agent): The agent object
+
+        Returns:
+            list: A list of dictionaries representing the dialog history
+        """
+        dialog = self.dialogs[dialog_id]
+        return dialog.get_history(agent_obj)
