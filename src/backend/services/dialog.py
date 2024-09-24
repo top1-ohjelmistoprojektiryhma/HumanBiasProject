@@ -18,7 +18,7 @@ class Dialog:
         """
         self.rounds[round_num] = prompts
 
-    def get_history(self, agent_obj):
+    def get_agent_history(self, agent_obj):
         """ Get the dialog history for a specific agent
 
         Args:
@@ -33,7 +33,7 @@ class Dialog:
                 if p['agent'] == agent_obj:
                     history.append({"role": "user", "text": p['input']})
                     history.append({"role": "model", "text": p['output']})
-        return history
+        return history 
 
     def to_dict(self):
         init = self.initial_prompt
