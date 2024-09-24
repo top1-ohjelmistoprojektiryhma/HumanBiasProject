@@ -28,4 +28,6 @@ class Agent:
         Returns:
             list: A list of dictionaries representing the dialog history
         """
+        if dialog_id not in self.histories:
+            self.histories[dialog_id] = []
         return self.histories[dialog_id]

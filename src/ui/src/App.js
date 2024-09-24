@@ -5,7 +5,8 @@ import SubmitButton from './components/SubmitButton';
 import ResponseDisplay from './components/ResponseDisplay';
 import AddPerspectiveForm from './components/AddPerspectiveForm';
 import GenerateAgents from './components/GenerateAgents';
-import DialogsBar from "./components/DialogsBar"; // Import dialogs bar
+import DialogsBar from "./components/DialogsBar";
+import DialogDisplay from './components/DialogDisplay';
 
 /**
  * Main application component.
@@ -15,10 +16,11 @@ import DialogsBar from "./components/DialogsBar"; // Import dialogs bar
 const App = () => {
   const [prompt, setPrompt] = useState('');
   const [selectedPerspectives, setSelectedPerspectives] = useState([]);
-  const [response, setResponse] = useState('');
   const [perspectives, setPerspectives] = useState([]);
-  const [dialogs, setDialogs] = useState([]); // Tila dialogeille
-  const [expandedDialogs, setExpandedDialogs] = useState({}); // Tila laajennetuille dialogeille
+  const [response, setResponse] = useState('');
+  const [dialogs, setDialogs] = useState({});
+  const [expandedDialogs, setExpandedDialogs] = useState({});
+  const [displayedDialog, setDisplayedDialog] = useState(0);
 
   /**
    * Fetch the list of agents from the backend when the component mounts.
@@ -35,7 +37,7 @@ const App = () => {
       })
       .catch((error) => console.error('Error fetching agents:', error));
 
-    // Haetaan dialogit heti kun komponentti ladataan
+    // Fetch all dialogs from the backend
     fetch("/api/all-dialogs")
       .then((response) => response.json())
       .then((data) => {
@@ -53,7 +55,9 @@ const App = () => {
       perspective: selectedPerspectives
     };
 
-    fetch('/api/process', {
+    console.log('Submitting request with data:', requestData);
+
+    fetch('/api/new-dialog', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -62,35 +66,35 @@ const App = () => {
     })
       .then((response) => response.json())
       .then((data) => {
-        setResponse(data.response);
-        // if no prompt is given, return
+        console.log('Received response:', data);
         if (data.response === "Error in processing the prompt") {
+          setResponse("Error in processing the prompt");
           return;
         }
-        // if no perspectives are selected, return
         if (data.response === "Please select perspectives") {
+          setResponse("Please select perspectives");
           return;
         }
-        // Luo uusi dialogi täydellisellä rakenteella ja lisää sen tilaan
+
         const newDialogId = data.dialog_id;
-        const newDialog = {
-          [newDialogId]: {
-            initial_prompt: prompt,
-            rounds: data.dialog.rounds,
-          }
-        };
-        
-        // Päivitetään dialogs-tila
-        setDialogs((prevDialogs) => ({
-          ...prevDialogs,
-          ...newDialog
+        const newDialog = data.dialog;
+
+        setDialogs((prevState) => ({
+          ...prevState,
+          [newDialogId]: newDialog
         }));
-  
-        // Avaa uusi dialogi automaattisesti
+
+        // Expand the new dialog automatically
         setExpandedDialogs((prevState) => ({
           ...prevState,
           [newDialogId]: true
         }));
+
+        // Set displayed dialog
+        setDisplayedDialog(newDialogId);
+
+        // Set response to ""
+        setResponse("");
       })
       .catch((error) => {
         console.error('Error processing the statement:', error);
@@ -128,7 +132,7 @@ const App = () => {
 
   return (
     <div className="app-container">
-      <DialogsBar dialogs={dialogs} expandedDialogs={expandedDialogs} toggleDialog={setExpandedDialogs} /> {/* Pass dialogs and expanded state */}
+      <DialogsBar dialogs={dialogs} expandedDialogs={expandedDialogs} toggleDialog={setExpandedDialogs} />
 
       <div className="main-content">
         <h1>Human Bias Project</h1>
@@ -142,12 +146,11 @@ const App = () => {
         />
         <AddPerspectiveForm perspectives={perspectives} setPerspectives={setPerspectives} />
         <SubmitButton onSubmit={handleSubmit} />
-        <ResponseDisplay response={response} />
+        {response && <ResponseDisplay response={response} />}
+        <DialogDisplay dialogId={displayedDialog} dialog={dialogs[displayedDialog]} />
       </div>
     </div>
   );
 };
 
 export default App;
-
-

@@ -10,6 +10,8 @@ class ExampleAgent:
     def add_chat_to_history(self, dialog_id, chat):
         pass
 
+    def get_history(self, dialog_id):
+        pass
 
 class TestServiceHandler(unittest.TestCase):
     def setUp(self):
@@ -37,52 +39,52 @@ class TestServiceHandler(unittest.TestCase):
         self._handler.add_agent(test_agent)
         self._mock_agent_manager.add_agent.assert_called_with("Agent 007")
 
-    def test_text_in_text_out_works_with_no_api_key(self):
-        test_text = "333"
-        self._mock_agent_manager.selected_agents = [ExampleAgent(), ExampleAgent()]
-        self._mock_formatter.format_multiple.return_value = [
-            'You are a "Student".Give your own thoughts on how probable the following statement is: 123',
-            'You are a "Student".Give your own thoughts on how probable the following statement is: 123',
-        ]
-        self._mock_api_manager.gemini_key = None
-        return_value, _, _ = self._handler.text_in_text_out(test_text)
+    def test_start_new_dialog_works_with_valid_prompt(self):
+        text = "This is a test prompt"
+        self._mock_agent_manager.selected_agents = [ExampleAgent()]
+        self._mock_dialog_manager.new_dialog.return_value = ("1", "dialog")
+        id, result = self._handler.start_new_dialog(text)
+        self.assertEqual(result, True)
 
-        expected = "prompts:\n"
-        expected += 'You are a "Student".Give your own thoughts on how probable the following statement is: 123'
-        expected += '\nYou are a "Student".Give your own thoughts on how probable the following statement is: 123'
+    def test_start_new_dialog_works_with_empty_prompt(self):
+        text = ""
+        id, result = self._handler.start_new_dialog(text)
+        self.assertEqual(result, False)
 
-        self.assertEqual(return_value, expected)
-
-    def test_text_in_text_out_works_with_api_key(self):
-        test_text = "222"
-        agents = [ExampleAgent(), ExampleAgent()]
-        self._mock_agent_manager.selected_agents = agents
-        self._mock_api_manager.gemini_key = "1"
-        self._mock_formatter.format_multiple.return_value = [
-            'You are a "Student".Give your own thoughts on how probable the following statement is: 123',
-            'You are a "Student".Give your own thoughts on how probable the following statement is: 123',
-        ]
-        self._mock_api_manager.send_prompts.return_value = [
-            {"prompt": {"text": "123", "model": None, "agent_object": agents[0]}, "model": "gemini", "output": "Response1"},
-            {"prompt": {"text": "123", "model": None, "agent_object": agents[1]}, "model": "gemini", "output": "Response2"}
-        ]
-        self._mock_dialog_manager.new_dialog.return_value = 1, "dialog"
-        return_value, _, _ = self._handler.text_in_text_out(test_text)
-        expected = "\n"
-        expected += "Student Thinks: Response1\n"
-        expected += "Student Thinks: Response2\n"
-        self.assertEqual(return_value, expected)
-
-    def test_text_in_text_out_works_with_no_selected_agents(self):
-        test_text = "222"
+    def test_start_new_dialog_works_with_no_selected_agents(self):
+        text = "This is a test prompt"
         self._mock_agent_manager.selected_agents = []
-        return_value, _, _ = self._handler.text_in_text_out(test_text)
-        self.assertEqual(return_value, "Please select perspectives")
+        id, result = self._handler.start_new_dialog(text)
+        self.assertEqual(result, False)
 
-    def test_text_in_text_out_works_with_no_prompt(self):
-        test_text = ""
-        return_value, _, _ = self._handler.text_in_text_out(test_text)
-        self.assertEqual(return_value, "Please enter a prompt")
+    def test_continue_dialog_no_gemini_key(self):
+        self._handler.api_manager.gemini_key = None
+        dialog_id = 1
+        prompt_list = []
+
+        result = self._handler.continue_dialog(dialog_id, prompt_list)
+
+        self.assertEqual(result, (None, None))
+
+    def test_continue_dialog_with_gemini_key(self):
+        self._handler.api_manager.gemini_key = 'valid_key'
+        agents = [ExampleAgent()]
+        self._mock_agent_manager.selected_agents = agents
+        dialog = Mock()
+        dialog.rounds = {}
+        dialog.agents = {agent: {"model": None} for agent in agents}
+        self._mock_dialog_manager.new_dialog.return_value = ("1", dialog)
+        self._mock_dialog_manager.get_dialog.return_value = dialog
+        self._mock_dialog_manager.add_round_to_dialog.return_value = None
+        self._mock_api_manager.send_prompts.return_value = [
+            {"prompt": {"text": "prompt", "agent_object": agents[0]}, 
+             "model": "model", "output": "output"}
+        ]
+        text = "prompt"
+        id, result = self._handler.start_new_dialog(text)
+        prompt_list = [{"agent": agents[0], "text": "prompt"}]
+        response, dialog_dict = self._handler.continue_dialog(id, prompt_list)
+        self.assertEqual(response, "Success")
 
     def test_set_gemini_api_key_works(self):
         self._handler.set_gemini_api_key("1")

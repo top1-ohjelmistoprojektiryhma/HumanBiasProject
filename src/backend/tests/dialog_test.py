@@ -52,3 +52,24 @@ class TestDialog(unittest.TestCase):
         # dont include in coverage
         print(self.dialog)
         self.assertEqual(True, True)
+
+    def test_get_agent_history_works(self):
+        agent = ExampleAgent()
+        self.dialog.add_round(1, [
+            {
+                'agent': agent,
+                'model': 'model',
+                'input': 'input',
+                'output': 'output'
+            }
+        ])
+        self.assertEqual(self.dialog.get_agent_history(agent), [
+            {
+                'role': 'user',
+                'text': 'input'
+            },
+            {
+                'role': 'model',
+                'text': 'output'
+            }
+        ])

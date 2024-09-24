@@ -7,19 +7,23 @@ def initialize_routes(app, agent_manager, service_handler):
         agents = [agent.role for agent in agent_manager.list_of_agents]
         return jsonify(agents)
 
-    @app.route("/api/process", methods=["POST"])
-    def process_statement():
+    @app.route("/api/new-dialog", methods=["POST"])
+    def new_dialog():
         data = request.json
         prompt = data.get("prompt")
         perspectives = data.get("perspective")
         print(f"Prompt: {prompt}, Perspective: {perspectives}")
         agent_manager.set_selected_agents(perspectives)
-        response, new_id, new_dialog = service_handler.text_in_text_out(prompt)
-        # send error if new_id is None
-        if new_id is None:
-            return jsonify({"response": response})
-        print(f"Response: {response}, Dialog ID: {new_id}, Dialog: {new_dialog}")
-        return jsonify({"response": response, "dialog_id": new_id, "dialog": new_dialog})
+        result, successful = service_handler.start_new_dialog(prompt)
+        if not successful:
+            return jsonify({"response": result})
+        new_id = result
+        prompt_list = service_handler.format_prompt_list(prompt)
+        response, dialog_dict = service_handler.continue_dialog(new_id, prompt_list)
+        if dialog_dict is None:
+            return jsonify({"response": "Missing gemini key"})
+        print(f"Response: {dialog_dict}, Dialog ID: {new_id}")
+        return jsonify({"response": response, "dialog_id": new_id, "dialog": dialog_dict})
 
     @app.route("/api/delete-perspective", methods=["POST"])
     def delete_perspective():
