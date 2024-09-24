@@ -46,8 +46,12 @@ class ServiceHandler:
             for response in responses:
                 role = response["prompt"]["agent_object"].role
                 output += f'{role} Thinks: {response["output"]}\n'
+
             # Create a new dialog object
-            new_id, _ = self.dialog_manager.new_dialog(text)
+            new_id, _ = self.dialog_manager.new_dialog(
+                text,
+                self.agent_manager.selected_agents
+            )
             # Add round to dialog object
             round_num = 1
             prompts = []
@@ -89,6 +93,7 @@ class ServiceHandler:
     def create_agents(self, list_of_roles):
         for role in list_of_roles:
             self.add_agent(role)
+
     def generate_agents(self, text):
         number_of_agents = 3
         generate_agents_prompt = self.formatter.format_generate_agents_prompt(text,number_of_agents)
