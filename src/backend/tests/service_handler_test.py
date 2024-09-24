@@ -119,14 +119,39 @@ class TestServiceHandler(unittest.TestCase):
         response = self._handler.generate_agents(test_text)
         self.assertEqual(response, {"response": "", "perspectives": []})
 
-    def test_generate_agents_with_not_enough_agents(self):
+    def test_generate_agents_and_get_correct_num(self):
         test_text = "Generate new agents based on this input."
         self._mock_api_manager.gemini_key = "valid_key"
         self._mock_formatter.format_generate_agents_prompt.return_value = test_text
-        self._mock_api_manager.send_prompts.return_value = [{"output": "Agent1|Agent2"}]
+        self._mock_api_manager.send_prompts.return_value = [{"output": "Agent1|Agent2|Agent3|Agent4"}]
+        self._mock_agent_manager.list_of_agents = [ExampleAgent(), ExampleAgent(), ExampleAgent()]
+    
+        response = self._handler.generate_agents(test_text)
+        self.assertEqual(response['response'], "['Student', 'Student', 'Student']")
+        self.assertEqual(response["perspectives"], ["Student"]*3)
+
+    def test_generate_agents_and_get_more_than_desired(self):
+        test_text = "Generate new agents based on this input."
+        self._mock_api_manager.gemini_key = "valid_key"
+        self._mock_formatter.format_generate_agents_prompt.return_value = test_text
+        self._mock_api_manager.send_prompts.return_value = [{"output": "Student|Student|Student|Student"}]
+        self._mock_agent_manager.list_of_agents = [ExampleAgent(), ExampleAgent(), ExampleAgent()]
+    
+        response = self._handler.generate_agents(test_text, 1)
+        self._mock_agent_manager.add_agent.assert_called_with("Student")
+        self.assertEqual(response['response'], "['Student', 'Student', 'Student']")
+        self.assertEqual(response["perspectives"], ["Student"]*3)
+    
+    def test_generate_agents_and_get_bad_output(self):
+        test_text = "Generate new agents based on this input."
+        self._mock_api_manager.gemini_key = "valid_key"
+        self._mock_formatter.format_generate_agents_prompt.return_value = test_text
+        self._mock_api_manager.send_prompts.return_value = [{"output": ""}]
     
         response = self._handler.generate_agents(test_text)
         self.assertEqual(response['response'], "error in generating agents")
+        self.assertEqual(response["perspectives"], [])
+
 
     def test_get_all_dialogs_works(self):
         self._mock_dialog_manager.all_dialogs.return_value = {"1": "dialog1", "2": "dialog2"}

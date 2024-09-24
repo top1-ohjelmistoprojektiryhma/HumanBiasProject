@@ -44,3 +44,7 @@ class AgentManager:
         self.selected_agents = []
         for agent in agent_list:
             self.selected_agents.append(Agent(agent))
+
+    def get_agents_as_list_of_strings(self):
+
+        return [str(agent.role) for agent in self.list_of_agents]
