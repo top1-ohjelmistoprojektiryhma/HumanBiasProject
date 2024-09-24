@@ -3,11 +3,12 @@ class Dialog:
 
     Attributes:
         initial_prompt (str): The initial prompt for the dialog
+        agents (list): A dictionary of agents {"AgentObj": "model"}
         rounds (dict): A dictionary of rounds identified by round number
     """
     def __init__(self, initial_prompt="", agents=None):
         self.initial_prompt = initial_prompt
-        self.agents = [] if agents is None else agents
+        self.agents = {} if agents is None else agents
         self.rounds = {}
 
     def add_round(self, round_num, prompts):

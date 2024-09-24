@@ -9,18 +9,18 @@ class DialogManager:
     def __init__(self):
         self.dialogs = {}
 
-    def new_dialog(self, initial_prompt):
+    def new_dialog(self, initial_prompt, agents):
         """ Create a new dialog object
 
         Args:
             initial_prompt (str): The initial prompt for the dialog
-
+            agents (list): A dictionary of agents {"AgentObj": "model"}
         Returns:
             int: The dialog id
             Dialog: The dialog object
         """
         new_id = len(self.dialogs)
-        dialog = Dialog(initial_prompt)
+        dialog = Dialog(initial_prompt, agents)
         self.dialogs[new_id] = dialog
         return new_id, dialog
 

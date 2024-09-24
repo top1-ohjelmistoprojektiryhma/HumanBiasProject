@@ -8,6 +8,87 @@ class ServiceHandler:
         default_agents = ["farmer", "eld", "student"]
         self.create_agents(default_agents)
 
+    def start_new_dialog(self, text):
+        """
+        Start a new dialog with the input text.
+
+        Args:
+            text (str): The input text to start the dialog with.
+
+        Returns:
+            The generated response, dialog id, and dialog as dict.
+        """
+        # Check if the input text is empty
+        if text == "":
+            return "Please enter a prompt", None, None
+        # Check if any perspectives are selected
+        if self.agent_manager.selected_agents == []:
+            return "Please select perspectives", None, None
+        agents = {
+            agent: {"model": None} for agent in self.agent_manager.selected_agents
+        }
+        new_id, _ = self.dialog_manager.new_dialog(
+            text,
+            agents
+        )
+        return new_id
+
+    def continue_dialog(self, dialog_id, prompt_list):
+        """ Continue a dialog with the input prompts.
+
+        Args:
+            dialog_id (int): The id of the dialog to continue.
+            prompt_list (list): A list of prompts from format_prompt_list function.
+        
+        Returns:
+            The dialog as a dict.
+        """
+        if self.api_manager.gemini_key is not None:
+            dialog = self.dialog_manager.get_dialog(dialog_id)
+            input_list = [
+                {
+                    "text": prompt["text"],
+                    "model": dialog.agents[prompt["agent"]]["model"],
+                    "history": prompt["agent"].get_chat_history(dialog_id),
+                    "agent_object": prompt["agent"]
+                }
+                for prompt in prompt_list
+            ]
+            # Send prompts to the API and collect responses
+            responses = self.api_manager.send_prompts(input_list)
+            # Add round to dialog object
+            round_num = len(self.dialog_manager.get_dialog(dialog_id).rounds) + 1
+            prompts = []
+            for response in responses:
+                # Format the prompts for dialog object
+                prompts.append(
+                    {
+                        "agent": response["prompt"]["agent_object"],
+                        "model": response["model"],
+                        "input": response["prompt"]["text"],
+                        "output": response["output"]
+                    }
+                )
+                # Change agent model if it is None
+                if dialog.agents[response["prompt"]["agent_object"]]["model"] is None:
+                    dialog.agents[response["prompt"]["agent_object"]]["model"] = response["model"]
+                # Add chat history to specific agents
+                response["prompt"]["agent_object"].add_chat_to_history(
+                    dialog_id,
+                    [
+                        {"role": "user", "text": response["prompt"]["text"]},
+                        {"role": "model", "text": response["output"]}
+                    ]
+                )
+            # Add round to dialog object
+            self.dialog_manager.add_round_to_dialog(
+                dialog_id,
+                round_num,
+                prompts
+            )
+            return self.dialog_manager.get_dialog(dialog_id).to_dict()
+        return None
+
     def text_in_text_out(self, text):
         """
         Process the input text and generate a response.
