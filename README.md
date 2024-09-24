@@ -3,6 +3,9 @@
 
 # Dokumentaatio:
 
+## Backlogit
+- [Product ja Sprint backlog](https://docs.google.com/spreadsheets/d/1MgSFmB2FVtgCejguAnvmcLbdJNIUZ8DQazVcVI62wbg/edit?usp=sharing)
+  
 ## Definition of Done
 - User story toimii kuvauksen mukaisesti.
 - Pylint score vähintään (9.00).
