@@ -50,15 +50,26 @@ class ServiceHandler:
             new_id, _ = self.dialog_manager.new_dialog(text)
             # Add round to dialog object
             round_num = 1
-            prompts = [
-                {
-                    "agent": response["prompt"]["agent_object"],
-                    "model": response["model"],
-                    "input": response["prompt"]["text"],
-                    "output": response["output"]
-                }
-                for response in responses
-            ]
+            prompts = []
+            for response in responses:
+                # Format the prompts for dialog object
+                prompts.append(
+                    {
+                        "agent": response["prompt"]["agent_object"],
+                        "model": response["model"],
+                        "input": response["prompt"]["text"],
+                        "output": response["output"]
+                    }
+                )
+                # Add chat history to specific agents
+                response["prompt"]["agent_object"].add_chat_to_history(
+                    new_id,
+                    [
+                        {"role": "user", "text": response["prompt"]["text"]},
+                        {"role": "model", "text": response["output"]}
+                    ]
+                )
+            # Add round to dialog object
             self.dialog_manager.add_round_to_dialog(
                 new_id,
                 round_num,

@@ -6,6 +6,9 @@ from backend.services.service_handler import ServiceHandler
 class ExampleAgent:
     def __init__(self):
         self.role = "Student"
+    
+    def add_chat_to_history(self, dialog_id, chat):
+        pass
 
 
 class TestServiceHandler(unittest.TestCase):
