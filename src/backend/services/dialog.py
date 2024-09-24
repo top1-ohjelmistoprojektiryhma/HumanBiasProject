@@ -33,7 +33,7 @@ class Dialog:
                 if p['agent'] == agent_obj:
                     history.append({"role": "user", "text": p['input']})
                     history.append({"role": "model", "text": p['output']})
-        return history 
+        return history
 
     def to_dict(self):
         init = self.initial_prompt
