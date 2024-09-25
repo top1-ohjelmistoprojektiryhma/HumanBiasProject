@@ -8,14 +8,10 @@ components:
   - name: backend
     container:
       image: backend-image:latest
-      dockerfile:
-        uri: ./Dockerfile.backend
 
   - name: frontend
     container:
       image: frontend-image:latest
-      dockerfile:
-        uri: ./src/ui/Dockerfile.frontend
 
 commands:
   - id: build-backend
@@ -33,3 +29,4 @@ commands:
       group:
         kind: build
         isDefault: false
+
