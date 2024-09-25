@@ -5,14 +5,9 @@ import SubmitButton from './components/SubmitButton';
 import ResponseDisplay from './components/ResponseDisplay';
 import AddPerspectiveForm from './components/AddPerspectiveForm';
 import GenerateAgents from './components/GenerateAgents';
-import DialogsBar from "./components/DialogsBar";
+import DialogsBar from './components/DialogsBar';
 import DialogDisplay from './components/DialogDisplay';
 
-/**
- * Main application component.
- * 
- * @component
- */
 const App = () => {
   const [prompt, setPrompt] = useState('');
   const [selectedPerspectives, setSelectedPerspectives] = useState([]);
@@ -22,22 +17,14 @@ const App = () => {
   const [expandedDialogs, setExpandedDialogs] = useState({});
   const [displayedDialog, setDisplayedDialog] = useState(0);
 
-  /**
-   * Fetch the list of agents from the backend when the component mounts.
-   */
   useEffect(() => {
     fetch('/api/agents')
       .then((response) => response.json())
       .then((data) => {
-        console.log('Fetched agents:', data);
-        if (data.length === 0) {
-          console.log('The agents list is empty.');
-        }
         setPerspectives(data);
       })
       .catch((error) => console.error('Error fetching agents:', error));
 
-    // Fetch all dialogs from the backend
     fetch("/api/all-dialogs")
       .then((response) => response.json())
       .then((data) => {
@@ -46,16 +33,11 @@ const App = () => {
       .catch((error) => console.error("Error fetching dialogs:", error));
   }, []);
 
-  /**
-   * Handle form submission for a new prompt.
-   */
   const handleSubmit = () => {
     const requestData = {
       prompt: prompt,
       perspective: selectedPerspectives
     };
-
-    console.log('Submitting request with data:', requestData);
 
     fetch('/api/new-dialog', {
       method: 'POST',
@@ -66,16 +48,6 @@ const App = () => {
     })
       .then((response) => response.json())
       .then((data) => {
-        console.log('Received response:', data);
-        if (data.response === "Error in processing the prompt") {
-          setResponse("Error in processing the prompt");
-          return;
-        }
-        if (data.response === "Please select perspectives") {
-          setResponse("Please select perspectives");
-          return;
-        }
-
         const newDialogId = data.dialog_id;
         const newDialog = data.dialog;
 
@@ -84,16 +56,12 @@ const App = () => {
           [newDialogId]: newDialog
         }));
 
-        // Expand the new dialog automatically
         setExpandedDialogs((prevState) => ({
           ...prevState,
           [newDialogId]: true
         }));
 
-        // Set displayed dialog
         setDisplayedDialog(newDialogId);
-
-        // Set response to ""
         setResponse("");
       })
       .catch((error) => {
@@ -101,12 +69,10 @@ const App = () => {
       });
   };
 
-  /**
-   * Handle form submission for generating agents.
-   */
-  const handleGenerateAgents = () => {
+  const handleGenerateAgents = (numAgents) => {
     const requestData = {
-      prompt: prompt
+      prompt: prompt,
+      num_agents: numAgents // Pass the number of agents selected
     };
 
     fetch('/api/generate-agents', {
@@ -120,8 +86,6 @@ const App = () => {
       .then((data) => {
         if (data.perspectives) {
           setPerspectives(data.perspectives);
-        } else {
-          console.error('Error generating agents:', data.error);
         }
         setResponse(data.response);
       })
@@ -137,7 +101,7 @@ const App = () => {
       <div className="main-content">
         <h1>Human Bias Project</h1>
         <InputForm prompt={prompt} setPrompt={setPrompt} />
-        <GenerateAgents onSubmit={handleGenerateAgents} perspectives={perspectives} setPerspectives={setPerspectives} />
+        <GenerateAgents onSubmit={handleGenerateAgents} />
         <PerspectiveSelector
           perspectives={perspectives}
           selectedPerspectives={selectedPerspectives}

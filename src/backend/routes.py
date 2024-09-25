@@ -45,10 +45,16 @@ def initialize_routes(app, agent_manager, service_handler):
     def generate_agents():
         data = request.json
         prompt = data.get("prompt")
-        response = service_handler.generate_agents(prompt)
+        num_agents = data.get("num_agents", 3)  # Default to 3 agents if not provided
+        print(f"Generating {num_agents} agents for prompt: {prompt}")
+    
+        # Pass the number of agents to the service handler
+        response = service_handler.generate_agents(prompt, desired_number_of_agents=num_agents)
+        
         if isinstance(response, dict) and 'perspectives' in response:
             return jsonify(response)
         return jsonify({"response": response, "perspectives": []})
+
 
     @app.route("/api/all-dialogs", methods=["GET"])
     def get_all_dialogs():

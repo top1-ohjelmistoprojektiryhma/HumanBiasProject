@@ -22,21 +22,20 @@ class Formatter:
         Give a conversational opening statement: {str(prompt)}"""
 
     def format_generate_agents_prompt(self, prompt, desired_number_of_agents, list_of_agents):
-
-
-        combined_prompt = f"""Generate {str(desired_number_of_agents)}
-        perspectives to debate the following statement: {str(prompt)}
-        Avoid perspectives that overlap with the following perspectives: {str(list_of_agents)}
-        Return a list only in the given style by replacing each instance of "agent" with the actual perspective: 
         """
-        if desired_number_of_agents < 3:
-            example_for_generation = "agent1|agent2"
-        elif desired_number_of_agents == 3:
-            example_for_generation = "agent1|agent2|agent3"
-        else:
-            example_for_generation =f"agent1|agent2|agent3|...|agent{str(desired_number_of_agents)}"
-        combined_prompt = combined_prompt+ example_for_generation
+        Format the prompt to generate the correct number of agents.
+        """
+        combined_prompt = f"""Generate {str(desired_number_of_agents)} perspectives 
+        to debate the following statement: {str(prompt)}.
+        Avoid perspectives that overlap with the following perspectives: {str(list_of_agents)}.
+        Return a list only in the given style, with perspectives separated by '|': 
+        """
 
-        print(combined_prompt)
+        # Handle dynamic agent generation based on the number
+        example_for_generation = '|'.join([f"agent{i+1}" for i in range(desired_number_of_agents)])
+        combined_prompt += example_for_generation
+
+        print(combined_prompt)  # Debugging: Print the final prompt to ensure correctness
+        return combined_prompt
 
         return combined_prompt

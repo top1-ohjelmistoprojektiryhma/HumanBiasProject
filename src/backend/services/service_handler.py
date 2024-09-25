@@ -101,14 +101,14 @@ class ServiceHandler:
         for role in list_of_roles:
             self.add_agent(role)
 
-    def generate_agents(self, text, desired_number_of_agents = 3):
-        generate_agents_prompt = self.formatter.format_generate_agents_prompt(text,
-        desired_number_of_agents,
-        self.agent_manager.get_agents_as_list_of_strings())
+    def generate_agents(self, text, desired_number_of_agents=3):
+        generate_agents_prompt = self.formatter.format_generate_agents_prompt(
+            text,
+            desired_number_of_agents,
+            self.agent_manager.get_agents_as_list_of_strings()
+        )
 
         prompt_list = [generate_agents_prompt]
-        # generate default output if api keys are not configured
-        output = ""
         perspectives = []  # Initialize perspectives to avoid UnboundLocalError
         if self.api_manager.gemini_key is not None:
             input_list = [
@@ -120,16 +120,16 @@ class ServiceHandler:
             # Send prompts to the API and collect responses
             response = self.api_manager.send_prompts(input_list)[0]["output"]
 
-            # Format the output with agent roles and their responses
-            raw_output = f"{response}"
-            output_no_newline = raw_output.rstrip(' \n')
-
+            # Split the response to generate the list of perspectives
+            output_no_newline = response.rstrip(' \n')
             output_list = output_no_newline.split("|")
 
-            #print(output_list)
-            perspectives, output = self.get_desired_output(output_list)
+            # Use the correct number of agents
+            perspectives, output = self.get_desired_output(output_list, desired_number_of_agents)
 
         return {"response": str(output), "perspectives": perspectives}
+
+
 
     def add_agent(self, user_input):
         self.agent_manager.add_agent(user_input)
@@ -145,33 +145,30 @@ class ServiceHandler:
         #print(dialogs)
         return dialogs
 
-    def get_desired_output(self, output_list):
+    def get_desired_output(self, output_list, desired_number_of_agents):
         perspectives = []
         output = "error in generating agents"
-        match len(output_list):
-            case int(desired_number_of_agents):
-                # Fix this janky code (ask aarni)
-                if int(desired_number_of_agents) == 1:
-                    output = "error in generating agents"
-                else:
-                    # If the number of agents matches the desired number
-                    for role in output_list:
-                        self.add_agent(str(role))
 
-                    # Extract perspectives or agents from agent manager
-                    perspectives = [agent.role for agent in self.agent_manager.list_of_agents]
-                    output = perspectives
+        if len(output_list) == desired_number_of_agents:
+            # If the number of agents matches the desired number
+            for role in output_list:
+                self.add_agent(str(role))
 
-            case n if desired_number_of_agents < n:
-                # If the desired number of agents is less than the available agents
-                for role in output_list[:desired_number_of_agents]:
-                    self.add_agent(str(role))
+            # Extract perspectives or agents from agent manager
+            perspectives = [agent.role for agent in self.agent_manager.list_of_agents]
+            output = perspectives
 
-                # Extract perspectives or agents from agent manager
-                perspectives = [agent.role for agent in self.agent_manager.list_of_agents]
-                output = perspectives
+        elif len(output_list) > desired_number_of_agents:
+            # If there are more generated agents than requested, truncate to the requested number
+            for role in output_list[:desired_number_of_agents]:
+                self.add_agent(str(role))
 
-            case _:
-                # If the desired number of agents is greater than the available agents
-                output = "error in generating agents"
+            # Extract perspectives or agents from agent manager
+            perspectives = [agent.role for agent in self.agent_manager.list_of_agents]
+            output = perspectives
+
+        elif len(output_list) < desired_number_of_agents:
+            # If fewer agents are generated than requested
+            output = "Fewer agents were generated than expected"
+
         return perspectives, output
