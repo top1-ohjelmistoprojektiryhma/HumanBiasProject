@@ -6,27 +6,45 @@ metadata:
 
 components:
   - name: backend
-    container:
-      image: backend-image:latest
+    image:
+      imageName: backend-image:latest
+      dockerfile:
+        uri: ./Dockerfile.backend
 
   - name: frontend
-    container:
-      image: frontend-image:latest
+    image:
+      imageName: frontend-image:latest
+      dockerfile:
+        uri: ./src/ui/Dockerfile.frontend
 
 commands:
   - id: build-backend
-    exec:
+    build:
       component: backend
-      commandLine: "docker build -t backend-image:latest -f ./Dockerfile.backend ."
       group:
         kind: build
         isDefault: true
 
   - id: build-frontend
-    exec:
+    build:
       component: frontend
-      commandLine: "docker build -t frontend-image:latest -f ./src/ui/Dockerfile.frontend ."
       group:
         kind: build
+        isDefault: false
+
+  - id: deploy-backend
+    exec:
+      component: backend
+      commandLine: "docker run backend-image:latest"
+      group:
+        kind: deploy
+        isDefault: true
+
+  - id: deploy-frontend
+    exec:
+      component: frontend
+      commandLine: "docker run frontend-image:latest"
+      group:
+        kind: deploy
         isDefault: false
 
