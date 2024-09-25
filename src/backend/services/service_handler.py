@@ -110,6 +110,7 @@ class ServiceHandler:
 
         prompt_list = [generate_agents_prompt]
         perspectives = []  # Initialize perspectives to avoid UnboundLocalError
+        output = ""  # Default to empty response
         if self.api_manager.gemini_key is not None:
             input_list = [
                 {
@@ -128,8 +129,6 @@ class ServiceHandler:
             perspectives, output = self.get_desired_output(output_list, desired_number_of_agents)
 
         return {"response": str(output), "perspectives": perspectives}
-
-
 
     def add_agent(self, user_input):
         self.agent_manager.add_agent(user_input)
@@ -169,6 +168,6 @@ class ServiceHandler:
 
         elif len(output_list) < desired_number_of_agents:
             # If fewer agents are generated than requested
-            output = "Fewer agents were generated than expected"
+            output = "error in generating agents"
 
         return perspectives, output

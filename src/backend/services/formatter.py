@@ -25,7 +25,7 @@ class Formatter:
         """
         Format the prompt to generate the correct number of agents.
         """
-        combined_prompt = f"""Generate {str(desired_number_of_agents)} perspectives 
+        combined_prompt = f"""Generate {str(desired_number_of_agents)} perspectives
         to debate the following statement: {str(prompt)}.
         Avoid perspectives that overlap with the following perspectives: {str(list_of_agents)}.
         Return a list only in the given style, with perspectives separated by '|': 
@@ -36,6 +36,4 @@ class Formatter:
         combined_prompt += example_for_generation
 
         print(combined_prompt)  # Debugging: Print the final prompt to ensure correctness
-        return combined_prompt
-
         return combined_prompt
