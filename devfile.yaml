@@ -6,14 +6,14 @@ metadata:
 
 components:
   - name: backend
-    image: 
-      imageName: backend-image:latest
+    container:
+      image: backend-image:latest
       dockerfile:
         uri: ./Dockerfile.backend
 
   - name: frontend
-    image: 
-      imageName: frontend-image:latest
+    container:
+      image: frontend-image:latest
       dockerfile:
         uri: ./src/ui/Dockerfile.frontend
 
@@ -21,15 +21,15 @@ commands:
   - id: build-backend
     exec:
       component: backend
-      commandLine: "docker build -t backend-image:latest -f Dockerfile.backend ."
+      commandLine: "docker build -t backend-image:latest -f ./Dockerfile.backend ."
       group:
         kind: build
-        isDefault: true  
+        isDefault: true
 
   - id: build-frontend
     exec:
       component: frontend
-      commandLine: "docker build -t frontend-image:latest -f src/ui/Dockerfile.frontend ."
+      commandLine: "docker build -t frontend-image:latest -f ./src/ui/Dockerfile.frontend ."
       group:
         kind: build
-        isDefault: false  
+        isDefault: false
