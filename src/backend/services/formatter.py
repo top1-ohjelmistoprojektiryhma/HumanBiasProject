@@ -1,6 +1,4 @@
 class Formatter:
-    def __init__(self) -> None:
-        pass
 
     def format_multiple(self, role_list, prompt):
         response_list = []
@@ -23,17 +21,20 @@ class Formatter:
 
     def format_generate_agents_prompt(self, prompt, desired_number_of_agents, list_of_agents):
         """
-        Format the prompt to generate the correct number of agents.
+        Format the prompt to generate the correct number of agents. For formatting reasons,
+        desired number of agents must be at least 2. Resulting issues are resolved elsewhere.
         """
-        combined_prompt = f"""Generate {str(desired_number_of_agents)} perspectives
-        to debate the following statement: {str(prompt)}.
-        Avoid perspectives that overlap with the following perspectives: {str(list_of_agents)}.
-        Return a list only in the given style, with perspectives separated by '|': 
-        """
+
+        desired_number_of_agents = max(desired_number_of_agents, 2)
+
+        combined_prompt = f"""Generate {str(desired_number_of_agents)} roles to debate the following statement: {str(prompt)}.""" #pylint: disable=line-too-long
+        if list_of_agents:
+            combined_prompt += f"""Avoid perspectives that overlap with the following roles: {str(list_of_agents)}.""" #pylint: disable=line-too-long
+
+        combined_prompt += "Return a list only in the given style, with the roles separated by '|':\n" #pylint: disable=line-too-long
 
         # Handle dynamic agent generation based on the number
         example_for_generation = '|'.join([f"agent{i+1}" for i in range(desired_number_of_agents)])
         combined_prompt += example_for_generation
 
-        print(combined_prompt)  # Debugging: Print the final prompt to ensure correctness
         return combined_prompt
