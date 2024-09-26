@@ -36,6 +36,13 @@ nvm install 20
 
 Siirry projektin juurihakemistoon
 
+Luo tiedosto ```.env``` **_ja_** määritä se muotoon
+```
+GEMINI_KEY=<gemini-api-key>
+OPEN_AI_KEY=<openai-api-key>
+ANTHROPIC-KEY=<anthropic-api-key>
+```
+
 Luo virtuaaliympäristö sovellusta varten
 ```bash
 python3 -m venv venv
