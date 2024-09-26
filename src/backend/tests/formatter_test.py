@@ -60,3 +60,31 @@ class TestFormatter(unittest.TestCase):
             "Yourself" in api_prompt_list[0] and "CS Professor" in api_prompt_list[1]
         )
         self.assertEqual(result, True)
+
+    def test_format_single_opening_statement_gemini_works(self):
+        role = "CS Student"
+        prompt = "Python is the best language"
+        result = self.formatter.format_single_opening_statement_gemini(role, prompt)
+        expected = f"""Embody the following role: {str(role)}.
+        Stay grounded and true to character. 
+        You are debating the plausibility of the following statement. 
+        Give a conversational opening statement: {str(prompt)}"""
+        self.assertEqual(result, expected)
+
+    def test_format_generate_agent_prompt_with_no_list(self):
+        prompt = "Python is the best language"
+        result = self.formatter.format_generate_agents_prompt(prompt, 1, [])
+        expected = f"Generate 2 roles to debate the following statement: {prompt}."
+        expected += "Return a list only in the given style, with the roles separated by '|':\n"
+        expected += "agent1|agent2"
+        self.assertEqual(result, expected)
+
+    def test_format_generate_agent_prompt_with_agent_list(self):
+        role_list = ["Student", "Professor", "Parent"]
+        prompt = "Python is the best language"
+        result = self.formatter.format_generate_agents_prompt(prompt, 3, role_list)
+        expected = f"Generate 3 roles to debate the following statement: {prompt}."
+        expected += f"Avoid perspectives that overlap with the following roles: {str(role_list)}."
+        expected += "Return a list only in the given style, with the roles separated by '|':\n"
+        expected += "agent1|agent2|agent3"
+        self.assertEqual(result, expected)
