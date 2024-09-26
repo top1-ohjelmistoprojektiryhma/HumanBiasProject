@@ -10,6 +10,7 @@ class Dialog:
         self.initial_prompt = initial_prompt
         self.agents = {} if agents is None else agents
         self.rounds = {}
+        self.format = "dialog"
 
     def add_round(self, round_num, prompts):
         """ Add a round to the dialog

@@ -7,6 +7,7 @@ import AddPerspectiveForm from './components/AddPerspectiveForm';
 import GenerateAgents from './components/GenerateAgents';
 import DialogsBar from './components/DialogsBar';
 import DialogDisplay from './components/DialogDisplay';
+import FormatSelector from './components/FormatSelector'; // Import new component
 
 const App = () => {
   const [prompt, setPrompt] = useState('');
@@ -16,6 +17,7 @@ const App = () => {
   const [dialogs, setDialogs] = useState({});
   const [expandedDialogs, setExpandedDialogs] = useState({});
   const [displayedDialog, setDisplayedDialog] = useState(0);
+  const [selectedFormat, setSelectedFormat] = useState('dialog'); // Add state for selected format
 
   useEffect(() => {
     fetch('/api/agents')
@@ -36,7 +38,8 @@ const App = () => {
   const handleSubmit = () => {
     const requestData = {
       prompt: prompt,
-      perspective: selectedPerspectives
+      perspective: selectedPerspectives,
+      format: selectedFormat
     };
 
     fetch('/api/new-dialog', {
@@ -72,7 +75,7 @@ const App = () => {
   const handleGenerateAgents = (numAgents) => {
     const requestData = {
       prompt: prompt,
-      num_agents: numAgents // Pass the number of agents selected
+      num_agents: numAgents
     };
 
     fetch('/api/generate-agents', {
@@ -101,6 +104,7 @@ const App = () => {
       <div className="main-content">
         <h1>Human Bias Project</h1>
         <InputForm prompt={prompt} setPrompt={setPrompt} />
+        
         <GenerateAgents onSubmit={handleGenerateAgents} />
         <PerspectiveSelector
           perspectives={perspectives}
@@ -109,6 +113,7 @@ const App = () => {
           setPerspectives={setPerspectives}
         />
         <AddPerspectiveForm perspectives={perspectives} setPerspectives={setPerspectives} />
+        <FormatSelector setSelectedFormat={setSelectedFormat} /> {/* Add FormatDropdown */}
         <SubmitButton onSubmit={handleSubmit} />
         {response && <ResponseDisplay response={response} />}
         <DialogDisplay dialogId={displayedDialog} dialog={dialogs[displayedDialog]} />
