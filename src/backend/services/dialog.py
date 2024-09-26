@@ -6,11 +6,11 @@ class Dialog:
         agents (list): A dictionary of agents {"AgentObj": "model"}
         rounds (dict): A dictionary of rounds identified by round number
     """
-    def __init__(self, initial_prompt="", agents=None):
+    def __init__(self, initial_prompt="", agents=None, dialog_format="dialog"):
         self.initial_prompt = initial_prompt
         self.agents = {} if agents is None else agents
         self.rounds = {}
-        self.format = "dialog"
+        self.dialog_format = dialog_format
 
     def add_round(self, round_num, prompts):
         """ Add a round to the dialog

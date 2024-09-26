@@ -8,7 +8,7 @@ class ServiceHandler:
         default_agents = ["farmer", "elder", "student"]
         self.create_agents(default_agents)
 
-    def start_new_dialog(self, text):
+    def start_new_dialog(self, text, dialog_format):
         """
         Start a new dialog with the input text.
 
@@ -24,12 +24,14 @@ class ServiceHandler:
         # Check if any perspectives are selected
         if self.agent_manager.selected_agents == []:
             return "Please select perspectives", False
+        # For dialog format, create a dialog with all selected agents
         agents = {
             agent: {"model": None} for agent in self.agent_manager.selected_agents
         }
         new_id, _ = self.dialog_manager.new_dialog(
             text,
-            agents
+            agents,
+            dialog_format
         )
         return new_id, True
 
@@ -49,7 +51,7 @@ class ServiceHandler:
                 {
                     "text": prompt["text"],
                     "model": dialog.agents[prompt["agent"]]["model"],
-                    "history": prompt["agent"].get_history(dialog_id),
+                    "history": prompt["agent"].get_chat_history(dialog_id),
                     "agent_object": prompt["agent"]
                 }
                 for prompt in prompt_list

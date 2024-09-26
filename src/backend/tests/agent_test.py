@@ -19,7 +19,7 @@ class TestAgent(unittest.TestCase):
         ]
         self.assertEqual(self.agent.histories[dialog_id], new_history)
 
-    def test_get_history(self):
+    def test_get_chat_history_works(self):
         dialog_id = "1"
         chat = [{"role": "user", "text": "hello"}]
-        self.assertEqual(self.agent.get_history(dialog_id), chat)
+        self.assertEqual(self.agent.get_chat_history(dialog_id), chat)

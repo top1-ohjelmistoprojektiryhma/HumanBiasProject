@@ -8,6 +8,7 @@ class Agent:
     def __init__(self, role) -> None:
         self.role = str(role)
         self.histories = {}
+        self.unseen = {}
 
     def add_chat_to_history(self, dialog_id, chat):
         """Add a chat to the agent's history
@@ -21,7 +22,7 @@ class Agent:
             return
         self.histories[dialog_id].extend(chat)
 
-    def get_history(self, dialog_id):
+    def get_chat_history(self, dialog_id):
         """Get the dialog history for a specific dialog
         Args:
             dialog_id (str): The dialog id

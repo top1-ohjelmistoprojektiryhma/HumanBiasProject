@@ -11,10 +11,11 @@ def initialize_routes(app, agent_manager, service_handler):
     def new_dialog():
         data = request.json
         prompt = data.get("prompt")
+        format = data.get("format")
         perspectives = data.get("perspective")
         print(f"Prompt: {prompt}, Perspective: {perspectives}")
         agent_manager.set_selected_agents(perspectives)
-        result, successful = service_handler.start_new_dialog(prompt)
+        result, successful = service_handler.start_new_dialog(prompt, format)
         if not successful:
             return jsonify({"response": result})
         new_id = result
@@ -54,7 +55,6 @@ def initialize_routes(app, agent_manager, service_handler):
         if isinstance(response, dict) and 'perspectives' in response:
             return jsonify(response)
         return jsonify({"response": response, "perspectives": []})
-
 
     @app.route("/api/all-dialogs", methods=["GET"])
     def get_all_dialogs():

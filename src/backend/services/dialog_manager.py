@@ -9,7 +9,7 @@ class DialogManager:
     def __init__(self):
         self.dialogs = {}
 
-    def new_dialog(self, initial_prompt, agents):
+    def new_dialog(self, initial_prompt, agents, dialog_format):
         """ Create a new dialog object
 
         Args:
@@ -20,7 +20,7 @@ class DialogManager:
             Dialog: The dialog object
         """
         new_id = len(self.dialogs)
-        dialog = Dialog(initial_prompt, agents)
+        dialog = Dialog(initial_prompt, agents, dialog_format)
         self.dialogs[new_id] = dialog
         return new_id, dialog
 
@@ -33,6 +33,16 @@ class DialogManager:
             prompts (list): A list of prompts for the round
         """
         self.dialogs[dialog_id].add_round(round_num, prompts)
+        # Add other agents' outputs to each agent's unseen list
+        for prompt in prompts:
+            agent_obj = prompt["agent"]
+            output = prompt["output"]
+            other_prompts = [p for p in prompts if p["agent"] != agent_obj]
+            for other_prompt in other_prompts:
+                other_agent = other_prompt["agent"]
+                if dialog_id not in other_agent.unseen:
+                    other_agent.unseen[dialog_id] = []
+                other_agent.unseen[dialog_id].append({"agent": agent_obj, "output": output})
 
     def get_dialog(self, dialog_id):
         return self.dialogs[dialog_id]

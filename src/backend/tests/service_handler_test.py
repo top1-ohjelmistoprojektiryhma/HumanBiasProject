@@ -10,7 +10,7 @@ class ExampleAgent:
     def add_chat_to_history(self, dialog_id, chat):
         pass
 
-    def get_history(self, dialog_id):
+    def get_chat_history(self, dialog_id):
         pass
 
 class TestServiceHandler(unittest.TestCase):
@@ -43,18 +43,18 @@ class TestServiceHandler(unittest.TestCase):
         text = "This is a test prompt"
         self._mock_agent_manager.selected_agents = [ExampleAgent()]
         self._mock_dialog_manager.new_dialog.return_value = ("1", "dialog")
-        id, result = self._handler.start_new_dialog(text)
+        id, result = self._handler.start_new_dialog(text, "dialog")
         self.assertEqual(result, True)
 
     def test_start_new_dialog_works_with_empty_prompt(self):
         text = ""
-        id, result = self._handler.start_new_dialog(text)
+        id, result = self._handler.start_new_dialog(text, "dialog")
         self.assertEqual(result, False)
 
     def test_start_new_dialog_works_with_no_selected_agents(self):
         text = "This is a test prompt"
         self._mock_agent_manager.selected_agents = []
-        id, result = self._handler.start_new_dialog(text)
+        id, result = self._handler.start_new_dialog(text, "dialog")
         self.assertEqual(result, False)
 
     def test_continue_dialog_no_gemini_key(self):
@@ -81,7 +81,7 @@ class TestServiceHandler(unittest.TestCase):
              "model": "model", "output": "output"}
         ]
         text = "prompt"
-        id, result = self._handler.start_new_dialog(text)
+        id, result = self._handler.start_new_dialog(text, "dialog")
         prompt_list = [{"agent": agents[0], "text": "prompt"}]
         response, dialog_dict = self._handler.continue_dialog(id, prompt_list)
         self.assertEqual(response, "Success")
