@@ -15,11 +15,11 @@ const App = () => {
   const [selectedPerspectives, setSelectedPerspectives] = useState([]);
   const [perspectives, setPerspectives] = useState([]);
   const [response, setResponse] = useState('');
-  const [agentResponse, setAgentResponse] = useState([]);
   const [dialogs, setDialogs] = useState({});
   const [expandedDialogs, setExpandedDialogs] = useState({});
   const [displayedDialog, setDisplayedDialog] = useState(0);
   const [selectedFormat, setSelectedFormat] = useState('dialog'); // Add state for selected format
+  const [dialogStarted, setDialogStarted] = useState(false)
 
   useEffect(() => {
     fetch('/api/agents')
@@ -68,6 +68,7 @@ const App = () => {
 
         setDisplayedDialog(newDialogId);
         setResponse("");
+        setDialogStarted(true);
       })
       .catch((error) => {
         console.error('Error processing the statement:', error);
@@ -92,7 +93,6 @@ const App = () => {
         if (data.perspectives) {
           setPerspectives(data.perspectives);
         }
-        setResponse(data.agentResponse);
       })
       .catch((error) => {
         console.error('Error processing the statement:', error);
@@ -150,7 +150,7 @@ const App = () => {
         <SubmitButton onSubmit={handleSubmit} />
         {response && <ResponseDisplay response={response} />}
         <DialogDisplay dialogId={displayedDialog} dialog={dialogs[displayedDialog]} />
-        <ContinueButton onSubmit={handleContinue} />
+        {dialogStarted && <ContinueButton onSubmit={handleContinue} />}
       </div>
     </div>
   );
