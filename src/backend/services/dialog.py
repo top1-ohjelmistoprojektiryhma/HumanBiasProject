@@ -21,6 +21,18 @@ class Dialog:
         """
         self.rounds[round_num] = prompts
 
+    def get_next_agent(self):
+        """ Get the next agent to speak
+
+        Returns:
+            Agent: The next agent to speak
+        """
+        agent = None
+        agents = list(self.agents.keys())
+        if self.dialog_format == "dialog":
+            agent = agents[(len(self.rounds) - 1) % len(agents)]
+        return agent
+
     def get_agent_history(self, agent_obj):
         """ Get the dialog history for a specific agent
 

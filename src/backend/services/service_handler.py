@@ -91,6 +91,18 @@ class ServiceHandler:
             return "Success", self.dialog_manager.get_dialog(dialog_id).to_dict()
         return None, None
 
+    def format_specific_prompt_list(self, dialog_id, text=""):
+        prompts_list = []
+        dialog = self.dialog_manager.get_dialog(dialog_id)
+        if dialog.rounds == {}:
+            prompts_list = self.format_prompt_list(text)
+        elif dialog.dialog_format == "dialog":
+            agent = dialog.get_next_agent()
+            unseen_prompts = agent.get_unseen_prompts(dialog_id)
+            prompt = self.formatter.format_dialog_prompt_with_unseen(agent, unseen_prompts)
+            prompts_list = [{"agent": agent, "text": prompt}]
+        return prompts_list
+
     def format_prompt_list(self, text):
         agent_list = self.agent_manager.selected_agents
         prompt_list = self.formatter.format_multiple([agent.role for agent in agent_list], text)

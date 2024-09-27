@@ -13,6 +13,19 @@ class Formatter:
         You are debating the plausibility of the following statement.
         Give a conversational opening statement: {str(prompt)}"""
 
+    def format_dialog_prompt_with_unseen(self, agent, unseen_prompts):
+        # need to experiment more with prompt engineering here:
+        # this is just a placeholder
+        unseen = [
+            f"""{prompt['agent'].role} has given the following response: 
+            {prompt['text']}""" for prompt in unseen_prompts
+        ]
+        return f"""Embody the following role: {str(agent.role)}.
+        Stay grounded and true to character. 
+        Given these new statements and dialogue history, 
+        update your stance and/or debate these new statements.
+        {str(unseen)}"""
+
     def format_single_opening_statement_gemini(self, role, prompt):
         return f"""Embody the following role: {str(role)}.
         Stay grounded and true to character. 

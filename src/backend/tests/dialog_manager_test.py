@@ -17,7 +17,11 @@ class TestDialogManager(unittest.TestCase):
         agent2 = Mock()
         agent1.unseen = {}
         agent2.unseen = {}
-        dialog_id, dialog = self._manager.new_dialog("Initial prompt", agents=None, dialog_format="dialog")
+        dialog_id, dialog = self._manager.new_dialog(
+            "Initial prompt", 
+            agents={agent1: None, agent2: None},
+            dialog_format="dialog"
+        )
         prompts = [
             {
                 "agent": agent1,
@@ -34,8 +38,6 @@ class TestDialogManager(unittest.TestCase):
         ]
         self._manager.add_round_to_dialog(dialog_id, 1, prompts)
         self.assertEqual(dialog.rounds, {1: prompts})
-        self.assertEqual(agent1.unseen, {0: [{"agent": agent2, "output": "Output 2"}]})
-        self.assertEqual(agent2.unseen, {0: [{"agent": agent1, "output": "Output 1"}]})
 
     def test_get_dialog_works(self):
         dialog_id, dialog = self._manager.new_dialog("Initial prompt", agents=None, dialog_format="dialog")

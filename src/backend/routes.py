@@ -20,7 +20,7 @@ def initialize_routes(app, agent_manager, service_handler):
         if not successful:
             return jsonify({"response": result})
         new_id = result
-        prompt_list = service_handler.format_prompt_list(prompt)
+        prompt_list = service_handler.format_specific_prompt_list(new_id, prompt)
         response, dialog_dict = service_handler.continue_dialog(new_id, prompt_list)
         if dialog_dict is None:
             return jsonify({"response": "Missing gemini key"})
@@ -36,12 +36,12 @@ def initialize_routes(app, agent_manager, service_handler):
         dialog_id = data.get("dialog_id")
         prompt = data.get("prompt")
         print(f"Dialog ID: {dialog_id}, Prompt: {prompt}")
-        prompt_list = service_handler.format_prompt_list(prompt)
+        prompt_list = service_handler.format_specific_prompt_list(dialog_id, prompt)
         response, dialog_dict = service_handler.continue_dialog(dialog_id, prompt_list)
         if dialog_dict is None:
             return jsonify({"response": "Missing gemini key"})
         print(f"Response: {dialog_dict}, Dialog ID: {dialog_id}")
-        return jsonify({"response": response, "dialog": dialog_dict})
+        return jsonify({"response": response, "dialog_id": dialog_id, "dialog": dialog_dict})
 
     @app.route("/api/delete-perspective", methods=["POST"])
     def delete_perspective():

@@ -98,7 +98,7 @@ const App = () => {
       });
   };
 
-  //TÄÄ TEHÄÄN KU PAINETAAN CONTINUE-NAPPII
+  // Add function to handle dialog continuation
   const handleContinue = () => {
     fetch('/api/continue-dialog', {
       method: 'POST',

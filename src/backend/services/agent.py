@@ -32,3 +32,26 @@ class Agent:
         if dialog_id not in self.histories:
             self.histories[dialog_id] = []
         return self.histories[dialog_id]
+
+    def add_unseen_prompts(self, dialog_id, prompts):
+        """Add unseen prompts to the agent's unseen list
+        Args:
+            dialog_id (str): The dialog id
+            prompts (list): list of prompts, such as:
+            [{"agent": agent_obj, "text": "output"}]
+        """
+        if dialog_id not in self.unseen:
+            self.unseen[dialog_id] = prompts
+            return
+        self.unseen[dialog_id].extend(prompts)
+
+    def get_unseen_prompts(self, dialog_id):
+        """Get the unseen prompts for a specific dialog
+        Args:
+            dialog_id (str): The dialog id
+        Returns:
+            list: A list of dictionaries representing the unseen prompts
+        """
+        unseen = self.unseen.get(dialog_id, [])
+        self.unseen[dialog_id] = []
+        return unseen

@@ -34,15 +34,28 @@ class DialogManager:
         """
         self.dialogs[dialog_id].add_round(round_num, prompts)
         # Add other agents' outputs to each agent's unseen list
-        for prompt in prompts:
-            agent_obj = prompt["agent"]
-            output = prompt["output"]
-            other_prompts = [p for p in prompts if p["agent"] != agent_obj]
-            for other_prompt in other_prompts:
-                other_agent = other_prompt["agent"]
-                if dialog_id not in other_agent.unseen:
-                    other_agent.unseen[dialog_id] = []
-                other_agent.unseen[dialog_id].append({"agent": agent_obj, "output": output})
+        for agent_obj in self.dialogs[dialog_id].agents:
+            unseen = [
+                prompt for prompt in prompts if prompt["agent"] != agent_obj
+            ]
+            if unseen:
+                self.add_unseen_prompts(dialog_id, agent_obj, unseen)
+
+    def add_unseen_prompts(self, dialog_id, agent_obj, unseen):
+        """ Add unseen prompts to an agent's unseen list
+
+        Args:
+            dialog_id (int): The id of the dialog object
+            agent_obj (Agent): The agent object
+            prompts (list): A list of prompts
+        """
+        agent_obj.add_unseen_prompts(
+            dialog_id,
+            [
+                {"agent": prompt["agent"], "text": prompt["output"]} for prompt in unseen
+            ]
+        )
+        print(f"Unseen prompts for {agent_obj.role}: {agent_obj.unseen}")
 
     def get_dialog(self, dialog_id):
         return self.dialogs[dialog_id]
