@@ -84,7 +84,7 @@ source venv/bin/activate
 
 Käynnistä backend
 ```bash
-python3 src/main.py
+python3 src/backend/main.py
 ```
 
 Avaa toinen terminaali/välilehti
