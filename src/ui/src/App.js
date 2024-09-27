@@ -15,6 +15,7 @@ const App = () => {
   const [selectedPerspectives, setSelectedPerspectives] = useState([]);
   const [perspectives, setPerspectives] = useState([]);
   const [response, setResponse] = useState('');
+  const [agentResponse, setAgentResponse] = useState([]);
   const [dialogs, setDialogs] = useState({});
   const [expandedDialogs, setExpandedDialogs] = useState({});
   const [displayedDialog, setDisplayedDialog] = useState(0);
@@ -86,12 +87,12 @@ const App = () => {
       },
       body: JSON.stringify(requestData),
     })
-      .then((response) => response.json())
+      .then((agentResponse) => agentResponse.json())
       .then((data) => {
         if (data.perspectives) {
           setPerspectives(data.perspectives);
         }
-        setResponse(data.response);
+        setResponse(data.agentResponse);
       })
       .catch((error) => {
         console.error('Error processing the statement:', error);
