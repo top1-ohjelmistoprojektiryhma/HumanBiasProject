@@ -8,6 +8,7 @@ import GenerateAgents from './components/GenerateAgents';
 import DialogsBar from './components/DialogsBar';
 import DialogDisplay from './components/DialogDisplay';
 import FormatSelector from './components/FormatSelector'; // Import new component
+import ContinueButton from './components/ContinueButton';
 
 const App = () => {
   const [prompt, setPrompt] = useState('');
@@ -97,6 +98,37 @@ const App = () => {
       });
   };
 
+  //TÄÄ TEHÄÄN KU PAINETAAN CONTINUE-NAPPII
+  const handleContinue = () => {
+    fetch('/api/continue-dialog', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ dialog_id: displayedDialog }),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        const newDialogId = data.dialog_id;
+        const newDialog = data.dialog;
+
+        setDialogs((prevState) => ({
+          ...prevState,
+          [newDialogId]: newDialog
+        }));
+
+        setExpandedDialogs({
+          [newDialogId]: true
+        });
+
+        setDisplayedDialog(newDialogId);
+        setResponse("");
+      })
+      .catch((error) => {
+        console.error('Error processing the statement:', error);
+      });
+  };
+
   return (
     <div className="app-container">
       <DialogsBar dialogs={dialogs} expandedDialogs={expandedDialogs} toggleDialog={setExpandedDialogs} />
@@ -104,7 +136,7 @@ const App = () => {
       <div className="main-content">
         <h1>Human Bias Project</h1>
         <InputForm prompt={prompt} setPrompt={setPrompt} />
-        
+
         <GenerateAgents onSubmit={handleGenerateAgents} />
         <PerspectiveSelector
           perspectives={perspectives}
@@ -117,6 +149,7 @@ const App = () => {
         <SubmitButton onSubmit={handleSubmit} />
         {response && <ResponseDisplay response={response} />}
         <DialogDisplay dialogId={displayedDialog} dialog={dialogs[displayedDialog]} />
+        <ContinueButton onSubmit={handleContinue} />
       </div>
     </div>
   );

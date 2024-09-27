@@ -1,6 +1,7 @@
 # pylint: skip-file
 from flask import request, jsonify
 
+
 def initialize_routes(app, agent_manager, service_handler):
     @app.route("/api/agents", methods=["GET"])
     def get_agents():
@@ -24,7 +25,23 @@ def initialize_routes(app, agent_manager, service_handler):
         if dialog_dict is None:
             return jsonify({"response": "Missing gemini key"})
         print(f"Response: {dialog_dict}, Dialog ID: {new_id}")
-        return jsonify({"response": response, "dialog_id": new_id, "dialog": dialog_dict})
+        return jsonify(
+            {"response": response, "dialog_id": new_id, "dialog": dialog_dict}
+        )
+
+    # CONTINUE DIALOG
+    @app.route("/api/continue-dialog", methods=["POST"])
+    def continue_dialog():
+        data = request.json
+        dialog_id = data.get("dialog_id")
+        prompt = data.get("prompt")
+        print(f"Dialog ID: {dialog_id}, Prompt: {prompt}")
+        prompt_list = service_handler.format_prompt_list(prompt)
+        response, dialog_dict = service_handler.continue_dialog(dialog_id, prompt_list)
+        if dialog_dict is None:
+            return jsonify({"response": "Missing gemini key"})
+        print(f"Response: {dialog_dict}, Dialog ID: {dialog_id}")
+        return jsonify({"response": response, "dialog": dialog_dict})
 
     @app.route("/api/delete-perspective", methods=["POST"])
     def delete_perspective():
@@ -48,11 +65,13 @@ def initialize_routes(app, agent_manager, service_handler):
         prompt = data.get("prompt")
         num_agents = data.get("num_agents", 3)  # Default to 3 agents if not provided
         print(f"Generating {num_agents} agents for prompt: {prompt}")
-    
+
         # Pass the number of agents to the service handler
-        response = service_handler.generate_agents(prompt, desired_number_of_agents=num_agents)
-        
-        if isinstance(response, dict) and 'perspectives' in response:
+        response = service_handler.generate_agents(
+            prompt, desired_number_of_agents=num_agents
+        )
+
+        if isinstance(response, dict) and "perspectives" in response:
             return jsonify(response)
         return jsonify({"response": response, "perspectives": []})
 
