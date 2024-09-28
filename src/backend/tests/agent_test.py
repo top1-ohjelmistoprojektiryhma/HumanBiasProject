@@ -23,3 +23,25 @@ class TestAgent(unittest.TestCase):
         dialog_id = "1"
         chat = [{"role": "user", "text": "hello"}]
         self.assertEqual(self.agent.get_chat_history(dialog_id), chat)
+
+    def test_add_unseen_prompts_works(self):
+        dialog_id = "2"
+        prompts = [{"role": "user", "text": "hello"}]
+        self.agent.add_unseen_prompts(dialog_id, prompts)
+        self.assertEqual(self.agent.unseen["2"], prompts)
+        prompt_2 = [{"role2":"obj", "text":"hello2"}]
+        self.agent.add_unseen_prompts(dialog_id, prompt_2)
+        self.assertEqual(self.agent.unseen["2"],
+                         [{"role": "user", "text": "hello"},
+                         {"role2":"obj", "text":"hello2"}])
+
+    def test_get_unseen_prompts_works(self):
+        dialog_id = "2"
+        prompts = [{"role": "user", "text": "hello"}]
+        self.agent.add_unseen_prompts(dialog_id, prompts)
+        result = self.agent.get_unseen_prompts("1")
+        self.assertEqual(result, [])
+        self.assertEqual(self.agent.unseen["1"], [])
+        result = self.agent.get_unseen_prompts("2")
+        self.assertEqual(prompts, result)
+        self.assertEqual(self.agent.unseen["2"], [])
