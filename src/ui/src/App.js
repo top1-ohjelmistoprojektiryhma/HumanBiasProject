@@ -9,6 +9,7 @@ import DialogsBar from './components/DialogsBar';
 import DialogDisplay from './components/DialogDisplay';
 import FormatSelector from './components/FormatSelector'; // Import new component
 import ContinueButton from './components/ContinueButton';
+import StopButton from './components/StopButton';
 
 const App = () => {
   const [prompt, setPrompt] = useState('');
@@ -99,7 +100,6 @@ const App = () => {
       });
   };
 
-  // Add function to handle dialog continuation
   const handleContinue = () => {
     fetch('/api/continue-dialog', {
       method: 'POST',
@@ -130,27 +130,39 @@ const App = () => {
       });
   };
 
+  const handleStop = () => {
+    setDialogStarted(false);
+    setDisplayedDialog(null);
+    setResponse("");
+    setSelectedPerspectives([]);
+    setSelectedFormat("");
+  };
+
   return (
     <div className="app-container">
       <DialogsBar dialogs={dialogs} expandedDialogs={expandedDialogs} toggleDialog={setExpandedDialogs} />
 
       <div className="main-content">
         <h1>Human Bias Project</h1>
-        <InputForm prompt={prompt} setPrompt={setPrompt} />
-
-        <GenerateAgents onSubmit={handleGenerateAgents} />
-        <PerspectiveSelector
-          perspectives={perspectives}
-          selectedPerspectives={selectedPerspectives}
-          setSelectedPerspectives={setSelectedPerspectives}
-          setPerspectives={setPerspectives}
-        />
-        <AddPerspectiveForm perspectives={perspectives} setPerspectives={setPerspectives} />
-        <FormatSelector setSelectedFormat={setSelectedFormat} /> {/* Add FormatDropdown */}
-        <SubmitButton onSubmit={handleSubmit} />
+        {!dialogStarted && (
+          <>
+            <InputForm prompt={prompt} setPrompt={setPrompt} />
+            <GenerateAgents onSubmit={handleGenerateAgents} />
+            <PerspectiveSelector
+              perspectives={perspectives}
+              selectedPerspectives={selectedPerspectives}
+              setSelectedPerspectives={setSelectedPerspectives}
+              setPerspectives={setPerspectives}
+            />
+            <AddPerspectiveForm perspectives={perspectives} setPerspectives={setPerspectives} />
+            <FormatSelector setSelectedFormat={setSelectedFormat} />
+            <SubmitButton onSubmit={handleSubmit} />
+          </>
+        )}
         {response && <ResponseDisplay response={response} />}
-        <DialogDisplay dialogId={displayedDialog} dialog={dialogs[displayedDialog]} />
+        {<DialogDisplay dialogId={displayedDialog} dialog={dialogs[displayedDialog]} />}
         {dialogStarted && <ContinueButton onSubmit={handleContinue} />}
+        {dialogStarted && <StopButton onSubmit={handleStop} />}
       </div>
     </div>
   );
