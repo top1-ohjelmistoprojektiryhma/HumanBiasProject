@@ -11,7 +11,9 @@ class Formatter:
         return f"""Embody the following role: {str(role)}.
         Stay grounded and true to character. 
         You are debating the plausibility of the following statement.
-        Give a conversational opening statement: {str(prompt)}"""
+        Give a conversational opening statement: {str(prompt)}
+        Also give a score from 0 to 10 on how much you agree with the statement.
+        Initially avoid scores around 5, be decisive."""
 
     def format_dialog_prompt_with_unseen(self, agent, unseen_prompts):
         # need to experiment more with prompt engineering here:
@@ -22,9 +24,10 @@ class Formatter:
         ]
         return f"""Embody the following role: {str(agent.role)}.
         Stay grounded and true to character. 
-        Given these new statements and dialogue history, 
-        update your stance and/or debate these new statements.
-        {str(unseen)}"""
+        Given the dialogue history debate these new statements
+        and hold your ground.
+        {str(unseen)}
+        Remark the initial prompt. Give a score from 0 to 10 on how much you agree with the statement."""
 
     def format_single_opening_statement_gemini(self, role, prompt):
         return f"""Embody the following role: {str(role)}.
