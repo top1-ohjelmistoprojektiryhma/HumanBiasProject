@@ -3,6 +3,10 @@ import unittest
 from backend.services.formatter import Formatter
 
 
+class ExampleAgent:
+    def __init__(self):
+        self.role = "student"
+
 class TestFormatter(unittest.TestCase):
     def setUp(self):
         self.formatter = Formatter()
@@ -88,3 +92,17 @@ class TestFormatter(unittest.TestCase):
         expected += "Return a list only in the given style, with the roles separated by '|':\n"
         expected += "agent1|agent2|agent3"
         self.assertEqual(result, expected)
+
+    def test_format_dialog_prompt_with_unseen(self):
+        agent = ExampleAgent()
+        unseen_prompts = [
+            {
+                "agent": ExampleAgent(),
+                "model": "model",
+                "input": "input",
+                "text": "output"
+            }
+        ]
+        result = self.formatter.format_dialog_prompt_with_unseen(agent, unseen_prompts)
+        expected = f"""['student has given the following response: \\n            output']"""
+        self.assertIn(expected, result)

@@ -23,11 +23,11 @@ class Formatter:
             {prompt['text']}""" for prompt in unseen_prompts
         ]
         return f"""Embody the following role: {str(agent.role)}.
-        Stay grounded and true to character. 
+        Stay grounded and true to character.
         Given the dialogue history debate these new statements
         and hold your ground.
         {str(unseen)}
-        Remark the initial prompt. Give a score from 0 to 10 
+        Remark the initial prompt. Give a score from 0 to 10
         on how much you agree with the statement."""
 
     def format_single_opening_statement_gemini(self, role, prompt):
