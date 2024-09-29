@@ -7,7 +7,7 @@ import AddPerspectiveForm from './components/AddPerspectiveForm';
 import GenerateAgents from './components/GenerateAgents';
 import DialogsBar from './components/DialogsBar';
 import DialogDisplay from './components/DialogDisplay';
-import FormatSelector from './components/FormatSelector'; // Import new component
+import FormatSelector from './components/FormatSelector';
 import ContinueButton from './components/ContinueButton';
 import StopButton from './components/StopButton';
 
@@ -19,7 +19,7 @@ const App = () => {
   const [dialogs, setDialogs] = useState({});
   const [expandedDialogs, setExpandedDialogs] = useState({});
   const [displayedDialog, setDisplayedDialog] = useState(0);
-  const [selectedFormat, setSelectedFormat] = useState('dialog'); // Add state for selected format
+  const [selectedFormat, setSelectedFormat] = useState('dialog');
   const [dialogStarted, setDialogStarted] = useState(false)
 
   useEffect(() => {
@@ -132,10 +132,10 @@ const App = () => {
 
   const handleStop = () => {
     setDialogStarted(false);
-    setDisplayedDialog(null);
+    setDisplayedDialog(0);
     setResponse("");
     setSelectedPerspectives([]);
-    setSelectedFormat("");
+    setSelectedFormat("dialog");
   };
 
   return (
