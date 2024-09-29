@@ -160,7 +160,7 @@ class ServiceHandler:
 
     def get_desired_output(self, output_list, desired_number_of_agents):
         perspectives = []
-        output = "error in generating agents"
+        output = ""
 
         if len(output_list) == desired_number_of_agents:
             # If the number of agents matches the desired number
@@ -180,7 +180,7 @@ class ServiceHandler:
             perspectives = [agent.role for agent in self.agent_manager.list_of_agents]
             output = perspectives
 
-        elif len(output_list) < desired_number_of_agents:
+        else:
             # If fewer agents are generated than requested
             output = "error in generating agents"
 
