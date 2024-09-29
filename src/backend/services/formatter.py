@@ -27,7 +27,8 @@ class Formatter:
         Given the dialogue history debate these new statements
         and hold your ground.
         {str(unseen)}
-        Remark the initial prompt. Give a score from 0 to 10 on how much you agree with the statement."""
+        Remark the initial prompt. Give a score from 0 to 10 
+        on how much you agree with the statement."""
 
     def format_single_opening_statement_gemini(self, role, prompt):
         return f"""Embody the following role: {str(role)}.
