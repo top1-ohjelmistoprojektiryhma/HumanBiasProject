@@ -13,6 +13,9 @@ class ExampleAgent:
     def get_chat_history(self, dialog_id):
         pass
 
+    def get_unseen_prompts(self, dialog_id):
+        pass
+
 class TestServiceHandler(unittest.TestCase):
     def setUp(self):
         self._mock_agent_manager = Mock()
@@ -110,6 +113,39 @@ class TestServiceHandler(unittest.TestCase):
         ]
         self.assertListEqual(return_value, expected)
 
+    def test_format_specific_prompt_list_works(self):
+        rounds = Mock()
+        rounds.rounds = {}
+        self._mock_dialog_manager.get_dialog.return_value = rounds
+        agents = [ExampleAgent()]
+        self._mock_agent_manager.selected_agents = agents
+        self._mock_formatter.format_multiple.return_value = [
+            'You are a "Student".Give your own thoughts on how probable the following statement is: 123'
+        ]
+        result = self._handler.format_specific_prompt_list(1)
+        expected = [{"agent":agents[0], "text": 'You are a "Student".Give your own thoughts on how probable the following statement is: 123'}
+        ]
+        self.assertEqual(result, expected)
+
+    def test_format_specific_prompt_list_works_with_dialogue(self):
+        rounds = Mock()
+        test_agent = ExampleAgent()
+        rounds.get_next_agent.return_value = test_agent
+        rounds.rounds = {"1":"text"}
+        rounds.dialog_format = "dialog"
+        self._mock_formatter.format_dialog_prompt_with_unseen.return_value = "Output"
+        self._mock_dialog_manager.get_dialog.return_value = rounds
+        result = self._handler.format_specific_prompt_list(1)
+        expected = [{"agent":test_agent, "text":"Output"}]
+        self.assertEqual(result, expected)
+
+    def test_format_specific_prompt_list_returns_empty_list(self):
+        rounds = Mock()
+        rounds.rounds = {"1":"..."}
+        rounds.dialog_format = "not a dialog"
+        self._mock_dialog_manager.get_dialog.return_value = rounds
+        self.assertEqual(self._handler.format_specific_prompt_list(1), [])
+
     def test_set_selected_agents_works(self):
         test_agent_list = ["Student", "Farmer"]
         self._handler.set_selected_agents(test_agent_list)
@@ -159,3 +195,9 @@ class TestServiceHandler(unittest.TestCase):
         self._mock_dialog_manager.all_dialogs.return_value = {"1": "dialog1", "2": "dialog2"}
         response = self._handler.get_all_dialogs()
         self.assertEqual(response, {"1": "dialog1", "2": "dialog2"})
+
+    def test_get_desired_output_works_with_outputlist_equal_to_desired_num(self):
+        self._mock_agent_manager.list_of_agents = [ExampleAgent(), ExampleAgent()]
+        result = self._handler.get_desired_output(["1"], 1)
+        expected = (["Student", "Student"], ["Student", "Student"])
+        self.assertEqual(result, expected)
