@@ -8,11 +8,20 @@ class ExampleAgent:
 
 class TestDialog(unittest.TestCase):
     def setUp(self):
-        self.dialog = Dialog("Initial prompt")
+        self.agents = [ExampleAgent(), ExampleAgent()]
+        self.dialog = Dialog(
+            "Initial prompt", {self.agents[0]: "None", self.agents[1]: "None"}, "dialog"
+            )
 
     def test_add_round_works(self):
         self.dialog.add_round(1, ["Prompt 1", "Prompt 2"])
         self.assertEqual(self.dialog.rounds, {1: ["Prompt 1", "Prompt 2"]})
+
+    def test_get_next_agent_works(self):
+        self.dialog.add_round(1, ["Prompt 1", "Prompt 2"])
+        self.assertEqual(self.dialog.get_next_agent(), self.agents[0])
+        self.dialog.add_round(2, ["Prompt 3", "Prompt 4"])
+        self.assertEqual(self.dialog.get_next_agent(), self.agents[1])
 
     def test_to_dict_works(self):
         self.dialog.add_round(1, [
