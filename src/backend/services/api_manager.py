@@ -3,9 +3,17 @@ import google.generativeai as genai
 
 class ApiManager:
     """Class for managing interaction with multiple APIs"""
-    def __init__(self, gemini_key=None, gemini_api=None) -> None:
+    def __init__(
+        self,
+        gemini_key=None,
+        gemini_api=None,
+        openai_key=None,
+        openai_api=None):
+
         self.gemini_key = gemini_key
         self.gemini_api = gemini_api
+        self.openai_key = openai_key
+        self.openai_api = openai_api
 
     def add_gemini_key(self, key):
         "If input key is not None, add new key"
@@ -27,7 +35,8 @@ class ApiManager:
         """
 
         model_map = {
-            "gemini": self.gemini_api.get_chat_response
+            "gemini": self.gemini_api.get_chat_response,
+            "openai": self.openai_api.get_chat_response
         }
         response_list = []
         model_names = list(model_map.keys())

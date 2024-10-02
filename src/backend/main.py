@@ -8,6 +8,7 @@ from services.api_manager import ApiManager
 from services.dialog_manager import DialogManager
 from services.service_handler import ServiceHandler
 from services.api import gemini
+from services.api import openai
 
 # Luo Flask-sovellus
 app = Flask(__name__)
@@ -16,12 +17,17 @@ CORS(app)  # Ota CORS käyttöön frontendin pyyntöjä varten
 # Lataa ympäristömuuttujat
 load_dotenv()
 GEMINI_KEY = os.getenv("GEMINI_KEY")
+OPENAI_KEY = os.getenv("OPEN_AI_KEY")
 
 # Alusta palvelut
 agent_manager = AgentManager()
 formatter = Formatter()
 gemini_api = gemini.GeminiApi(gemini_key=GEMINI_KEY)
-api_manager = ApiManager(gemini_key=GEMINI_KEY, gemini_api=gemini_api)
+openai_api = openai.OpenAiApi(openai_key=OPENAI_KEY)
+api_manager = ApiManager(gemini_key=GEMINI_KEY, 
+                         gemini_api=gemini_api, 
+                        openai_key=OPENAI_KEY,
+                        openai_api=openai_api)
 dialog_manager = DialogManager()
 service_handler = ServiceHandler(
     io=None, 
