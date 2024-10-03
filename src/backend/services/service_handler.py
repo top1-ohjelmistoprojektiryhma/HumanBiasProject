@@ -199,7 +199,7 @@ class ServiceHandler:
         # Add your logic to save or update the dialog
         print("Latest dialog processed:", dialog_data)
         summary = self.get_summary_from_ai(dialog_data)
-        
+
         print("Generated Summary:", summary)
         return summary
 
@@ -220,10 +220,10 @@ class ServiceHandler:
             "history": None,
             "agent_object": None
         }]
-        
+
         # Use ApiManager to send the prompt to the AI model
         responses = self.api_manager.send_prompts(prompt_list)
-        
+
         # Extract and return the AI's response (assuming a single response)
         if responses and "output" in responses[0]:
             return responses[0]["output"]
