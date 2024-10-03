@@ -41,7 +41,9 @@ def initialize_routes(app, agent_manager, service_handler):
         if dialog_dict is None:
             return jsonify({"response": "Missing gemini key"})
         print(f"Response: {dialog_dict}, Dialog ID: {dialog_id}")
-        return jsonify({"response": response, "dialog_id": dialog_id, "dialog": dialog_dict})
+        return jsonify(
+            {"response": response, "dialog_id": dialog_id, "dialog": dialog_dict}
+        )
 
     @app.route("/api/delete-perspective", methods=["POST"])
     def delete_perspective():
@@ -79,3 +81,8 @@ def initialize_routes(app, agent_manager, service_handler):
     def get_all_dialogs():
         dialogs = service_handler.get_all_dialogs()
         return jsonify(dialogs)
+
+    @app.route("/api/summary", methods=["GET"])
+    def get_summary():
+        summary = service_handler.get_dialog_summary()
+        return jsonify({"response": summary})

@@ -10,6 +10,7 @@ import DialogDisplay from './components/DialogDisplay';
 import FormatSelector from './components/FormatSelector';
 import ContinueButton from './components/ContinueButton';
 import StopButton from './components/StopButton';
+import SummaryButton from './components/SummaryButton';
 
 const App = () => {
   const [prompt, setPrompt] = useState('');
@@ -138,6 +139,18 @@ const App = () => {
     setSelectedFormat("dialog");
   };
 
+  const handleSummaryClick = () => {
+    fetch('/api/summary')
+      .then((response) => response.json())
+      .then((data) => {
+        console.log('Summary:', data.response);
+        // Voit päivittää tilan tai tehdä jotain muuta yhteenvedon kanssa
+      })
+      .catch((error) => {
+        console.error('Error fetching summary:', error);
+      });
+  };
+
   return (
     <div className="app-container">
       <DialogsBar dialogs={dialogs} expandedDialogs={expandedDialogs} toggleDialog={setExpandedDialogs} />
@@ -163,6 +176,7 @@ const App = () => {
         {<DialogDisplay dialogId={displayedDialog} dialog={dialogs[displayedDialog]} />}
         {dialogStarted && <ContinueButton onSubmit={handleContinue} />}
         {dialogStarted && <StopButton onSubmit={handleStop} />}
+        {dialogStarted && <SummaryButton onClick={handleSummaryClick} />}
       </div>
     </div>
   );
