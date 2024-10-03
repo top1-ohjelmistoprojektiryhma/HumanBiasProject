@@ -185,3 +185,16 @@ class ServiceHandler:
             output = "error in generating agents"
 
         return perspectives, output
+
+    def process_latest_dialog(self, dialog_data):
+        """
+        Process the latest dialog sent from the frontend.
+            
+        Args:
+         dialog_data (str): The latest dialog data received.
+            
+        Returns:
+            None
+        """
+        # Add your logic to save or update the dialog
+        print("Latest dialog processed:", dialog_data)

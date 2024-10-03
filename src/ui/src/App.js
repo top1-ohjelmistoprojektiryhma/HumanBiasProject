@@ -140,21 +140,31 @@ const App = () => {
   };
 
   const handleSummaryClick = () => {
-    fetch('/api/summary')
-      .then((response) => response.json())
-      .then((data) => {
-        console.log('Summary:', data.response);
-        // Voit päivittää tilan tai tehdä jotain muuta yhteenvedon kanssa
-      })
-      .catch((error) => {
-        console.error('Error fetching summary:', error);
-      });
+    // Get the dialog data to send
+    const dialogData = dialogs[displayedDialog]; 
+  
+    fetch('/api/summary', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ dialog: dialogData }),
+    })
+    .then((response) => response.json())
+    .then((data) => {
+      console.log('Summary:', data.response);
+      // Handle the response from the server
+    })
+    .catch((error) => {
+      console.error('Error sending dialog data:', error);
+    });
   };
-
+  
+  
   return (
     <div className="app-container">
       <DialogsBar dialogs={dialogs} expandedDialogs={expandedDialogs} toggleDialog={setExpandedDialogs} />
-
+  
       <div className="main-content">
         <h1>Human Bias Project</h1>
         {!dialogStarted && (
@@ -173,13 +183,17 @@ const App = () => {
           </>
         )}
         {response && <ResponseDisplay response={response} />}
-        {<DialogDisplay dialogId={displayedDialog} dialog={dialogs[displayedDialog]} />}
+        {/* Display the dialog content */}
+        {displayedDialog !== null && dialogs[displayedDialog] && (
+          <DialogDisplay dialogId={displayedDialog} dialog={dialogs[displayedDialog]} />
+        )}
         {dialogStarted && <ContinueButton onSubmit={handleContinue} />}
         {dialogStarted && <StopButton onSubmit={handleStop} />}
+        {/* Pass the correct dialog data to handleSummaryClick */}
         {dialogStarted && <SummaryButton onClick={handleSummaryClick} />}
       </div>
     </div>
   );
-};
-
+  };
+  
 export default App;
