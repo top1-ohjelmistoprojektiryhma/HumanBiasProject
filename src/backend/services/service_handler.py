@@ -198,3 +198,33 @@ class ServiceHandler:
         """
         # Add your logic to save or update the dialog
         print("Latest dialog processed:", dialog_data)
+        summary = self.get_summary_from_ai(dialog_data)
+        
+        print("Generated Summary:", summary)
+        return summary
+
+    def get_summary_from_ai(self, dialog_data):
+        """
+        Send dialog data to the AI model to generate a summary.
+        
+        Args:
+            dialog_data (str): The dialog text to be summarized.
+        
+        Returns:
+            str: The generated summary from the AI.
+        """
+        # Prepare prompt for AI; use dialog_data as the prompt text
+        prompt_list = [{
+            "text": f"Summarize the following dialog:\n{dialog_data}",
+            "model": None,
+            "history": None,
+            "agent_object": None
+        }]
+        
+        # Use ApiManager to send the prompt to the AI model
+        responses = self.api_manager.send_prompts(prompt_list)
+        
+        # Extract and return the AI's response (assuming a single response)
+        if responses and "output" in responses[0]:
+            return responses[0]["output"]
+        return "No summary generated."

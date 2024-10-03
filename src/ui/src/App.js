@@ -22,6 +22,8 @@ const App = () => {
   const [displayedDialog, setDisplayedDialog] = useState(0);
   const [selectedFormat, setSelectedFormat] = useState('dialog');
   const [dialogStarted, setDialogStarted] = useState(false)
+  const [summary, setSummary] = useState('');
+
 
   useEffect(() => {
     fetch('/api/agents')
@@ -153,7 +155,7 @@ const App = () => {
     .then((response) => response.json())
     .then((data) => {
       console.log('Summary:', data.response);
-      // Handle the response from the server
+      setSummary(data.response);
     })
     .catch((error) => {
       console.error('Error sending dialog data:', error);
@@ -185,7 +187,15 @@ const App = () => {
         {response && <ResponseDisplay response={response} />}
         {/* Display the dialog content */}
         {displayedDialog !== null && dialogs[displayedDialog] && (
-          <DialogDisplay dialogId={displayedDialog} dialog={dialogs[displayedDialog]} />
+          <>
+            <DialogDisplay dialogId={displayedDialog} dialog={dialogs[displayedDialog]} />
+            {summary && (
+              <div className="summary-section">
+                <h2>Summary</h2>
+                <p>{summary}</p>
+              </div>
+            )}
+          </>
         )}
         {dialogStarted && <ContinueButton onSubmit={handleContinue} />}
         {dialogStarted && <StopButton onSubmit={handleStop} />}
@@ -194,6 +204,6 @@ const App = () => {
       </div>
     </div>
   );
-  };
-  
+};
+
 export default App;
