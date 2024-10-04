@@ -13,7 +13,7 @@ class Formatter:
         You are debating the plausibility of the following statement.
         Give a conversational opening statement: {str(prompt)}
         Also give a score from 0 to 10 on how much you agree with the statement.
-        Initially avoid scores around 5, be decisive."""
+        Initially avoid scores around 5, be decisive. Limit your response to 100 words."""
 
     def format_dialog_prompt_with_unseen(self, agent, unseen_prompts):
         # need to experiment more with prompt engineering here:
@@ -28,7 +28,7 @@ class Formatter:
         and hold your ground.
         {str(unseen)}
         Remark the initial prompt. Give a score from 0 to 10
-        on how much you agree with the statement."""
+        on how much you agree with the statement. Limit your response to 250 words."""
 
     def format_single_opening_statement_gemini(self, role, prompt):
         return f"""Embody the following role: {str(role)}.
