@@ -40,6 +40,7 @@ class OpenAiApi:
         Returns:
             list: A list of dictionaries representing the history
         """
+        #pylint: disable=duplicate-code
         formatted_history = []
         for message in history:
             if message["role"] == "user":
@@ -52,3 +53,4 @@ class OpenAiApi:
                 }
             )
         return formatted_history
+        #pylint: enable=duplicate-code
