@@ -26,26 +26,7 @@ class AnthropicApi:
         message = self.client.messages.create(
             model=self.model, messages=chat_history, max_tokens=1000
         )
-        #         {
-        #   "id": "msg_01XFDUDYJgAACzvnptvVoYEL",
-        #   "type": "message",
-        #   "role": "assistant",
-        #   "content": [
-        #     {
-        #       "type": "text",
-        #       "text": "Hello!"
-        #     }
-        #   ],
-        #   "model": "claude-3-5-sonnet-20240620",
-        #   "stop_reason": "end_turn",
-        #   "stop_sequence": null,
-        #   "usage": {
-        #     "input_tokens": 12,
-        #     "output_tokens": 6
-        #   }
-        # }
-        # join each dict in content list
-        response = "".join([content["text"] for content in message.content])
+        response = "".join([content.text for content in message.content])
         return response
 
     def format_history(self, history):

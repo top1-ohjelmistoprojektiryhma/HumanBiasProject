@@ -40,7 +40,8 @@ class ApiManager:
 
         model_map = {
             "gemini": self.gemini_api.get_chat_response,
-            "openai": self.openai_api.get_chat_response
+            "openai": self.openai_api.get_chat_response,
+            "anthropic": self.anthropic_api.get_chat_response
         }
         response_list = []
         model_names = list(model_map.keys())

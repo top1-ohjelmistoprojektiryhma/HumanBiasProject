@@ -13,6 +13,7 @@ class TestApiManager(unittest.TestCase):
         self._api_manager = ApiManager()
         self._api_manager.gemini_api = Mock()
         self._api_manager.openai_api = Mock()
+        self._api_manager.anthropic_api = Mock()
 
     def test_add_gemini_key_works(self):
         self._api_manager.add_gemini_key("1")
@@ -27,6 +28,7 @@ class TestApiManager(unittest.TestCase):
         prompt_list = [{"text": "123", "model": "gemini", "agent_object": agent, "history": None}]
         self._api_manager.gemini_api.get_chat_response = Mock(return_value="Response1")
         self._api_manager.openai_api.get_chat_response = Mock(return_value="Response2")
+        self._api_manager.anthropic_api.get_chat_response = Mock(return_value="Response3")
         response_list = self._api_manager.send_prompts(prompt_list)
         self.assertEqual(
             response_list,
@@ -44,6 +46,7 @@ class TestApiManager(unittest.TestCase):
         prompt_list = [{"text": "123", "model": "gemini", "agent_object": agent, "history": None}]
         self._api_manager.gemini_api.get_chat_response = Mock(return_value="Response1")
         self._api_manager.openai_api.get_chat_response = Mock(return_value="Response2")
+        self._api_manager.anthropic_api.get_chat_response = Mock(return_value="Response3")
         response_list = self._api_manager.send_prompts(prompt_list)
         self.assertEqual(
             response_list,
