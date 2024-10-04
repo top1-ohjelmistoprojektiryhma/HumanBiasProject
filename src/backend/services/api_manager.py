@@ -8,12 +8,16 @@ class ApiManager:
         gemini_key=None,
         gemini_api=None,
         openai_key=None,
-        openai_api=None):
+        openai_api=None,
+        anthropic_key=None,
+        anthropic_api=None):
 
         self.gemini_key = gemini_key
         self.gemini_api = gemini_api
         self.openai_key = openai_key
         self.openai_api = openai_api
+        self.anthropic_key = anthropic_key
+        self.anthropic_api = anthropic_api
 
     def add_gemini_key(self, key):
         "If input key is not None, add new key"

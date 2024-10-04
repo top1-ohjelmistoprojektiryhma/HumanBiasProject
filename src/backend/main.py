@@ -9,6 +9,7 @@ from services.dialog_manager import DialogManager
 from services.service_handler import ServiceHandler
 from services.api import gemini
 from services.api import openai
+from services.api import anthropic
 
 # Luo Flask-sovellus
 app = Flask(__name__)
@@ -18,17 +19,22 @@ CORS(app)  # Ota CORS käyttöön frontendin pyyntöjä varten
 load_dotenv()
 GEMINI_KEY = os.getenv("GEMINI_KEY")
 OPENAI_KEY = os.getenv("OPEN_AI_KEY")
+ANTHROPIC_KEY = os.getenv("ANTHROPIC_KEY")
 
 # Alusta palvelut
 agent_manager = AgentManager()
 formatter = Formatter()
+dialog_manager = DialogManager()
 gemini_api = gemini.GeminiApi(gemini_key=GEMINI_KEY)
 openai_api = openai.OpenAiApi(openai_key=OPENAI_KEY)
+anthropic_api = anthropic.AnthropicApi(anthropic_key=ANTHROPIC_KEY)
 api_manager = ApiManager(gemini_key=GEMINI_KEY, 
                          gemini_api=gemini_api, 
                         openai_key=OPENAI_KEY,
-                        openai_api=openai_api)
-dialog_manager = DialogManager()
+                        openai_api=openai_api,
+                        anthropic_key=ANTHROPIC_KEY,
+                        anthropic_api=anthropic_api)
+
 service_handler = ServiceHandler(
     io=None, 
     agent_manager=agent_manager, 
