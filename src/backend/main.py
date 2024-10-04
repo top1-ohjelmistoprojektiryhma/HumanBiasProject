@@ -11,17 +11,17 @@ from services.api import gemini
 from services.api import openai
 from services.api import anthropic
 
-# Luo Flask-sovellus
+# Initialize Flask
 app = Flask(__name__)
-CORS(app)  # Ota CORS käyttöön frontendin pyyntöjä varten
+CORS(app)  # Use CORS for frontend
 
-# Lataa ympäristömuuttujat
+# get env variables
 load_dotenv()
 GEMINI_KEY = os.getenv("GEMINI_KEY")
 OPENAI_KEY = os.getenv("OPEN_AI_KEY")
 ANTHROPIC_KEY = os.getenv("ANTHROPIC_KEY")
 
-# Alusta palvelut
+# Initialize services
 agent_manager = AgentManager()
 formatter = Formatter()
 dialog_manager = DialogManager()
@@ -43,16 +43,16 @@ service_handler = ServiceHandler(
     dialog_manager=dialog_manager
 )
 
-# Määritä GEMINI_KEY
+# Set GEMINI_KEY
 if GEMINI_KEY is not None:
     service_handler.set_gemini_api_key(GEMINI_KEY)
 else:
     print("GEMINI_KEY environment variable not found")
 
-# Tuo reitit
+# Create routes
 from routes import initialize_routes
 initialize_routes(app, agent_manager, service_handler)
 
-# Käynnistä sovellus
+# Start app
 if __name__ == "__main__":
     app.run(debug=True)
