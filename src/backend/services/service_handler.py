@@ -147,9 +147,6 @@ class ServiceHandler:
     def add_agent(self, user_input):
         self.agent_manager.add_agent(user_input)
 
-    def set_gemini_api_key(self, api_key):
-        self.api_manager.add_gemini_key(api_key)
-
     def set_selected_agents(self, agent_list):
         self.agent_manager.set_selected_agents(agent_list)
 

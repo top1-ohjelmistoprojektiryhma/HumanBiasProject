@@ -89,9 +89,9 @@ class TestServiceHandler(unittest.TestCase):
         response, dialog_dict = self._handler.continue_dialog(id, prompt_list)
         self.assertEqual(response, "Success")
 
-    def test_set_gemini_api_key_works(self):
-        self._handler.set_gemini_api_key("1")
-        self._mock_api_manager.add_gemini_key.assert_called_with("1")
+    # def test_set_gemini_api_key_works(self):
+    #     self._handler.set_gemini_api_key("1")
+    #     self._mock_api_manager.add_gemini_key.assert_called_with("1")
 
     def test_format_prompt_list_works(self):
         test_text = "123"

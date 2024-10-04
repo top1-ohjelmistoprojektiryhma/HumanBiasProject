@@ -43,12 +43,6 @@ service_handler = ServiceHandler(
     dialog_manager=dialog_manager
 )
 
-# Set GEMINI_KEY
-if GEMINI_KEY is not None:
-    service_handler.set_gemini_api_key(GEMINI_KEY)
-else:
-    print("GEMINI_KEY environment variable not found")
-
 # Create routes
 from routes import initialize_routes
 initialize_routes(app, agent_manager, service_handler)

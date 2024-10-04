@@ -15,13 +15,13 @@ class TestApiManager(unittest.TestCase):
         self._api_manager.openai_api = Mock()
         self._api_manager.anthropic_api = Mock()
 
-    def test_add_gemini_key_works(self):
-        self._api_manager.add_gemini_key("1")
-        self.assertEqual(self._api_manager.gemini_key, "1")
+    # def test_add_gemini_key_works(self):
+    #     self._api_manager.add_gemini_key("1")
+    #     self.assertEqual(self._api_manager.gemini_key, "1")
 
-    def test_add_gemini_key_works_with_none(self):
-        self._api_manager.add_gemini_key(None)
-        self.assertEqual(self._api_manager.gemini_key, None)
+    # def test_add_gemini_key_works_with_none(self):
+    #     self._api_manager.add_gemini_key(None)
+    #     self.assertEqual(self._api_manager.gemini_key, None)
 
     def test_send_prompts_works_without_model(self):
         agent = Agent("student")

@@ -1,6 +1,3 @@
-import google.generativeai as genai
-
-
 class ApiManager:
     """Class for managing interaction with multiple APIs"""
     def __init__(
@@ -18,14 +15,6 @@ class ApiManager:
         self.openai_api = openai_api
         self.anthropic_key = anthropic_key
         self.anthropic_api = anthropic_api
-
-    def add_gemini_key(self, key):
-        "If input key is not None, add new key"
-        if key is not None:
-            self.gemini_key = key
-            genai.configure(api_key=self.gemini_key)
-            return True
-        return False
 
     def send_prompts(self, prompt_list):
         """Sends any number of prompts to available or selected models
