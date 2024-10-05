@@ -212,7 +212,14 @@ class ServiceHandler:
         """
         # Prepare prompt for AI; use dialog_data as the prompt text
         prompt_list = [{
-            "text": f"Summarize the following dialog:\n{dialog_data}",
+            "text": (
+                "Summarize the following dialog in a way that captures only "
+                "the most critical points and key takeaways. Focus on information that would be "
+                "valuable to someone who prioritizes financial impact or decision-making. "
+                "Keep the summary short, clear, "
+                "and concise—something that can be read in a few seconds. \n"
+                f"{dialog_data}"
+            ),
             "model": None,
             "history": None,
             "agent_object": None
@@ -224,4 +231,5 @@ class ServiceHandler:
         # Extract and return the AI's response (assuming a single response)
         if responses and "output" in responses[0]:
             return responses[0]["output"]
-        return "No summary generated."
+
+        return None  # Handle cases where there's no valid response
