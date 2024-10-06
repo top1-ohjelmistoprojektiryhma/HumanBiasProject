@@ -18,13 +18,11 @@ class ServiceHandler:
         Returns:
             The generated response, dialog id, and dialog as dict.
         """
-        # Check if the input text is empty
-        if text == "":
-            return "Please enter a prompt", False
-        # Check if any perspectives are selected
-        if self.agent_manager.selected_agents == []:
-            return "Please select perspectives", False
-        # For dialog format, create a dialog with all selected agents
+        # Validate user input
+        is_valid, error_message = self.validate_user_input(text)
+        if not is_valid:
+            return error_message, False
+        # Create a new dialog
         agents = {
             agent: {"model": None} for agent in self.agent_manager.selected_agents
         }
@@ -226,3 +224,10 @@ class ServiceHandler:
             return responses[0]["output"]
 
         return None
+
+    def validate_user_input(self, text):
+        if text == "":
+            return False, "Please enter a prompt"
+        if self.agent_manager.selected_agents == []:
+            return False, "Please select perspectives"
+        return True, ""
