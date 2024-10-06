@@ -27,7 +27,10 @@ class AnthropicApi:
             model=self.model,
             messages=chat_history,
             max_tokens=1000,
-            system="""Don't use stage directions or other non-dialogue text in the prompt."""
+            system = """
+            Respond only with plain text dialogue. 
+            Avoid all stage directions, actions, 
+            roleplaying elements, or any text within asterisks or parentheses."""
         )
         response = "".join([content.text for content in message.content])
         return response

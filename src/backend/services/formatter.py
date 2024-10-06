@@ -8,7 +8,7 @@ class Formatter:
 
     def format_single(self, role, prompt):
         role = role if role not in (None, "") else "Yourself"
-        return f"""Embody the following role: {str(role)}.
+        return f"""Speak from the following perspective: {str(role)}.
         Stay grounded and true to character. 
         You are debating the plausibility of the following statement.
         Give a conversational opening statement of around 100 words: {str(prompt)}
@@ -20,7 +20,7 @@ class Formatter:
             f"""{prompt['agent'].role} has given the following response: 
             {prompt['text']}""" for prompt in unseen_prompts
         ]
-        return f"""Embody the following role: {str(agent.role)}.
+        return f"""Speak from the following perspective: {str(agent.role)}.
         Stay grounded and true to character.
         Given the dialogue history, debate these new statements
         and hold your ground.
