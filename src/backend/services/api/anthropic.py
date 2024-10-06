@@ -30,7 +30,9 @@ class AnthropicApi:
             system = """
             Respond only with plain text dialogue. 
             Avoid all stage directions, actions, 
-            roleplaying elements, or any text within asterisks or parentheses."""
+            roleplaying elements, or any text within asterisks or parentheses.
+            At all costs avoid repeating yourself""",
+            temperature=1.0
         )
         response = "".join([content.text for content in message.content])
         return response
