@@ -11,24 +11,22 @@ class Formatter:
         return f"""Embody the following role: {str(role)}.
         Stay grounded and true to character. 
         You are debating the plausibility of the following statement.
-        Give a conversational opening statement: {str(prompt)}
+        Give a conversational opening statement of around 100 words: {str(prompt)}
         Also give a score from 0 to 10 on how much you agree with the statement.
-        Initially avoid scores around 5, be decisive. Limit your response to 100 words."""
+        Initially avoid scores around 5, be decisive."""
 
     def format_dialog_prompt_with_unseen(self, agent, unseen_prompts):
-        # need to experiment more with prompt engineering here:
-        # this is just a placeholder
         unseen = [
             f"""{prompt['agent'].role} has given the following response: 
             {prompt['text']}""" for prompt in unseen_prompts
         ]
         return f"""Embody the following role: {str(agent.role)}.
         Stay grounded and true to character.
-        Given the dialogue history debate these new statements
+        Given the dialogue history, debate these new statements
         and hold your ground.
         {str(unseen)}
         Remark the initial prompt. Give a score from 0 to 10
-        on how much you agree with the statement. Limit your response to 250 words."""
+        on how much you agree with the statement. Give a response of around 250 words."""
 
     def format_generate_agents_prompt(self, prompt, desired_number_of_agents, list_of_agents):
         """
