@@ -24,7 +24,10 @@ class AnthropicApi:
         # Add the user's prompt to the chat history
         chat_history.append({"role": "user", "content": [{"text": prompt, "type": "text"}]})
         message = self.client.messages.create(
-            model=self.model, messages=chat_history, max_tokens=1000
+            model=self.model,
+            messages=chat_history,
+            max_tokens=1000,
+            system="""Don't use stage directions or other non-dialogue text in the prompt."""
         )
         response = "".join([content.text for content in message.content])
         return response
