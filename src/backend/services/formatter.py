@@ -30,12 +30,6 @@ class Formatter:
         Remark the initial prompt. Give a score from 0 to 10
         on how much you agree with the statement. Limit your response to 250 words."""
 
-    def format_single_opening_statement_gemini(self, role, prompt):
-        return f"""Embody the following role: {str(role)}.
-        Stay grounded and true to character. 
-        You are debating the plausibility of the following statement. 
-        Give a conversational opening statement: {str(prompt)}"""
-
     def format_generate_agents_prompt(self, prompt, desired_number_of_agents, list_of_agents):
         """
         Format the prompt to generate the correct number of agents. For formatting reasons,

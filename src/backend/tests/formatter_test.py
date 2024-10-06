@@ -65,16 +65,6 @@ class TestFormatter(unittest.TestCase):
         )
         self.assertEqual(result, True)
 
-    def test_format_single_opening_statement_gemini_works(self):
-        role = "CS Student"
-        prompt = "Python is the best language"
-        result = self.formatter.format_single_opening_statement_gemini(role, prompt)
-        expected = f"""Embody the following role: {str(role)}.
-        Stay grounded and true to character. 
-        You are debating the plausibility of the following statement. 
-        Give a conversational opening statement: {str(prompt)}"""
-        self.assertEqual(result, expected)
-
     def test_format_generate_agent_prompt_with_no_list(self):
         prompt = "Python is the best language"
         result = self.formatter.format_generate_agents_prompt(prompt, 1, [])
