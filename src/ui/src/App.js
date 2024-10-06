@@ -142,31 +142,27 @@ const App = () => {
   };
 
   const handleSummaryClick = () => {
-    // Get the dialog data to send
-    const dialogData = dialogs[displayedDialog]; 
-  
     fetch('/api/summary', {
-      method: 'POST',
+      method: 'GET',  // Change to GET method
       headers: {
         'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ dialog: dialogData }),
+      }
     })
-    .then((response) => response.json())
-    .then((data) => {
-      console.log('Summary:', data.response);
-      setSummary(data.response);
-    })
-    .catch((error) => {
-      console.error('Error sending dialog data:', error);
-    });
+      .then((response) => response.json())
+      .then((data) => {
+        console.log('Summary:', data.response);
+        setSummary(data.response);
+      })
+      .catch((error) => {
+        console.error('Error sending dialog data:', error);
+      });
   };
-  
-  
+
+
   return (
     <div className="app-container">
       <DialogsBar dialogs={dialogs} expandedDialogs={expandedDialogs} toggleDialog={setExpandedDialogs} />
-  
+
       <div className="main-content">
         <h1>Human Bias Project</h1>
         {!dialogStarted && (

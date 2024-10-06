@@ -82,15 +82,7 @@ def initialize_routes(app, agent_manager, service_handler):
         dialogs = service_handler.get_all_dialogs()
         return jsonify(dialogs)
 
-    @app.route("/api/summary", methods=["POST"])
+    @app.route("/api/summary", methods=["GET"])
     def receive_dialog():
-        request_data = request.json
-        dialog_text = request_data.get("dialog", "")
-        
-        if not dialog_text:
-            return jsonify({"error": "No dialog text received"}), 400
-        
-        # Process the dialog and get the summary
-        summary = service_handler.process_latest_dialog(dialog_text)
-        
+        summary = service_handler.process_latest_dialog()
         return jsonify({"response": summary}), 200
