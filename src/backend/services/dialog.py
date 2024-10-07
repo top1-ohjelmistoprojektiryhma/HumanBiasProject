@@ -1,3 +1,5 @@
+from . import formatter
+
 class Dialog:
     """Represents a dialog
 
@@ -14,13 +16,34 @@ class Dialog:
         self.dialog_format = dialog_format
         self.history = []
 
-    def add_round(self, round_num, prompts):
+    def initial_prompts(self, text):
+        agent_list = list(self.agents.keys())
+        prompt_list = formatter.format_multiple(
+            [agent.role for agent in agent_list], text
+        )
+        # Format the prompts into a list of dictionaries with agent roles and prompts
+        for i, prompt in enumerate(prompt_list):
+            prompt_list[i] = {"agent": agent_list[i], "text": prompt}
+        return prompt_list
+
+    def get_prompts(self):
         """Add a round to the dialog
 
         Args:
             round_num (int): The round number
             prompts (list): A list of prompts for the round
         """
+        if not self.rounds:
+            return self.initial_prompts(self.initial_prompt)
+        agent = self.get_next_agent()
+        unseen_prompts = agent.get_unseen_prompts()
+        prompt = formatter.format_dialog_prompt_with_unseen(
+            agent, unseen_prompts
+        )
+        prompts_list = [{"agent": agent, "text": prompt}]
+        return prompts_list
+
+    def add_round(self, round_num, prompts):
         self.rounds[round_num] = prompts
         self.history.append({"round": round_num, "prompts": prompts})
 

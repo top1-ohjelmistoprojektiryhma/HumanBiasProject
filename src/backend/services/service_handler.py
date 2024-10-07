@@ -1,8 +1,9 @@
+from . import formatter
+
 class ServiceHandler:
-    def __init__(self, io, agent_manager, formatter, api_manager, dialog_manager):
+    def __init__(self, io, agent_manager, api_manager, dialog_manager):
         self.io = io
         self.agent_manager = agent_manager
-        self.formatter = formatter
         self.api_manager = api_manager
         self.dialog_manager = dialog_manager
         default_agents = ["farmer", "elder", "student"]
@@ -45,7 +46,7 @@ class ServiceHandler:
                 {
                     "text": prompt["text"],
                     "model": dialog.agents[prompt["agent"]]["model"],
-                    "history": prompt["agent"].get_chat_history(dialog_id),
+                    "history": prompt["agent"].get_chat_history(),
                     "agent_object": prompt["agent"],
                 }
                 for prompt in prompt_list
@@ -72,39 +73,19 @@ class ServiceHandler:
                     )
                 # Add chat history to specific agents
                 response["prompt"]["agent_object"].add_chat_to_history(
-                    dialog_id,
                     [
                         {"role": "user", "text": response["prompt"]["text"]},
                         {"role": "model", "text": response["output"]},
-                    ],
+                    ]
                 )
             # Add round to dialog object
             self.dialog_manager.add_round_to_dialog(dialog_id, round_num, prompts)
             return "Success", self.dialog_manager.get_dialog(dialog_id).to_dict()
         return None, None
 
-    def format_specific_prompt_list(self, dialog_id, text=""):
-        prompts_list = []
+    def format_specific_prompt_list(self, dialog_id):
         dialog = self.dialog_manager.get_dialog(dialog_id)
-        if dialog.rounds == {}:
-            prompts_list = self.format_prompt_list(text)
-        elif dialog.dialog_format == "dialog":
-            agent = dialog.get_next_agent()
-            unseen_prompts = agent.get_unseen_prompts(dialog_id)
-            prompt = self.formatter.format_dialog_prompt_with_unseen(
-                agent, unseen_prompts
-            )
-            prompts_list = [{"agent": agent, "text": prompt}]
-        return prompts_list
-
-    def format_prompt_list(self, text):
-        agent_list = self.agent_manager.selected_agents
-        prompt_list = self.formatter.format_multiple(
-            [agent.role for agent in agent_list], text
-        )
-        # Format the prompts into a list of dictionaries with agent roles and prompts
-        for i, prompt in enumerate(prompt_list):
-            prompt_list[i] = {"agent": agent_list[i], "text": prompt}
+        prompt_list = dialog.get_prompts()
         return prompt_list
 
     def create_agents(self, list_of_roles):
@@ -112,7 +93,7 @@ class ServiceHandler:
             self.add_agent(role)
 
     def generate_agents(self, text, desired_number_of_agents=3):
-        generate_agents_prompt = self.formatter.format_generate_agents_prompt(
+        generate_agents_prompt = formatter.format_generate_agents_prompt(
             text,
             desired_number_of_agents,
             self.agent_manager.get_agents_as_list_of_strings(),

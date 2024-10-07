@@ -7,51 +7,32 @@ class Agent:
     """
     def __init__(self, role) -> None:
         self.role = str(role)
-        self.histories = {}
-        self.unseen = {}
+        self.history = []
+        self.unseen = []
 
-    def add_chat_to_history(self, dialog_id, chat):
+    def add_chat_to_history(self, chat):
         """Add a chat to the agent's history
         Args:
-            dialog_id (str): The dialog id
             chat (list): list of chat messages in the format 
             {"role": "user"/"model", "text": "message"}
         """
-        if dialog_id not in self.histories:
-            self.histories[dialog_id] = chat
-            return
-        self.histories[dialog_id].extend(chat)
+        self.history.extend(chat)
 
-    def get_chat_history(self, dialog_id):
-        """Get the dialog history for a specific dialog
-        Args:
-            dialog_id (str): The dialog id
-        Returns:
-            list: A list of dictionaries representing the dialog history
-        """
-        if dialog_id not in self.histories:
-            self.histories[dialog_id] = []
-        return self.histories[dialog_id]
+    def get_chat_history(self):
+        """Get the chat history for the agent"""
+        return self.history
 
-    def add_unseen_prompts(self, dialog_id, prompts):
+    def add_unseen_prompts(self, prompts):
         """Add unseen prompts to the agent's unseen list
         Args:
-            dialog_id (str): The dialog id
             prompts (list): list of prompts, such as:
             [{"agent": agent_obj, "text": "output"}]
         """
-        if dialog_id not in self.unseen:
-            self.unseen[dialog_id] = prompts
-            return
-        self.unseen[dialog_id].extend(prompts)
+        self.unseen.extend(prompts)
 
-    def get_unseen_prompts(self, dialog_id):
-        """Get the unseen prompts for a specific dialog
-        Args:
-            dialog_id (str): The dialog id
+    def get_unseen_prompts(self):
+        """Get the unseen prompts for the agent
         Returns:
-            list: A list of dictionaries representing the unseen prompts
+            list: A list of unseen prompts
         """
-        unseen = self.unseen.get(dialog_id, [])
-        self.unseen[dialog_id] = []
-        return unseen
+        return self.unseen

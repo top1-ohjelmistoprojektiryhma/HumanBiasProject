@@ -3,7 +3,6 @@ from flask import Flask
 from flask_cors import CORS
 from dotenv import load_dotenv
 from services.agent_manager import AgentManager
-from services.formatter import Formatter
 from services.api_manager import ApiManager
 from services.dialog_manager import DialogManager
 from services.service_handler import ServiceHandler
@@ -23,7 +22,6 @@ ANTHROPIC_KEY = os.getenv("ANTHROPIC_KEY")
 
 # Initialize services
 agent_manager = AgentManager()
-formatter = Formatter()
 dialog_manager = DialogManager()
 gemini_api = gemini.GeminiApi(gemini_key=GEMINI_KEY)
 openai_api = openai.OpenAiApi(openai_key=OPENAI_KEY)
@@ -37,8 +35,7 @@ api_manager = ApiManager(gemini_key=GEMINI_KEY,
 
 service_handler = ServiceHandler(
     io=None, 
-    agent_manager=agent_manager, 
-    formatter=formatter, 
+    agent_manager=agent_manager,
     api_manager=api_manager,
     dialog_manager=dialog_manager
 )

@@ -39,9 +39,9 @@ class DialogManager:
         for agent_obj in self.dialogs[dialog_id].agents:
             unseen = [prompt for prompt in prompts if prompt["agent"] != agent_obj]
             if unseen:
-                self.add_unseen_prompts(dialog_id, agent_obj, unseen)
+                self.add_unseen_prompts(agent_obj, unseen)
 
-    def add_unseen_prompts(self, dialog_id, agent_obj, unseen):
+    def add_unseen_prompts(self, agent_obj, unseen):
         """Add unseen prompts to an agent's unseen list
 
         Args:
@@ -50,8 +50,7 @@ class DialogManager:
             prompts (list): A list of prompts
         """
         agent_obj.add_unseen_prompts(
-            dialog_id,
-            [{"agent": prompt["agent"], "text": prompt["output"]} for prompt in unseen],
+            [{"agent": prompt["agent"], "text": prompt["output"]} for prompt in unseen]
         )
 
     def get_dialog(self, dialog_id):
@@ -64,19 +63,6 @@ class DialogManager:
         # return a dictionary of dialog objects as dictionaries
         dictionary = {k: v.to_dict() for k, v in self.dialogs.items()}
         return dictionary
-
-    def get_agent_dialog_history(self, dialog_id, agent_obj):
-        """Get the dialog history for a specific agent
-
-        Args:
-            dialog_id (int): The dialog id
-            agent_obj (Agent): The agent object
-
-        Returns:
-            list: A list of dictionaries representing the dialog history
-        """
-        dialog = self.dialogs[dialog_id]
-        return dialog.get_history(agent_obj)
 
     def get_latest_dialog_id(self):
         return len(self.dialogs) - 1
