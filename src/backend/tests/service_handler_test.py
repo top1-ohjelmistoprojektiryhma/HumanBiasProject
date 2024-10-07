@@ -7,13 +7,13 @@ class ExampleAgent:
     def __init__(self):
         self.role = "Student"
     
-    def add_chat_to_history(self, dialog_id, chat):
+    def add_chat_to_history(self, chat):
         pass
 
-    def get_chat_history(self, dialog_id):
+    def get_chat_history(self):
         pass
 
-    def get_unseen_prompts(self, dialog_id):
+    def get_unseen_prompts(self):
         pass
 
 class TestServiceHandler(unittest.TestCase):
@@ -25,7 +25,6 @@ class TestServiceHandler(unittest.TestCase):
         self._handler = ServiceHandler(
             io=None,
             agent_manager=self._mock_agent_manager,
-            formatter=self._mock_formatter,
             api_manager=self._mock_api_manager,
             dialog_manager=self._mock_dialog_manager
         )
@@ -89,62 +88,12 @@ class TestServiceHandler(unittest.TestCase):
         response, dialog_dict = self._handler.continue_dialog(id, prompt_list)
         self.assertEqual(response, "Success")
 
-    # def test_set_gemini_api_key_works(self):
-    #     self._handler.set_gemini_api_key("1")
-    #     self._mock_api_manager.add_gemini_key.assert_called_with("1")
-
-    def test_format_prompt_list_works(self):
-        test_text = "123"
-        agents = [ExampleAgent(), ExampleAgent()]
-        self._mock_agent_manager.selected_agents = agents
-
-        self._mock_formatter.format_multiple.return_value = [
-            'You are a "Student".Give your own thoughts on how probable the following statement is: 123',
-            'You are a "Student".Give your own thoughts on how probable the following statement is: 123',
-        ]
-
-        return_value = self._handler.format_prompt_list(test_text)
-        self._mock_formatter.format_multiple.assert_called_with(
-            ["Student", "Student"], "123"
-        )
-        expected = [
-            {"agent": agents[0], "text": 'You are a "Student".Give your own thoughts on how probable the following statement is: 123'},
-            {"agent": agents[1], "text": 'You are a "Student".Give your own thoughts on how probable the following statement is: 123'},
-        ]
-        self.assertListEqual(return_value, expected)
-
     def test_format_specific_prompt_list_works(self):
-        rounds = Mock()
-        rounds.rounds = {}
-        self._mock_dialog_manager.get_dialog.return_value = rounds
-        agents = [ExampleAgent()]
-        self._mock_agent_manager.selected_agents = agents
-        self._mock_formatter.format_multiple.return_value = [
-            'You are a "Student".Give your own thoughts on how probable the following statement is: 123'
-        ]
-        result = self._handler.format_specific_prompt_list(1)
-        expected = [{"agent":agents[0], "text": 'You are a "Student".Give your own thoughts on how probable the following statement is: 123'}
-        ]
-        self.assertEqual(result, expected)
-
-    def test_format_specific_prompt_list_works_with_dialogue(self):
-        rounds = Mock()
-        test_agent = ExampleAgent()
-        rounds.get_next_agent.return_value = test_agent
-        rounds.rounds = {"1":"text"}
-        rounds.dialog_format = "dialog"
-        self._mock_formatter.format_dialog_prompt_with_unseen.return_value = "Output"
-        self._mock_dialog_manager.get_dialog.return_value = rounds
-        result = self._handler.format_specific_prompt_list(1)
-        expected = [{"agent":test_agent, "text":"Output"}]
-        self.assertEqual(result, expected)
-
-    def test_format_specific_prompt_list_returns_empty_list(self):
-        rounds = Mock()
-        rounds.rounds = {"1":"..."}
-        rounds.dialog_format = "not a dialog"
-        self._mock_dialog_manager.get_dialog.return_value = rounds
-        self.assertEqual(self._handler.format_specific_prompt_list(1), [])
+        test_dialog = Mock()
+        test_dialog.get_prompts.return_value = ["zzz"]
+        self._mock_dialog_manager.get_dialog.return_value = test_dialog
+        result = self._handler.format_specific_prompt_list("1")
+        self.assertListEqual(result, ["zzz"])
 
     def test_set_selected_agents_works(self):
         test_agent_list = ["Student", "Farmer"]

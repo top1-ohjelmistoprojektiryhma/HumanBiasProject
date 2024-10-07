@@ -7,8 +7,8 @@ class Agent:
     """
     def __init__(self, role) -> None:
         self.role = str(role)
-        self.history = []
-        self.unseen = []
+        self._history = []
+        self._unseen = []
 
     def add_chat_to_history(self, chat):
         """Add a chat to the agent's history
@@ -16,11 +16,11 @@ class Agent:
             chat (list): list of chat messages in the format 
             {"role": "user"/"model", "text": "message"}
         """
-        self.history.extend(chat)
+        self._history.extend(chat)
 
     def get_chat_history(self):
         """Get the chat history for the agent"""
-        return self.history
+        return self._history
 
     def add_unseen_prompts(self, prompts):
         """Add unseen prompts to the agent's unseen list
@@ -28,11 +28,11 @@ class Agent:
             prompts (list): list of prompts, such as:
             [{"agent": agent_obj, "text": "output"}]
         """
-        self.unseen.extend(prompts)
+        self._unseen.extend(prompts)
 
     def get_unseen_prompts(self):
         """Get the unseen prompts for the agent
         Returns:
             list: A list of unseen prompts
         """
-        return self.unseen
+        return self._unseen
