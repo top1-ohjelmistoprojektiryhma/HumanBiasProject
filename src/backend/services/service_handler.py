@@ -2,33 +2,33 @@ from . import formatter
 
 
 class ServiceHandler:
-    def __init__(self, io, agent_manager, api_manager, dialog_manager):
+    def __init__(self, io, agent_manager, api_manager, session_manager):
         self.io = io
         self.agent_manager = agent_manager
         self.api_manager = api_manager
-        self.dialog_manager = dialog_manager
+        self.session_manager = session_manager
         default_agents = ["farmer", "elder", "student"]
         self.create_agents(default_agents)
 
-    def start_new_session(self, text, dialog_format):
+    def start_new_session(self, text, session_format):
         """
-        Start a new dialog with the input text.
+        Start a new session with the input text.
 
         Args:
-            text (str): The input text to start the dialog with.
+            text (str): The input text to start the session with.
 
         Returns:
-            The generated response, dialog id, and dialog as dict.
+            The generated response, session id, and session as dict.
         """
         # Validate user input
         is_valid, error_message = self.validate_user_input(text)
         if not is_valid:
             return error_message, False
-        # Create a new dialog
+        # Create a new session
         agents = {
             agent: {"model": None} for agent in self.agent_manager.selected_agents
         }
-        new_id, _ = self.dialog_manager.new_session(text, agents, dialog_format)
+        new_id, _ = self.session_manager.new_session(text, agents, session_format)
         return new_id, True
 
     def continue_dialog(self, session_id, prompt_list):
@@ -42,7 +42,7 @@ class ServiceHandler:
             The dialog as a dict.
         """
         if self.api_manager.gemini_key is not None:
-            dialog = self.dialog_manager.get_session(session_id)
+            dialog = self.session_manager.get_session(session_id)
             input_list = [
                 {
                     "text": prompt["text"],
@@ -55,7 +55,7 @@ class ServiceHandler:
             # Send prompts to the API and collect responses
             responses = self.api_manager.send_prompts(input_list)
             # Add round to dialog object
-            round_num = len(self.dialog_manager.get_session(session_id).rounds) + 1
+            round_num = len(self.session_manager.get_session(session_id).rounds) + 1
             prompts = []
             for response in responses:
                 # Format the prompts for dialog object
@@ -80,13 +80,13 @@ class ServiceHandler:
                     ]
                 )
             # Add round to dialog object
-            self.dialog_manager.add_round_to_dialog(session_id, round_num, prompts)
-            return "Success", self.dialog_manager.get_session(session_id).to_dict()
+            self.session_manager.add_round_to_dialog(session_id, round_num, prompts)
+            return "Success", self.session_manager.get_session(session_id).to_dict()
         return None, None
 
     def format_specific_prompt_list(self, session_id):
-        dialog = self.dialog_manager.get_session(session_id)
-        prompt_list = dialog.get_prompts()
+        session = self.session_manager.get_session(session_id)
+        prompt_list = session.get_prompts()
         return prompt_list
 
     def create_agents(self, list_of_roles):
@@ -129,7 +129,7 @@ class ServiceHandler:
         self.agent_manager.set_selected_agents(agent_list)
 
     def get_all_sessions(self):
-        sessions = self.dialog_manager.all_sessions()
+        sessions = self.session_manager.all_sessions()
         return sessions
 
     def get_desired_output(self, output_list, desired_number_of_agents):
@@ -170,8 +170,8 @@ class ServiceHandler:
         Returns:
             None
         """
-        session_id = self.dialog_manager.get_latest_session_id()
-        dialog = self.dialog_manager.get_session(session_id)
+        session_id = self.session_manager.get_latest_session_id()
+        dialog = self.session_manager.get_session(session_id)
         history = dialog.get_history()
         summary = self.get_summary_from_ai(history)
         return summary

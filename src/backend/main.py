@@ -22,7 +22,7 @@ ANTHROPIC_KEY = os.getenv("ANTHROPIC_KEY")
 
 # Initialize services
 agent_manager = AgentManager()
-dialog_manager = SessionManager()
+session_manager = SessionManager()
 gemini_api = gemini.GeminiApi(gemini_key=GEMINI_KEY)
 openai_api = openai.OpenAiApi(openai_key=OPENAI_KEY)
 anthropic_api = anthropic.AnthropicApi(anthropic_key=ANTHROPIC_KEY)
@@ -39,7 +39,7 @@ service_handler = ServiceHandler(
     io=None,
     agent_manager=agent_manager,
     api_manager=api_manager,
-    dialog_manager=dialog_manager,
+    session_manager=session_manager,
 )
 
 # Create routes
