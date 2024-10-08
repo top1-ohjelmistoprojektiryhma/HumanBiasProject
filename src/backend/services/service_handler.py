@@ -31,7 +31,7 @@ class ServiceHandler:
         new_id, _ = self.session_manager.new_session(text, agents, session_format)
         return new_id, True
 
-    def continue_dialog(self, session_id):
+    def continue_session(self, session_id):
         """Continue a dialog with the input prompts.
 
         Args:

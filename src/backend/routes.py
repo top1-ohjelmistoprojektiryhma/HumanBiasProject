@@ -20,7 +20,7 @@ def initialize_routes(app, agent_manager, service_handler):
         if not successful:
             return jsonify({"response": result})
         new_id = result
-        response, dialog_dict = service_handler.continue_dialog(new_id)
+        response, dialog_dict = service_handler.continue_session(new_id)
         if dialog_dict is None:
             return jsonify({"response": "Missing gemini key"})
         print(f"Response: {dialog_dict}, Dialog ID: {new_id}")
@@ -30,12 +30,12 @@ def initialize_routes(app, agent_manager, service_handler):
 
     # CONTINUE DIALOG
     @app.route("/api/continue-dialog", methods=["POST"])
-    def continue_dialog():
+    def continue_session():
         data = request.json
         session_id = data.get("session_id")
         prompt = data.get("prompt")
         print(f"Dialog ID: {session_id}, Prompt: {prompt}")
-        response, dialog_dict = service_handler.continue_dialog(session_id)
+        response, dialog_dict = service_handler.continue_session(session_id)
         if dialog_dict is None:
             return jsonify({"response": "Missing gemini key"})
         print(f"Response: {dialog_dict}, Dialog ID: {session_id}")

@@ -64,7 +64,7 @@ class TestServiceHandler(unittest.TestCase):
         self._handler.api_manager.gemini_key = None
         session_id = 1
 
-        result = self._handler.continue_dialog(session_id)
+        result = self._handler.continue_session(session_id)
 
         self.assertEqual(result, (None, None))
 
@@ -87,7 +87,7 @@ class TestServiceHandler(unittest.TestCase):
         ]
         text = "prompt"
         id, result = self._handler.start_new_session(text, "dialog")
-        response, session_dict = self._handler.continue_dialog(id)
+        response, session_dict = self._handler.continue_session(id)
         self.assertEqual(response, "Success")
 
     def test_set_selected_agents_works(self):
