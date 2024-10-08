@@ -12,14 +12,15 @@ class SessionManager:
         self.sessions = {}
 
     def new_session(self, initial_prompt, agents, session_format):
-        """Create a new dialog object
+        """Create a new session object
 
         Args:
-            initial_prompt (str): The initial prompt for the dialog
+            initial_prompt (str): The initial prompt for the session
             agents (list): A dictionary of agents {"AgentObj": "model"}
+            session_format (str): The format of the session
         Returns:
-            int: The dialog id
-            Dialog: The dialog object
+            int: The session id
+            session: The session object
         """
         new_id = len(self.sessions)
         session = Dialog(initial_prompt, agents, session_format)
@@ -27,20 +28,20 @@ class SessionManager:
         return new_id, session
 
     def get_session_prompts(self, session_id):
-        """Get the prompts for the next round of a dialog object
+        """Get the prompts for the next round of a session
 
         Args:
-            session_id (int): The id of the dialog object
+            session_id (int): The id of the session
         Returns:
             list: A list of prompts for the next round
         """
         return self.sessions[session_id].get_prompts()
 
     def update_session_with_responses(self, session_id, responses):
-        """Update a dialog object with responses
+        """Update a session with responses
 
         Args:
-            session_id (int): The id of the dialog object
+            session_id (int): The id of the session
             responses (list): A list of responses
         """
         self.sessions[session_id].update_with_responses(responses)
