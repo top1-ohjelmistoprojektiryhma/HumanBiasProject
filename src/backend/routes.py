@@ -14,13 +14,13 @@ def initialize_routes(app, agent_manager, service_handler):
         print(f"Format options: {format_options}")
         return jsonify(format_options)
 
-    @app.route("/api/new-dialog", methods=["POST"])
+    @app.route("/api/new-session", methods=["POST"])
     def new_session():
         data = request.json
         prompt = data.get("prompt")
         format = data.get("format")
         perspectives = data.get("perspective")
-        print(f"Prompt: {prompt}, Perspective: {perspectives}")
+        print(f"Prompt: {prompt}, Perspective: {perspectives}, Format: {format}")
         agent_manager.set_selected_agents(perspectives)
         result, successful = service_handler.start_new_session(prompt, format)
         if not successful:
@@ -34,8 +34,7 @@ def initialize_routes(app, agent_manager, service_handler):
             {"response": response, "session_id": new_id, "dialog": dialog_dict}
         )
 
-    # CONTINUE DIALOG
-    @app.route("/api/continue-dialog", methods=["POST"])
+    @app.route("/api/continue-session", methods=["POST"])
     def continue_session():
         data = request.json
         session_id = data.get("session_id")
