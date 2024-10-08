@@ -21,7 +21,7 @@ class Dialog:
 
     def initial_prompts(self, text):
         """Get the initial prompts for the dialog
-        
+
         Args:
             text (str): The initial prompt text"""
         agent_list = list(self.agents.keys())
@@ -118,8 +118,13 @@ class Dialog:
         """
         agent = None
         agents = list(self.agents.keys())
-        if self.dialog_format == "dialog":
+        if (
+            self.dialog_format == "dialog - no consensus"
+            or self.dialog_format == "dialog - consensus"
+        ):
             agent = agents[(len(self.rounds) - 1) % len(agents)]
+        else:
+            print("Agent is None")
         return agent
 
     def get_agent_history(self, agent_obj):
