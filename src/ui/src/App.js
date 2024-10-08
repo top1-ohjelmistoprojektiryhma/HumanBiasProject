@@ -11,6 +11,7 @@ import FormatSelector from './components/FormatSelector';
 import ContinueButton from './components/ContinueButton';
 import StopButton from './components/StopButton';
 import SummaryButton from './components/SummaryButton';
+import ExamplePrompts from './components/ExamplePrompts';
 
 const App = () => {
   const [prompt, setPrompt] = useState('');
@@ -184,6 +185,7 @@ const App = () => {
         <h1>Human Bias Project</h1>
         {!dialogStarted && (
           <>
+            <ExamplePrompts />
             <InputForm prompt={prompt} setPrompt={setPrompt} />
             <GenerateAgents onSubmit={handleGenerateAgents} />
             <PerspectiveSelector
