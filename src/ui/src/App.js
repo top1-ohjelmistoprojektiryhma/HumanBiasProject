@@ -25,6 +25,7 @@ const App = () => {
   const [dialogStarted, setDialogStarted] = useState(false)
   const [summary, setSummary] = useState('');
   const [error, setError] = useState("");
+  const [formatOptions, setFormatOptions] = useState([]);
 
 
   useEffect(() => {
@@ -41,6 +42,14 @@ const App = () => {
         setDialogs(data);
       })
       .catch((error) => console.error("Error fetching dialogs:", error));
+
+    fetch('/api/formats')
+      .then((response) => response.json())
+      .then((data) => {
+        setFormatOptions(data);
+      })
+      .catch((error) => console.error('Error fetching formats:', error));
+    console.log('formatOptions:', formatOptions);
   }, []);
 
   const validateUserInput = () => {
@@ -195,7 +204,7 @@ const App = () => {
               setPerspectives={setPerspectives}
             />
             <AddPerspectiveForm perspectives={perspectives} setPerspectives={setPerspectives} />
-            <FormatSelector setSelectedFormat={setSelectedFormat} />
+            <FormatSelector formatOptions={formatOptions} setSelectedFormat={setSelectedFormat} />
             <SubmitButton onSubmit={handleSubmit} />
             {error && <div className="error-message">{error}</div>}
           </>

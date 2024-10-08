@@ -1,7 +1,7 @@
 
 import React from 'react';
 
-const FormatSelector = ({ setSelectedFormat }) => {
+const FormatSelector = ({ formatOptions, setSelectedFormat }) => {
   const handleFormatChange = (e) => {
     setSelectedFormat(e.target.value);
   };
@@ -10,8 +10,11 @@ const FormatSelector = ({ setSelectedFormat }) => {
     <div>
       <label htmlFor="format-select">Select Format:</label>
       <select id="format-select" onChange={handleFormatChange}>
-        <option value="dialog">Dialog</option>
-        {/* Add other formats as needed */}
+        {formatOptions.map((format) => (
+          <option key={format} value={format}>
+            {format}
+          </option>
+        ))}
       </select>
     </div>
   );

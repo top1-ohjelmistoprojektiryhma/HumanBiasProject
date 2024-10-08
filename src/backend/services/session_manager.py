@@ -10,10 +10,13 @@ class SessionManager:
 
     def __init__(self):
         self.sessions = {}
+        self.all_formats = ["dialog - no consensus", "dialog - consensus"]
+
+    def get_all_formats(self):
+        return self.all_formats
 
     def new_session(self, initial_prompt, agents, session_format):
         """Create a new session object
-
         Args:
             initial_prompt (str): The initial prompt for the session
             agents (list): A dictionary of agents {"AgentObj": "model"}
@@ -23,7 +26,12 @@ class SessionManager:
             session: The session object
         """
         new_id = len(self.sessions)
-        session = Dialog(initial_prompt, agents, session_format)
+        if session_format == "dialog - no consensus":
+            session = Dialog(initial_prompt, agents, session_format)
+        elif session_format == "dialog - consensus":
+            session = Dialog(initial_prompt, agents, session_format)
+        else:
+            raise ValueError("Invalid dialog format")
         self.sessions[new_id] = session
         return new_id, session
 

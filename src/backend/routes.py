@@ -8,6 +8,12 @@ def initialize_routes(app, agent_manager, service_handler):
         agents = [agent.role for agent in agent_manager.list_of_agents]
         return jsonify(agents)
 
+    @app.route("/api/formats", methods=["GET"])
+    def get_formats():
+        format_options = service_handler.get_all_formats()
+        print(f"Format options: {format_options}")
+        return jsonify(format_options)
+
     @app.route("/api/new-dialog", methods=["POST"])
     def new_session():
         data = request.json
@@ -63,7 +69,8 @@ def initialize_routes(app, agent_manager, service_handler):
     def generate_agents():
         data = request.json
         prompt = data.get("prompt")
-        num_agents = data.get("num_agents", 3)  # Default to 3 agents if not provided
+        num_agents = data.get("num_agents", 3)
+        format = data.get("format")
         print(f"Generating {num_agents} agents for prompt: {prompt}")
 
         # Pass the number of agents to the service handler

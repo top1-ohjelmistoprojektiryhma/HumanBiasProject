@@ -29,8 +29,10 @@ class ServiceHandler:
         agents = {
             agent: {"model": None} for agent in self.agent_manager.selected_agents
         }
-        new_id, _ = self.session_manager.new_session(text, agents, session_format)
-        return new_id, True
+        new_session_id, _ = self.session_manager.new_session(
+            text, agents, session_format
+        )
+        return new_session_id, True
 
     def continue_session(self, session_id):
         """Continue a session with the input prompts.
@@ -175,3 +177,6 @@ class ServiceHandler:
         if self.agent_manager.selected_agents == []:
             return False, "Please select perspectives"
         return True, ""
+
+    def get_all_formats(self):
+        return self.session_manager.get_all_formats()
