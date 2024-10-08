@@ -12,6 +12,15 @@ import ContinueButton from './components/ContinueButton';
 import StopButton from './components/StopButton';
 import SummaryButton from './components/SummaryButton';
 import ExamplePrompts from './components/ExamplePrompts';
+import {
+  fetchAgents,
+  fetchDialogs,
+  fetchFormats,
+  startNewSession,
+  generateAgents,
+  continueSession,
+} from './api';
+
 
 const App = () => {
   const [prompt, setPrompt] = useState('');
@@ -20,8 +29,8 @@ const App = () => {
   const [response, setResponse] = useState('');
   const [dialogs, setDialogs] = useState({});
   const [expandedDialogs, setExpandedDialogs] = useState({});
-  const [displayedDialog, setDisplayedDialog] = useState(0);
-  const [selectedFormat, setSelectedFormat] = useState('dialog');
+  const [displayedSession, setDisplayedSession] = useState(0);
+  const [selectedFormat, setSelectedFormat] = useState('');
   const [dialogStarted, setDialogStarted] = useState(false)
   const [summary, setSummary] = useState('');
   const [error, setError] = useState("");
@@ -29,27 +38,22 @@ const App = () => {
 
 
   useEffect(() => {
-    fetch('/api/agents')
-      .then((response) => response.json())
-      .then((data) => {
-        setPerspectives(data);
-      })
-      .catch((error) => console.error('Error fetching agents:', error));
+    const fetchData = async () => {
+      try {
+        const agentsData = await fetchAgents();
+        setPerspectives(agentsData);
 
-    fetch("/api/all-dialogs")
-      .then((response) => response.json())
-      .then((data) => {
-        setDialogs(data);
-      })
-      .catch((error) => console.error("Error fetching dialogs:", error));
+        const dialogsData = await fetchDialogs();
+        setDialogs(dialogsData);
 
-    fetch('/api/formats')
-      .then((response) => response.json())
-      .then((data) => {
-        setFormatOptions(data);
-      })
-      .catch((error) => console.error('Error fetching formats:', error));
-    console.log('formatOptions:', formatOptions);
+        const formatsData = await fetchFormats();
+        setFormatOptions(formatsData);
+        setSelectedFormat(formatsData[0])
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+    fetchData();
   }, []);
 
   const validateUserInput = () => {
@@ -64,108 +68,82 @@ const App = () => {
     setError('');
     return true;
   };
-
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!validateUserInput()) {
       return;
     }
     const requestData = {
       prompt: prompt,
       perspective: selectedPerspectives,
-      format: selectedFormat
+      format: selectedFormat,
     };
 
-    fetch('/api/new-dialog', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(requestData),
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        const newSessionId = data.session_id;
-        const newDialog = data.dialog;
+    try {
+      const data = await startNewSession(requestData);
+      const newSessionId = data.session_id;
+      const newDialog = data.dialog;
 
-        setDialogs((prevState) => ({
-          ...prevState,
-          [newSessionId]: newDialog
-        }));
+      setDialogs((prevState) => ({
+        ...prevState,
+        [newSessionId]: newDialog,
+      }));
 
-        setExpandedDialogs((prevState) => ({
-          ...prevState,
-          [newSessionId]: true
-        }));
+      setExpandedDialogs((prevState) => ({
+        ...prevState,
+        [newSessionId]: true,
+      }));
 
-        setDisplayedDialog(newSessionId);
-        setResponse("");
-        setDialogStarted(true);
-      })
-      .catch((error) => {
-        console.error('Error processing the statement:', error);
-      });
+      setDisplayedSession(newSessionId);
+      setResponse('');
+      setDialogStarted(true);
+    } catch (error) {
+      console.error('Error processing the statement:', error);
+    }
   };
-
-  const handleGenerateAgents = (numAgents) => {
+  const handleGenerateAgents = async (numAgents) => {
     const requestData = {
       prompt: prompt,
-      num_agents: numAgents
+      num_agents: numAgents,
     };
 
-    fetch('/api/generate-agents', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(requestData),
-    })
-      .then((agentResponse) => agentResponse.json())
-      .then((data) => {
-        if (data.perspectives) {
-          setPerspectives(data.perspectives);
-        }
-      })
-      .catch((error) => {
-        console.error('Error processing the statement:', error);
-      });
+    try {
+      const data = await generateAgents(requestData);
+      if (data.perspectives) {
+        setPerspectives(data.perspectives);
+      }
+    } catch (error) {
+      console.error('Error generating agents:', error);
+    }
   };
+  const handleContinue = async () => {
+    try {
+      const data = await continueSession(displayedSession);
+      const newSessionId = data.session_id;
+      const newDialog = data.dialog;
 
-  const handleContinue = () => {
-    fetch('/api/continue-dialog', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ session_id: displayedDialog }),
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        const newSessionId = data.session_id;
-        const newDialog = data.dialog;
+      setDialogs((prevState) => ({
+        ...prevState,
+        [newSessionId]: newDialog
+      }));
 
-        setDialogs((prevState) => ({
-          ...prevState,
-          [newSessionId]: newDialog
-        }));
-
-        setExpandedDialogs({
-          [newSessionId]: true
-        });
-
-        setDisplayedDialog(newSessionId);
-        setResponse("");
-      })
-      .catch((error) => {
-        console.error('Error processing the statement:', error);
+      setExpandedDialogs({
+        [newSessionId]: true
       });
+
+      setDisplayedSession(newSessionId);
+      setResponse("");
+    } catch (error) {
+      console.error('Error continuing the dialog:', error);
+    }
   };
 
   const handleStop = () => {
     setDialogStarted(false);
-    setDisplayedDialog(0);
+    setDisplayedSession(0);
     setResponse("");
     setSelectedPerspectives([]);
-    setSelectedFormat("dialog");
+    setSelectedFormat(formatOptions[0]);
+    setPrompt('');
   };
 
   const handleSummaryClick = () => {
@@ -211,9 +189,9 @@ const App = () => {
         )}
         {response && <ResponseDisplay response={response} />}
         {/* Display the dialog content */}
-        {displayedDialog !== null && dialogs[displayedDialog] && (
+        {displayedSession !== null && dialogs[displayedSession] && (
           <>
-            <DialogDisplay dialogId={displayedDialog} dialog={dialogs[displayedDialog]} />
+            <DialogDisplay dialogId={displayedSession} dialog={dialogs[displayedSession]} />
             {summary && (
               <div className="summary-section">
                 <h2>Summary</h2>
