@@ -31,63 +31,24 @@ class ServiceHandler:
         new_id, _ = self.session_manager.new_session(text, agents, session_format)
         return new_id, True
 
-    def continue_dialog(self, session_id, prompt_list):
+    def continue_dialog(self, session_id):
         """Continue a dialog with the input prompts.
 
         Args:
             session_id (int): The id of the dialog to continue.
-            prompt_list (list): A list of prompts from format_prompt_list function.
 
         Returns:
             The dialog as a dict.
         """
         if self.api_manager.gemini_key is not None:
-            dialog = self.session_manager.get_session(session_id)
-            input_list = [
-                {
-                    "text": prompt["text"],
-                    "model": dialog.agents[prompt["agent"]]["model"],
-                    "history": prompt["agent"].get_chat_history(),
-                    "agent_object": prompt["agent"],
-                }
-                for prompt in prompt_list
-            ]
+            # Get the prompts from session
+            api_input_list = self.session_manager.get_session_prompts(session_id)
             # Send prompts to the API and collect responses
-            responses = self.api_manager.send_prompts(input_list)
-            # Add round to dialog object
-            round_num = len(self.session_manager.get_session(session_id).rounds) + 1
-            prompts = []
-            for response in responses:
-                # Format the prompts for dialog object
-                prompts.append(
-                    {
-                        "agent": response["prompt"]["agent_object"],
-                        "model": response["model"],
-                        "input": response["prompt"]["text"],
-                        "output": response["output"],
-                    }
-                )
-                # Change agent model if it is None
-                if dialog.agents[response["prompt"]["agent_object"]]["model"] is None:
-                    dialog.agents[response["prompt"]["agent_object"]]["model"] = (
-                        response["model"]
-                    )
-                # Add chat history to specific agents
-                response["prompt"]["agent_object"].add_chat_to_history(
-                    [
-                        {"role": "user", "text": response["prompt"]["text"]},
-                        {"role": "model", "text": response["output"]},
-                    ]
-                )
-            # Add round to dialog object
-            self.session_manager.add_round_to_dialog(session_id, round_num, prompts)
+            responses = self.api_manager.send_prompts(api_input_list)
+            # Update the session with responses
+            self.session_manager.update_session_with_responses(session_id, responses)
             return "Success", self.session_manager.get_session(session_id).to_dict()
         return None, None
-
-    def format_specific_prompt_list(self, session_id):
-        session = self.session_manager.get_session(session_id)
-        prompt_list = session.get_prompts()
-        return prompt_list
 
     def create_agents(self, list_of_roles):
         for role in list_of_roles:

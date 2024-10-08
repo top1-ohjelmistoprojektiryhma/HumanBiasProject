@@ -26,32 +26,24 @@ class SessionManager:
         self.sessions[new_id] = dialog
         return new_id, dialog
 
-    def add_round_to_dialog(self, session_id, round_num, prompts):
-        """Add a round to a dialog object
+    def get_session_prompts(self, session_id):
+        """Get the prompts for the next round of a dialog object
 
         Args:
             session_id (int): The id of the dialog object
-            round_num (int): The round number
-            prompts (list): A list of prompts for the round
+        Returns:
+            list: A list of prompts for the next round
         """
-        self.sessions[session_id].add_round(round_num, prompts)
-        # Add other agents' outputs to each agent's unseen list
-        for agent_obj in self.sessions[session_id].agents:
-            unseen = [prompt for prompt in prompts if prompt["agent"] != agent_obj]
-            if unseen:
-                self.add_unseen_prompts(agent_obj, unseen)
+        return self.sessions[session_id].get_prompts()
 
-    def add_unseen_prompts(self, agent_obj, unseen):
-        """Add unseen prompts to an agent's unseen list
+    def update_session_with_responses(self, session_id, responses):
+        """Update a dialog object with responses
 
         Args:
             session_id (int): The id of the dialog object
-            agent_obj (Agent): The agent object
-            prompts (list): A list of prompts
+            responses (list): A list of responses
         """
-        agent_obj.add_unseen_prompts(
-            [{"agent": prompt["agent"], "text": prompt["output"]} for prompt in unseen]
-        )
+        self.sessions[session_id].update_with_responses(responses)
 
     def get_session(self, session_id):
         print(self.sessions)

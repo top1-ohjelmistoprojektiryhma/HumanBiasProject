@@ -63,9 +63,8 @@ class TestServiceHandler(unittest.TestCase):
     def test_continue_session_no_gemini_key(self):
         self._handler.api_manager.gemini_key = None
         session_id = 1
-        prompt_list = []
 
-        result = self._handler.continue_dialog(session_id, prompt_list)
+        result = self._handler.continue_dialog(session_id)
 
         self.assertEqual(result, (None, None))
 
@@ -88,16 +87,8 @@ class TestServiceHandler(unittest.TestCase):
         ]
         text = "prompt"
         id, result = self._handler.start_new_session(text, "dialog")
-        prompt_list = [{"agent": agents[0], "text": "prompt"}]
-        response, session_dict = self._handler.continue_dialog(id, prompt_list)
+        response, session_dict = self._handler.continue_dialog(id)
         self.assertEqual(response, "Success")
-
-    def test_format_specific_prompt_list_works(self):
-        test_dialog = Mock()
-        test_dialog.get_prompts.return_value = ["zzz"]
-        self._mock_session_manager.get_session.return_value = test_dialog
-        result = self._handler.format_specific_prompt_list("1")
-        self.assertListEqual(result, ["zzz"])
 
     def test_set_selected_agents_works(self):
         test_agent_list = ["Student", "Farmer"]

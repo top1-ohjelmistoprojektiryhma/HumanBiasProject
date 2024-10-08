@@ -1,5 +1,6 @@
 from . import formatter
 
+
 class Dialog:
     """Represents a dialog
 
@@ -27,21 +28,72 @@ class Dialog:
         return prompt_list
 
     def get_prompts(self):
-        """Add a round to the dialog
+        """Get the prompts for the next round of the dialog"""
+        if not self.rounds:
+            prompts_list = self.initial_prompts(self.initial_prompt)
+        else:
+            agent = self.get_next_agent()
+            unseen_prompts = agent.get_unseen_prompts()
+            prompt = formatter.format_dialog_prompt_with_unseen(agent, unseen_prompts)
+            prompts_list = [{"agent": agent, "text": prompt}]
+
+        api_input_list = [
+            {
+                "text": prompt["text"],
+                "model": self.agents[prompt["agent"]]["model"],
+                "history": prompt["agent"].get_chat_history(),
+                "agent_object": prompt["agent"],
+            }
+            for prompt in prompts_list
+        ]
+
+        return api_input_list
+
+    def update_with_responses(self, responses):
+        """Update the dialog with responses
 
         Args:
-            round_num (int): The round number
-            prompts (list): A list of prompts for the round
+            responses (list): A list of responses
         """
-        if not self.rounds:
-            return self.initial_prompts(self.initial_prompt)
-        agent = self.get_next_agent()
-        unseen_prompts = agent.get_unseen_prompts()
-        prompt = formatter.format_dialog_prompt_with_unseen(
-            agent, unseen_prompts
+        prompts = []
+        for response in responses:
+            prompts.append(
+                {
+                    "agent": response["prompt"]["agent_object"],
+                    "model": response["model"],
+                    "input": response["prompt"]["text"],
+                    "output": response["output"],
+                }
+            )
+            # Add chat history to specific agents
+            response["prompt"]["agent_object"].add_chat_to_history(
+                [
+                    {"role": "user", "text": response["prompt"]["text"]},
+                    {"role": "model", "text": response["output"]},
+                ]
+            )
+            # Change agent model if it is None
+            if self.agents[response["prompt"]["agent_object"]]["model"] is None:
+                self.agents[response["prompt"]["agent_object"]]["model"] = response[
+                    "model"
+                ]
+        self.add_round(len(self.rounds) + 1, prompts)
+        # Add other agents' outputs to each agent's unseen list
+        for agent_obj in self.agents:
+            unseen = [prompt for prompt in prompts if prompt["agent"] != agent_obj]
+            if unseen:
+                self.add_unseen_prompts(agent_obj, unseen)
+
+    def add_unseen_prompts(self, agent_obj, unseen):
+        """Add unseen prompts to an agent's unseen list
+
+        Args:
+            agent_obj (Agent): The agent object
+            unseen (list): A list of unseen prompts
+        """
+        agent_obj.add_unseen_prompts(
+            [{"agent": prompt["agent"], "text": prompt["output"]} for prompt in unseen]
         )
-        prompts_list = [{"agent": agent, "text": prompt}]
-        return prompts_list
 
     def add_round(self, round_num, prompts):
         self.rounds[round_num] = prompts
