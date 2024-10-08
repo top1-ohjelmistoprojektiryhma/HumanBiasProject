@@ -6,7 +6,7 @@ from backend.services.service_handler import ServiceHandler
 class ExampleAgent:
     def __init__(self):
         self.role = "Student"
-    
+
     def add_chat_to_history(self, chat):
         pass
 
@@ -15,6 +15,7 @@ class ExampleAgent:
 
     def get_unseen_prompts(self):
         pass
+
 
 class TestServiceHandler(unittest.TestCase):
     def setUp(self):
@@ -26,7 +27,7 @@ class TestServiceHandler(unittest.TestCase):
             io=None,
             agent_manager=self._mock_agent_manager,
             api_manager=self._mock_api_manager,
-            dialog_manager=self._mock_dialog_manager
+            dialog_manager=self._mock_dialog_manager,
         )
 
     def test_create_agents_works(self):
@@ -41,49 +42,52 @@ class TestServiceHandler(unittest.TestCase):
         self._handler.add_agent(test_agent)
         self._mock_agent_manager.add_agent.assert_called_with("Agent 007")
 
-    def test_start_new_dialog_works_with_valid_prompt(self):
+    def test_start_new_session_works_with_valid_prompt(self):
         text = "This is a test prompt"
         self._mock_agent_manager.selected_agents = [ExampleAgent()]
-        self._mock_dialog_manager.new_dialog.return_value = ("1", "dialog")
-        id, result = self._handler.start_new_dialog(text, "dialog")
+        self._mock_dialog_manager.new_session.return_value = ("1", "dialog")
+        id, result = self._handler.start_new_session(text, "dialog")
         self.assertEqual(result, True)
 
-    def test_start_new_dialog_works_with_empty_prompt(self):
+    def test_start_new_session_works_with_empty_prompt(self):
         text = ""
-        id, result = self._handler.start_new_dialog(text, "dialog")
+        id, result = self._handler.start_new_session(text, "dialog")
         self.assertEqual(result, False)
 
-    def test_start_new_dialog_works_with_no_selected_agents(self):
+    def test_start_new_session_works_with_no_selected_agents(self):
         text = "This is a test prompt"
         self._mock_agent_manager.selected_agents = []
-        id, result = self._handler.start_new_dialog(text, "dialog")
+        id, result = self._handler.start_new_session(text, "dialog")
         self.assertEqual(result, False)
 
     def test_continue_dialog_no_gemini_key(self):
         self._handler.api_manager.gemini_key = None
-        dialog_id = 1
+        session_id = 1
         prompt_list = []
 
-        result = self._handler.continue_dialog(dialog_id, prompt_list)
+        result = self._handler.continue_dialog(session_id, prompt_list)
 
         self.assertEqual(result, (None, None))
 
     def test_continue_dialog_with_gemini_key(self):
-        self._handler.api_manager.gemini_key = 'valid_key'
+        self._handler.api_manager.gemini_key = "valid_key"
         agents = [ExampleAgent()]
         self._mock_agent_manager.selected_agents = agents
         dialog = Mock()
         dialog.rounds = {}
         dialog.agents = {agent: {"model": None} for agent in agents}
-        self._mock_dialog_manager.new_dialog.return_value = ("1", dialog)
-        self._mock_dialog_manager.get_dialog.return_value = dialog
+        self._mock_dialog_manager.new_session.return_value = ("1", dialog)
+        self._mock_dialog_manager.get_session.return_value = dialog
         self._mock_dialog_manager.add_round_to_dialog.return_value = None
         self._mock_api_manager.send_prompts.return_value = [
-            {"prompt": {"text": "prompt", "agent_object": agents[0]}, 
-             "model": "model", "output": "output"}
+            {
+                "prompt": {"text": "prompt", "agent_object": agents[0]},
+                "model": "model",
+                "output": "output",
+            }
         ]
         text = "prompt"
-        id, result = self._handler.start_new_dialog(text, "dialog")
+        id, result = self._handler.start_new_session(text, "dialog")
         prompt_list = [{"agent": agents[0], "text": "prompt"}]
         response, dialog_dict = self._handler.continue_dialog(id, prompt_list)
         self.assertEqual(response, "Success")
@@ -91,7 +95,7 @@ class TestServiceHandler(unittest.TestCase):
     def test_format_specific_prompt_list_works(self):
         test_dialog = Mock()
         test_dialog.get_prompts.return_value = ["zzz"]
-        self._mock_dialog_manager.get_dialog.return_value = test_dialog
+        self._mock_dialog_manager.get_session.return_value = test_dialog
         result = self._handler.format_specific_prompt_list("1")
         self.assertListEqual(result, ["zzz"])
 
@@ -110,39 +114,53 @@ class TestServiceHandler(unittest.TestCase):
         test_text = "Generate new agents based on this input."
         self._mock_api_manager.gemini_key = "valid_key"
         self._mock_formatter.format_generate_agents_prompt.return_value = test_text
-        self._mock_api_manager.send_prompts.return_value = [{"output": "Agent1|Agent2|Agent3|Agent4"}]
-        self._mock_agent_manager.list_of_agents = [ExampleAgent(), ExampleAgent(), ExampleAgent()]
-    
+        self._mock_api_manager.send_prompts.return_value = [
+            {"output": "Agent1|Agent2|Agent3|Agent4"}
+        ]
+        self._mock_agent_manager.list_of_agents = [
+            ExampleAgent(),
+            ExampleAgent(),
+            ExampleAgent(),
+        ]
+
         response = self._handler.generate_agents(test_text)
-        self.assertEqual(response['response'], "['Student', 'Student', 'Student']")
-        self.assertEqual(response["perspectives"], ["Student"]*3)
+        self.assertEqual(response["response"], "['Student', 'Student', 'Student']")
+        self.assertEqual(response["perspectives"], ["Student"] * 3)
 
     def test_generate_agents_and_get_more_than_desired(self):
         test_text = "Generate new agents based on this input."
         self._mock_api_manager.gemini_key = "valid_key"
         self._mock_formatter.format_generate_agents_prompt.return_value = test_text
-        self._mock_api_manager.send_prompts.return_value = [{"output": "Student|Student|Student|Student"}]
-        self._mock_agent_manager.list_of_agents = [ExampleAgent(), ExampleAgent(), ExampleAgent()]
-    
+        self._mock_api_manager.send_prompts.return_value = [
+            {"output": "Student|Student|Student|Student"}
+        ]
+        self._mock_agent_manager.list_of_agents = [
+            ExampleAgent(),
+            ExampleAgent(),
+            ExampleAgent(),
+        ]
+
         response = self._handler.generate_agents(test_text, 1)
         self._mock_agent_manager.add_agent.assert_called_with("Student")
-        self.assertEqual(response['response'], "['Student', 'Student', 'Student']")
-        self.assertEqual(response["perspectives"], ["Student"]*3)
-    
+        self.assertEqual(response["response"], "['Student', 'Student', 'Student']")
+        self.assertEqual(response["perspectives"], ["Student"] * 3)
+
     def test_generate_agents_and_get_bad_output(self):
         test_text = "Generate new agents based on this input."
         self._mock_api_manager.gemini_key = "valid_key"
         self._mock_formatter.format_generate_agents_prompt.return_value = test_text
         self._mock_api_manager.send_prompts.return_value = [{"output": ""}]
-    
+
         response = self._handler.generate_agents(test_text)
-        self.assertEqual(response['response'], "error in generating agents")
+        self.assertEqual(response["response"], "error in generating agents")
         self.assertEqual(response["perspectives"], [])
 
-
-    def test_get_all_dialogs_works(self):
-        self._mock_dialog_manager.all_dialogs.return_value = {"1": "dialog1", "2": "dialog2"}
-        response = self._handler.get_all_dialogs()
+    def test_get_all_sessions_works(self):
+        self._mock_dialog_manager.all_sessions.return_value = {
+            "1": "dialog1",
+            "2": "dialog2",
+        }
+        response = self._handler.get_all_sessions()
         self.assertEqual(response, {"1": "dialog1", "2": "dialog2"})
 
     def test_get_desired_output_works_with_outputlist_equal_to_desired_num(self):

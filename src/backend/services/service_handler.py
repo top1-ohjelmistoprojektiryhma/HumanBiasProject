@@ -1,5 +1,6 @@
 from . import formatter
 
+
 class ServiceHandler:
     def __init__(self, io, agent_manager, api_manager, dialog_manager):
         self.io = io
@@ -9,7 +10,7 @@ class ServiceHandler:
         default_agents = ["farmer", "elder", "student"]
         self.create_agents(default_agents)
 
-    def start_new_dialog(self, text, dialog_format):
+    def start_new_session(self, text, dialog_format):
         """
         Start a new dialog with the input text.
 
@@ -27,21 +28,21 @@ class ServiceHandler:
         agents = {
             agent: {"model": None} for agent in self.agent_manager.selected_agents
         }
-        new_id, _ = self.dialog_manager.new_dialog(text, agents, dialog_format)
+        new_id, _ = self.dialog_manager.new_session(text, agents, dialog_format)
         return new_id, True
 
-    def continue_dialog(self, dialog_id, prompt_list):
+    def continue_dialog(self, session_id, prompt_list):
         """Continue a dialog with the input prompts.
 
         Args:
-            dialog_id (int): The id of the dialog to continue.
+            session_id (int): The id of the dialog to continue.
             prompt_list (list): A list of prompts from format_prompt_list function.
 
         Returns:
             The dialog as a dict.
         """
         if self.api_manager.gemini_key is not None:
-            dialog = self.dialog_manager.get_dialog(dialog_id)
+            dialog = self.dialog_manager.get_session(session_id)
             input_list = [
                 {
                     "text": prompt["text"],
@@ -54,7 +55,7 @@ class ServiceHandler:
             # Send prompts to the API and collect responses
             responses = self.api_manager.send_prompts(input_list)
             # Add round to dialog object
-            round_num = len(self.dialog_manager.get_dialog(dialog_id).rounds) + 1
+            round_num = len(self.dialog_manager.get_session(session_id).rounds) + 1
             prompts = []
             for response in responses:
                 # Format the prompts for dialog object
@@ -79,12 +80,12 @@ class ServiceHandler:
                     ]
                 )
             # Add round to dialog object
-            self.dialog_manager.add_round_to_dialog(dialog_id, round_num, prompts)
-            return "Success", self.dialog_manager.get_dialog(dialog_id).to_dict()
+            self.dialog_manager.add_round_to_dialog(session_id, round_num, prompts)
+            return "Success", self.dialog_manager.get_session(session_id).to_dict()
         return None, None
 
-    def format_specific_prompt_list(self, dialog_id):
-        dialog = self.dialog_manager.get_dialog(dialog_id)
+    def format_specific_prompt_list(self, session_id):
+        dialog = self.dialog_manager.get_session(session_id)
         prompt_list = dialog.get_prompts()
         return prompt_list
 
@@ -127,9 +128,9 @@ class ServiceHandler:
     def set_selected_agents(self, agent_list):
         self.agent_manager.set_selected_agents(agent_list)
 
-    def get_all_dialogs(self):
-        dialogs = self.dialog_manager.all_dialogs()
-        return dialogs
+    def get_all_sessions(self):
+        sessions = self.dialog_manager.all_sessions()
+        return sessions
 
     def get_desired_output(self, output_list, desired_number_of_agents):
         perspectives = []
@@ -169,8 +170,8 @@ class ServiceHandler:
         Returns:
             None
         """
-        dialog_id = self.dialog_manager.get_latest_dialog_id()
-        dialog = self.dialog_manager.get_dialog(dialog_id)
+        session_id = self.dialog_manager.get_latest_session_id()
+        dialog = self.dialog_manager.get_session(session_id)
         history = dialog.get_history()
         summary = self.get_summary_from_ai(history)
         return summary

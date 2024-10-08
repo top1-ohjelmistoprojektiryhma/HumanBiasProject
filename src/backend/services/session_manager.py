@@ -1,17 +1,17 @@
 from .dialog import Dialog
 
 
-class DialogManager:
+class SessionManager:
     """Manages dialog objects
 
     Attributes:
-        dialogs: A dictionary of dialog objects
+        sessions: A dictionary of dialog objects
     """
 
     def __init__(self):
-        self.dialogs = {}
+        self.sessions = {}
 
-    def new_dialog(self, initial_prompt, agents, dialog_format):
+    def new_session(self, initial_prompt, agents, dialog_format):
         """Create a new dialog object
 
         Args:
@@ -21,22 +21,22 @@ class DialogManager:
             int: The dialog id
             Dialog: The dialog object
         """
-        new_id = len(self.dialogs)
+        new_id = len(self.sessions)
         dialog = Dialog(initial_prompt, agents, dialog_format)
-        self.dialogs[new_id] = dialog
+        self.sessions[new_id] = dialog
         return new_id, dialog
 
-    def add_round_to_dialog(self, dialog_id, round_num, prompts):
+    def add_round_to_dialog(self, session_id, round_num, prompts):
         """Add a round to a dialog object
 
         Args:
-            dialog_id (int): The id of the dialog object
+            session_id (int): The id of the dialog object
             round_num (int): The round number
             prompts (list): A list of prompts for the round
         """
-        self.dialogs[dialog_id].add_round(round_num, prompts)
+        self.sessions[session_id].add_round(round_num, prompts)
         # Add other agents' outputs to each agent's unseen list
-        for agent_obj in self.dialogs[dialog_id].agents:
+        for agent_obj in self.sessions[session_id].agents:
             unseen = [prompt for prompt in prompts if prompt["agent"] != agent_obj]
             if unseen:
                 self.add_unseen_prompts(agent_obj, unseen)
@@ -45,7 +45,7 @@ class DialogManager:
         """Add unseen prompts to an agent's unseen list
 
         Args:
-            dialog_id (int): The id of the dialog object
+            session_id (int): The id of the dialog object
             agent_obj (Agent): The agent object
             prompts (list): A list of prompts
         """
@@ -53,16 +53,18 @@ class DialogManager:
             [{"agent": prompt["agent"], "text": prompt["output"]} for prompt in unseen]
         )
 
-    def get_dialog(self, dialog_id):
-        return self.dialogs[dialog_id]
+    def get_session(self, session_id):
+        print(self.sessions)
+        print(session_id)
+        return self.sessions[session_id]
 
-    def delete_dialog(self, dialog_id):
-        del self.dialogs[dialog_id]
+    def delete_session(self, session_id):
+        del self.sessions[session_id]
 
-    def all_dialogs(self):
+    def all_sessions(self):
         # return a dictionary of dialog objects as dictionaries
-        dictionary = {k: v.to_dict() for k, v in self.dialogs.items()}
+        dictionary = {k: v.to_dict() for k, v in self.sessions.items()}
         return dictionary
 
-    def get_latest_dialog_id(self):
-        return len(self.dialogs) - 1
+    def get_latest_session_id(self):
+        return len(self.sessions) - 1

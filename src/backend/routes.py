@@ -9,40 +9,40 @@ def initialize_routes(app, agent_manager, service_handler):
         return jsonify(agents)
 
     @app.route("/api/new-dialog", methods=["POST"])
-    def new_dialog():
+    def new_session():
         data = request.json
         prompt = data.get("prompt")
         format = data.get("format")
         perspectives = data.get("perspective")
         print(f"Prompt: {prompt}, Perspective: {perspectives}")
         agent_manager.set_selected_agents(perspectives)
-        result, successful = service_handler.start_new_dialog(prompt, format)
+        result, successful = service_handler.start_new_session(prompt, format)
         if not successful:
             return jsonify({"response": result})
         new_id = result
-        prompt_list = service_handler.format_specific_prompt_list(new_id, prompt)
+        prompt_list = service_handler.format_specific_prompt_list(new_id)
         response, dialog_dict = service_handler.continue_dialog(new_id, prompt_list)
         if dialog_dict is None:
             return jsonify({"response": "Missing gemini key"})
         print(f"Response: {dialog_dict}, Dialog ID: {new_id}")
         return jsonify(
-            {"response": response, "dialog_id": new_id, "dialog": dialog_dict}
+            {"response": response, "session_id": new_id, "dialog": dialog_dict}
         )
 
     # CONTINUE DIALOG
     @app.route("/api/continue-dialog", methods=["POST"])
     def continue_dialog():
         data = request.json
-        dialog_id = data.get("dialog_id")
+        session_id = data.get("session_id")
         prompt = data.get("prompt")
-        print(f"Dialog ID: {dialog_id}, Prompt: {prompt}")
-        prompt_list = service_handler.format_specific_prompt_list(dialog_id, prompt)
-        response, dialog_dict = service_handler.continue_dialog(dialog_id, prompt_list)
+        print(f"Dialog ID: {session_id}, Prompt: {prompt}")
+        prompt_list = service_handler.format_specific_prompt_list(session_id)
+        response, dialog_dict = service_handler.continue_dialog(session_id, prompt_list)
         if dialog_dict is None:
             return jsonify({"response": "Missing gemini key"})
-        print(f"Response: {dialog_dict}, Dialog ID: {dialog_id}")
+        print(f"Response: {dialog_dict}, Dialog ID: {session_id}")
         return jsonify(
-            {"response": response, "dialog_id": dialog_id, "dialog": dialog_dict}
+            {"response": response, "session_id": session_id, "dialog": dialog_dict}
         )
 
     @app.route("/api/delete-perspective", methods=["POST"])
@@ -77,10 +77,10 @@ def initialize_routes(app, agent_manager, service_handler):
             return jsonify(response)
         return jsonify({"response": response, "perspectives": []})
 
-    @app.route("/api/all-dialogs", methods=["GET"])
-    def get_all_dialogs():
-        dialogs = service_handler.get_all_dialogs()
-        return jsonify(dialogs)
+    @app.route("/api/all-sessions", methods=["GET"])
+    def get_all_sessions():
+        sessions = service_handler.get_all_sessions()
+        return jsonify(sessions)
 
     @app.route("/api/summary", methods=["GET"])
     def receive_dialog():

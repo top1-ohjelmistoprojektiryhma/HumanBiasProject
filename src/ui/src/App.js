@@ -74,20 +74,20 @@ const App = () => {
     })
       .then((response) => response.json())
       .then((data) => {
-        const newDialogId = data.dialog_id;
+        const newSessionId = data.session_id;
         const newDialog = data.dialog;
 
         setDialogs((prevState) => ({
           ...prevState,
-          [newDialogId]: newDialog
+          [newSessionId]: newDialog
         }));
 
         setExpandedDialogs((prevState) => ({
           ...prevState,
-          [newDialogId]: true
+          [newSessionId]: true
         }));
 
-        setDisplayedDialog(newDialogId);
+        setDisplayedDialog(newSessionId);
         setResponse("");
         setDialogStarted(true);
       })
@@ -126,23 +126,23 @@ const App = () => {
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ dialog_id: displayedDialog }),
+      body: JSON.stringify({ session_id: displayedDialog }),
     })
       .then((response) => response.json())
       .then((data) => {
-        const newDialogId = data.dialog_id;
+        const newSessionId = data.session_id;
         const newDialog = data.dialog;
 
         setDialogs((prevState) => ({
           ...prevState,
-          [newDialogId]: newDialog
+          [newSessionId]: newDialog
         }));
 
         setExpandedDialogs({
-          [newDialogId]: true
+          [newSessionId]: true
         });
 
-        setDisplayedDialog(newDialogId);
+        setDisplayedDialog(newSessionId);
         setResponse("");
       })
       .catch((error) => {
