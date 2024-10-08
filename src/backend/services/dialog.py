@@ -8,6 +8,8 @@ class Dialog:
         initial_prompt (str): The initial prompt for the dialog
         agents (list): A dictionary of agents {"AgentObj": "model"}
         rounds (dict): A dictionary of rounds identified by round number
+        dialog_format (str): The format of the dialog
+        history (list): A list of dictionaries representing the dialog history
     """
 
     def __init__(self, initial_prompt="", agents=None, dialog_format="dialog"):
@@ -18,6 +20,10 @@ class Dialog:
         self.history = []
 
     def initial_prompts(self, text):
+        """Get the initial prompts for the dialog
+        
+        Args:
+            text (str): The initial prompt text"""
         agent_list = list(self.agents.keys())
         prompt_list = formatter.format_multiple(
             [agent.role for agent in agent_list], text
@@ -96,6 +102,11 @@ class Dialog:
         )
 
     def add_round(self, round_num, prompts):
+        """Add a round to the dialog
+
+        Args:
+            round_num (int): The round number
+            prompts (list): A list of prompts"""
         self.rounds[round_num] = prompts
         self.history.append({"round": round_num, "prompts": prompts})
 
