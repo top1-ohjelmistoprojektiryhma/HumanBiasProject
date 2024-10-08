@@ -2,7 +2,7 @@ from .dialog import Dialog
 
 
 class SessionManager:
-    """Manages dialog objects
+    """Manages sessions
 
     Attributes:
         sessions: A dictionary of dialog objects
@@ -11,7 +11,7 @@ class SessionManager:
     def __init__(self):
         self.sessions = {}
 
-    def new_session(self, initial_prompt, agents, dialog_format):
+    def new_session(self, initial_prompt, agents, session_format):
         """Create a new dialog object
 
         Args:
@@ -22,9 +22,9 @@ class SessionManager:
             Dialog: The dialog object
         """
         new_id = len(self.sessions)
-        dialog = Dialog(initial_prompt, agents, dialog_format)
-        self.sessions[new_id] = dialog
-        return new_id, dialog
+        session = Dialog(initial_prompt, agents, session_format)
+        self.sessions[new_id] = session
+        return new_id, session
 
     def get_session_prompts(self, session_id):
         """Get the prompts for the next round of a dialog object
