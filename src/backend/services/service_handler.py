@@ -16,6 +16,7 @@ class ServiceHandler:
 
         Args:
             text (str): The input text to start the session with.
+            session_format (str): The format of the session.
 
         Returns:
             The generated response, session id, and session as dict.
@@ -32,13 +33,13 @@ class ServiceHandler:
         return new_id, True
 
     def continue_session(self, session_id):
-        """Continue a dialog with the input prompts.
+        """Continue a session with the input prompts.
 
         Args:
-            session_id (int): The id of the dialog to continue.
+            session_id (int): The id of the session to continue.
 
         Returns:
-            The dialog as a dict.
+            The session as a dict.
         """
         if self.api_manager.gemini_key is not None:
             # Get the prompts from session
@@ -121,7 +122,7 @@ class ServiceHandler:
 
         return perspectives, output
 
-    def process_latest_dialog(self):
+    def get_latest_dialog_summary(self):
         """
         Process the latest dialog sent from the frontend.
 
