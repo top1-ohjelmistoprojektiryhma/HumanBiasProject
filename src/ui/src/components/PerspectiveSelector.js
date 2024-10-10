@@ -58,7 +58,9 @@ const PerspectiveSelector = ({ perspectives, selectedPerspectives, setSelectedPe
             onClick={() => handleAgentClick(perspective)}
           >
             {perspective}
-            <button onClick={() => handleDeletePerspective(perspective)}>Delete</button>
+            <button className="delete-button" onClick={(e) => { e.stopPropagation(); handleDeletePerspective(perspective); }}>
+            &times;
+          </button>
           </div>
         ))}
       </div>

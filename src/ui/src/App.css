@@ -240,24 +240,42 @@ input[type="text"] {
 }
 
 .agent-box {
-  background-color: #2b2b3d; /* Dark background for agent boxes */
+  position: relative; /* To position the X button inside the box */
+  background-color: #2b2b3d;
   color: #ffffff;
   padding: 10px;
   margin: 5px;
   border-radius: 8px;
   cursor: pointer;
   transition: background-color 0.3s ease;
-  border: 2px solid transparent; /* Add border to indicate selection */
+  border: 2px solid transparent;
   display: inline-block;
-  min-width: 100px; /* Ensures the boxes are small */
+  min-width: 100px;
   text-align: center;
 }
 
 .agent-box.active {
-  background-color: #3d72de; /* Highlight active agent */
-  border-color: #ffffff; /* White border for active agents */
+  background-color: #3d72de;
+  border-color: #ffffff;
 }
 
 .agent-box:hover {
-  background-color: #3d3d5c; /* Slightly darker on hover */
+  background-color: #3d3d5c;
+}
+
+.delete-button {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  background: none;
+  border: none;
+  color: #ff6b6b; /* Red color for delete button */
+  font-size: 18px; /* Bigger size for the X symbol */
+  cursor: pointer;
+  padding: 0;
+  line-height: 1;
+}
+
+.delete-button:hover {
+  color: #ff4c4c; /* Slightly darker red on hover */
 }
