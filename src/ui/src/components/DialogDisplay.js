@@ -50,7 +50,6 @@ const DialogDisplay = ({ dialogId, dialog }) => {
                     <strong>Output:</strong> {prompt.output} <br />
                     <span
                       onClick={() => handleToggleInfo(roundId, index)}
-                      style={{ cursor: 'pointer', color: 'black', textDecoration: 'underline' }}
                     >
                       {expandedInfo[roundId]?.[index] ? 'Hide model and input' : 'Show model and input'}
                     </span>

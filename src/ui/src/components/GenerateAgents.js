@@ -8,20 +8,25 @@ const GenerateAgents = ({ onSubmit }) => {
   };
 
   return (
-    <div>
-      <label htmlFor="numAgents">Number of Agents: </label>
+    <div className="generate-agents-container">
+      <label htmlFor="numAgents" className="label">
+        Number of Agents:
+      </label>
       <select
         id="numAgents"
         value={numAgents}
         onChange={(e) => setNumAgents(parseInt(e.target.value))}
+        className="select-dropdown"
       >
-        <option value={1}>1</option>
-        <option value={2}>2</option>
-        <option value={3}>3</option>
-        <option value={4}>4</option>
-        <option value={5}>5</option>
+        {[...Array(5)].map((_, i) => (
+          <option key={i} value={i + 1}>
+            {i + 1}
+          </option>
+        ))}
       </select>
-      <button onClick={handleSubmit}>Generate Agents</button>
+      <button onClick={handleSubmit} className="generate-button">
+        Generate Agents
+      </button>
     </div>
   );
 };

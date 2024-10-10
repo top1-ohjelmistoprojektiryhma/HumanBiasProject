@@ -1,45 +1,61 @@
 body {
   font-family: Arial, sans-serif;
   margin: 0;
+  background-color: #1e1e2f; /* Dark background */
+  color: #ffffff; /* Light text for contrast */
   white-space: pre-line;
 }
 
 h1 {
-  color: #333;
+  color: #fff; /* White title color */
+  font-size: 24px;
 }
 
 input, select, button {
   margin: 10px 0;
+  border-radius: 8px;
+  padding: 10px;
+  border: none;
+  font-size: 16px;
 }
 
-/* Flex-asettelu, joka pitää dialogipalkin vasemmalla */
+input, select {
+  background-color: #2b2b3d; /* Dark background for inputs */
+  color: #ffffff; /* Light text color */
+}
+
+button {
+  background-color: #3d72de; /* Blue button background */
+  color: white;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+button:hover {
+  background-color: #335ebb; /* Darker shade on hover */
+}
+
 .app-container {
   display: flex;
-  height: 100vh; /* Koko ikkunan korkeus */
+  height: 100vh;
 }
 
 .dialogs-bar {
   width: 300px;
-  background-color: #f4f4f4;
-  border-right: 1px solid #ccc; /* Reunaviiva oikealle */
+  background-color: #292938; /* Slightly darker sidebar */
+  border-right: 1px solid #3d3d5c; /* Subtle border for separation */
   padding: 10px;
-  margin: 0; /* Poista marginaali */
+  margin: 0;
   overflow-y: auto;
-  height: 100vh; /* Koko ikkunan korkeus */
-  position: fixed; /* Kiinnitä vasemmalle */
+  height: 100vh;
+  position: fixed;
   left: 0;
   top: 0;
 }
 
-.main-content {
-  flex-grow: 1; /* Kasvata pääsisältö lopputilaan */
-  margin-left: 320px; /* Jätä tilaa dialogipalkille */
-  padding: 20px;
-}
-
 .dialogs-bar h2 {
   font-size: 18px;
-  margin-bottom: 10px;
+  color: #ffffff;
 }
 
 .dialogs-bar ul {
@@ -53,8 +69,195 @@ input, select, button {
 
 .dialogs-bar li {
   margin-bottom: 5px;
+  color: #9b9bba; /* Slightly muted text for dialog list */
 }
 
 .dialogs-bar strong {
   cursor: pointer;
+  color: #ffffff;
+}
+
+.main-content {
+  flex-grow: 1;
+  margin-left: 320px;
+  padding: 20px;
+}
+
+.main-content h1 {
+  margin-bottom: 20px;
+}
+
+.error-message {
+  color: #ff6b6b; /* Red error message */
+  font-size: 14px;
+  margin-top: 10px;
+}
+
+.input-container, .button-container {
+  margin: 20px 0;
+}
+
+input[type="text"] {
+  width: calc(100% - 20px);
+}
+
+.submit-button {
+  background-color: #3d72de;
+  color: white;
+  padding: 10px 20px;
+  font-size: 16px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.submit-button:hover {
+  background-color: #2a52b2;
+}
+
+.generate-button, .continue-button, .stop-button {
+  background-color: #2b2b3d;
+  color: #ffffff;
+  padding: 10px;
+  font-size: 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.generate-button:hover, .continue-button:hover, .stop-button:hover {
+  background-color: #1e1e2f;
+}
+
+.summary-section {
+  background-color: #23233c;
+  padding: 20px;
+  border-radius: 10px;
+  margin-top: 20px;
+}
+
+.summary-section h2 {
+  color: #ffffff;
+}
+
+.example-prompts {
+  display: flex;
+  justify-content: space-between;
+}
+
+.example-prompts div {
+  background-color: #2b2b3d;
+  color: #ffffff;
+  padding: 15px;
+  border-radius: 8px;
+  text-align: center;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.example-prompts div:hover {
+  background-color: #3d3d5c;
+}
+
+.consensus-toggle {
+  display: flex;
+  align-items: center;
+  margin-top: 10px;
+}
+
+.consensus-toggle input {
+  margin-left: 10px;
+  cursor: pointer;
+}
+
+.submit-section {
+  margin-top: 20px;
+}
+
+.agent-box {
+  background-color: #2b2b3d; /* Dark background for agent box */
+  color: #ffffff;
+  padding: 10px;
+  margin: 5px;
+  border-radius: 8px;
+  cursor: pointer;
+  display: inline-block; /* Display agents as small boxes */
+  transition: background-color 0.3s ease;
+  border: 2px solid transparent; /* Add border to indicate selection */
+}
+
+.agent-box.active {
+  background-color: #3d72de; /* Highlight active agent */
+  border-color: #ffffff; /* White border to indicate active */
+}
+
+.agent-box:hover {
+  background-color: #3d3d5c; /* Slightly darker on hover */
+}
+
+.generate-agents-container {
+  margin-top: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  max-width: 400px;
+}
+
+.label {
+  color: #ffffff;
+  font-size: 16px;
+  margin-right: 10px;
+}
+
+.select-dropdown {
+  padding: 10px;
+  background-color: #2b2b3d;
+  color: #ffffff;
+  border-radius: 8px;
+  border: none;
+}
+
+.generate-button {
+  background-color: #3d72de;
+  color: #ffffff;
+  padding: 10px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.generate-button:hover {
+  background-color: #2a52b2;
+}
+
+.perspective-selector-container {
+  margin-top: 20px;
+}
+
+.agent-box-container {
+  display: flex;
+  flex-wrap: wrap; /* Allows the boxes to wrap if there are too many */
+}
+
+.agent-box {
+  background-color: #2b2b3d; /* Dark background for agent boxes */
+  color: #ffffff;
+  padding: 10px;
+  margin: 5px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  border: 2px solid transparent; /* Add border to indicate selection */
+  display: inline-block;
+  min-width: 100px; /* Ensures the boxes are small */
+  text-align: center;
+}
+
+.agent-box.active {
+  background-color: #3d72de; /* Highlight active agent */
+  border-color: #ffffff; /* White border for active agents */
+}
+
+.agent-box:hover {
+  background-color: #3d3d5c; /* Slightly darker on hover */
 }
