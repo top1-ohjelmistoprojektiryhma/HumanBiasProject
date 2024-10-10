@@ -35,6 +35,7 @@ const App = () => {
   const [summary, setSummary] = useState('');
   const [error, setError] = useState("");
   const [formatOptions, setFormatOptions] = useState([]);
+  const [isDialogsBarVisible, setIsDialogsBarVisible] = useState(false); // New state for visibility
 
 
   useEffect(() => {
@@ -68,6 +69,7 @@ const App = () => {
     setError('');
     return true;
   };
+
   const handleSubmit = async () => {
     if (!validateUserInput()) {
       return;
@@ -162,11 +164,19 @@ const App = () => {
         console.error('Error sending dialog data:', error);
       });
   };
-
+  const handleToggleDialogsBar = () => {
+    setIsDialogsBarVisible(!isDialogsBarVisible);
+  };
 
   return (
-    <div className="app-container">
-      <DialogsBar dialogs={dialogs} expandedDialogs={expandedDialogs} toggleDialog={setExpandedDialogs} />
+    <div className={`app-container ${isDialogsBarVisible ? 'dialogs-visible' : 'dialogs-hidden'}`}>
+      <div className={`dialogs-bar ${isDialogsBarVisible ? '' : 'dialogs-bar-hidden'}`}>
+        <DialogsBar
+          dialogs={dialogs}
+          expandedDialogs={expandedDialogs}
+          toggleDialog={setExpandedDialogs}
+        />
+      </div>
 
       <div className="main-content">
         <h1>Human Bias Project</h1>
@@ -204,6 +214,11 @@ const App = () => {
         {dialogStarted && <StopButton onSubmit={handleStop} />}
         {/* Pass the correct dialog data to handleSummaryClick */}
         {dialogStarted && <SummaryButton onClick={handleSummaryClick} />}
+      </div>
+
+      {/* Menu Symbol */}
+      <div className="menu-symbol" onClick={handleToggleDialogsBar}>
+        &#9776; {/* Unicode character for the menu symbol */}
       </div>
     </div>
   );

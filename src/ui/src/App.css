@@ -1,10 +1,10 @@
 body {
   font-family: Arial, sans-serif;
   margin: 0;
-  background-color: #1e1e2f; /* Dark background */
+  background-color: #01040C; /* Dark background */
   color: #ffffff; /* Light text for contrast */
   white-space: pre-line;
-}
+} 
 
 h1 {
   color: #fff; /* White title color */
@@ -20,7 +20,7 @@ input, select, button {
 }
 
 input, select {
-  background-color: #2b2b3d; /* Dark background for inputs */
+  background-color: #131B2C; /* Dark background for inputs */
   color: #ffffff; /* Light text color */
 }
 
@@ -38,21 +38,38 @@ button:hover {
 .app-container {
   display: flex;
   height: 100vh;
+  position: relative;
+}
+
+.menu-symbol {
+  position: fixed;
+  left: 30px;
+  top: 20px;
+  font-size: 30px;
+  color: white;
+  cursor: pointer;
+  z-index: 1000;
 }
 
 .dialogs-bar {
   width: 300px;
-  background-color: #292938; /* Slightly darker sidebar */
-  border-right: 1px solid #3d3d5c; /* Subtle border for separation */
+  background-color: #131B2C;
+  border-right: 1px solid #3d3d5c;
   padding: 10px;
+  padding-top: 60px;
+  padding-left: 34px;
   margin: 0;
   overflow-y: auto;
   height: 100vh;
   position: fixed;
   left: 0;
   top: 0;
+  transition: transform 0.3s ease;
 }
 
+.dialogs-bar-hidden {
+  transform: translateX(-100%);
+}
 .dialogs-bar h2 {
   font-size: 18px;
   color: #ffffff;
@@ -278,4 +295,4 @@ input[type="text"] {
 
 .delete-button:hover {
   color: #ff4c4c; /* Slightly darker red on hover */
-}
+} 
