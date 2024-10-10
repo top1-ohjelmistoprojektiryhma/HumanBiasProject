@@ -9,11 +9,11 @@ class SessionManager:
     """
 
     def __init__(self):
-        self.sessions = {}
-        self.all_formats = ["dialog - no consensus", "dialog - consensus"]
+        self._sessions = {}
+        self._all_formats = {"dialog - no consensus":Dialog, "dialog - consensus":Dialog}
 
     def get_all_formats(self):
-        return self.all_formats
+        return list(self._all_formats.keys())
 
     def new_session(self, initial_prompt, agents, session_format):
         """Create a new session object
@@ -25,14 +25,12 @@ class SessionManager:
             int: The session id
             session: The session object
         """
-        new_id = len(self.sessions)
-        if session_format == "dialog - no consensus":
-            session = Dialog(initial_prompt, agents, session_format)
-        elif session_format == "dialog - consensus":
-            session = Dialog(initial_prompt, agents, session_format)
-        else:
-            raise ValueError("Invalid dialog format")
-        self.sessions[new_id] = session
+        new_id = len(self._sessions)
+        session_type = self._all_formats.get(session_format)
+        if session_type is None:
+            raise ValueError("Invalid format")
+        session = session_type(initial_prompt, agents, session_format)
+        self._sessions[new_id] = session
         return new_id, session
 
     def get_session_prompts(self, session_id):
@@ -43,7 +41,7 @@ class SessionManager:
         Returns:
             list: A list of prompts for the next round
         """
-        return self.sessions[session_id].get_prompts()
+        return self._sessions[session_id].get_prompts()
 
     def update_session_with_responses(self, session_id, responses):
         """Update a session with responses
@@ -52,20 +50,20 @@ class SessionManager:
             session_id (int): The id of the session
             responses (list): A list of responses
         """
-        self.sessions[session_id].update_with_responses(responses)
+        self._sessions[session_id].update_with_responses(responses)
 
     def get_session(self, session_id):
-        print(self.sessions)
+        print(self._sessions)
         print(session_id)
-        return self.sessions[session_id]
+        return self._sessions[session_id]
 
     def delete_session(self, session_id):
-        del self.sessions[session_id]
+        del self._sessions[session_id]
 
     def all_sessions(self):
         # return a dictionary of dialog objects as dictionaries
-        dictionary = {k: v.to_dict() for k, v in self.sessions.items()}
+        dictionary = {k: v.to_dict() for k, v in self._sessions.items()}
         return dictionary
 
     def get_latest_session_id(self):
-        return len(self.sessions) - 1
+        return len(self._sessions) - 1

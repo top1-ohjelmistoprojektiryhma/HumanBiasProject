@@ -118,10 +118,7 @@ class Dialog:
         """
         agent = None
         agents = list(self.agents.keys())
-        if (
-            self.dialog_format == "dialog - no consensus"
-            or self.dialog_format == "dialog - consensus"
-        ):
+        if self.dialog_format in ("dialog - no consensus", "dialog - consensus"):
             agent = agents[(len(self.rounds) - 1) % len(agents)]
         else:
             print("Agent is None")
