@@ -1,3 +1,9 @@
+import json
+
+
+with open('prompts.json', 'r', encoding='utf-8') as file:
+    PROMPTS = json.load(file)
+
 def format_multiple(role_list, prompt):
     response_list = []
     for role in role_list:
@@ -6,26 +12,16 @@ def format_multiple(role_list, prompt):
 
 def format_single(role, prompt):
     role = role if role not in (None, "") else "Yourself"
-    return f"""Speak from the following perspective: {str(role)}.
-    Stay grounded and true to character. 
-    You are debating the plausibility of the following statement.
-    Give a conversational opening statement of around 100 words: {str(prompt)}
-    Also give a score from 0 to 10 on how much you agree with the statement.
-    Initially avoid scores around 5, be decisive."""
+    return PROMPTS["format_single"].format(role=str(role), prompt=str(prompt))
 
 def format_dialog_prompt_with_unseen(agent, unseen_prompts):
     print(f"Agent: {agent}, Unseen Prompts: {unseen_prompts}")
     unseen = [
-        f"""{prompt['agent'].role} has given the following response: 
-        {prompt['text']}""" for prompt in unseen_prompts
+        PROMPTS["format_unseen"].format(role=prompt['agent'].role, text=prompt['text'])
+        for prompt in unseen_prompts
     ]
-    return f"""Speak from the following perspective: {str(agent.role)}.
-    Stay grounded and true to character.
-    Given the dialogue history, debate these new statements
-    and hold your ground.
-    {str(unseen)}
-    Remark the initial prompt. Give a score from 0 to 10
-    on how much you agree with the statement. Give a response of around 250 words."""
+    return PROMPTS["format_dialog_prompt_with_unseen"].format(
+        role=str(agent.role), unseen=str(unseen))
 
 def format_generate_agents_prompt(prompt, desired_number_of_agents, list_of_agents):
     """
