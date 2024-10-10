@@ -159,3 +159,23 @@ class TestServiceHandler(unittest.TestCase):
         result = self._handler.get_desired_output(["1"], 1)
         expected = (["Student", "Student"], ["Student", "Student"])
         self.assertEqual(result, expected)
+
+    def test_get_latest_dialog_summary(self):
+        self._mock_session_manager.get_latest_session_id.return_value = "session123"
+        self._mock_session_manager.get_session.return_value.get_history.return_value = (
+            "dialog history"
+        )
+        self._handler.get_summary_from_ai = Mock(return_value="summary")
+        summary = self._handler.get_latest_dialog_summary()
+        self._mock_session_manager.get_latest_session_id.assert_called_once()
+        self._mock_session_manager.get_session.assert_called_once_with("session123")
+        self._handler.get_summary_from_ai.assert_called_once_with("dialog history")
+        self.assertEqual(summary, "summary")
+
+    def test_get_summary_from_ai(self):
+        self._mock_api_manager.send_prompts.return_value = [
+            {"output": "summary from AI"}
+        ]
+        summary = self._handler.get_summary_from_ai("dialog data")
+        self._mock_api_manager.send_prompts.assert_called_once()
+        self.assertEqual(summary, "summary from AI")
