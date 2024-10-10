@@ -8,7 +8,7 @@ import React from 'react';
  * @param {Array} selectedPerspectives - The list of currently selected perspectives.
  * @param {Function} setSelectedPerspectives - Function to update the selected perspectives.
  */
-const PerspectiveSelector = ({ perspectives, selectedPerspectives, setSelectedPerspectives }) => {
+const PerspectiveSelector = ({ perspectives, selectedPerspectives, setSelectedPerspectives, setPerspectives }) => {
 
   /**
    * Handle agent click event.
@@ -25,6 +25,27 @@ const PerspectiveSelector = ({ perspectives, selectedPerspectives, setSelectedPe
     }
   };
 
+  const handleDeletePerspective = async (perspective) => {
+    // Update the state to remove the perspective
+    setPerspectives(perspectives.filter(p => p !== perspective));
+    setSelectedPerspectives(selectedPerspectives.filter(p => p !== perspective));
+
+    try {
+      // Send a POST request to delete the perspective
+      const response = await fetch('/api/delete-perspective', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ perspective: perspective })
+      });
+      const result = await response.json();
+      console.log('Deleted perspective:', result);
+    } catch (error) {
+      console.error('Error deleting perspective:', error);
+    }
+  };
+
   return (
     <div className="perspective-selector-container">
       <label>Select perspectives:</label>
@@ -37,6 +58,7 @@ const PerspectiveSelector = ({ perspectives, selectedPerspectives, setSelectedPe
             onClick={() => handleAgentClick(perspective)}
           >
             {perspective}
+            <button onClick={() => handleDeletePerspective(perspective)}>Delete</button>
           </div>
         ))}
       </div>
