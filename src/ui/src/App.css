@@ -1,5 +1,5 @@
 body {
-  font-family: Arial, sans-serif;
+  font-family: 'Istok Web', sans-serif;
   margin: 0;
   background-color: #01040C; /* Dark background */
   color: #ffffff; /* Light text for contrast */
@@ -158,21 +158,28 @@ input[type="text"] {
 
 .example-prompts {
   display: flex;
-  justify-content: space-between;
+  gap: 60px; /* Add space between boxes */
 }
 
 .example-prompts div {
-  background-color: #2b2b3d;
-  color: #ffffff;
-  padding: 15px;
-  border-radius: 8px;
-  text-align: center;
+  background-color: #01040C; /* Same as the background */
+  color: #525864;
+  padding: 30px; /* Add more space around the text */
+  border-radius: 25px;
+  text-align:left;
   cursor: pointer;
   transition: background-color 0.3s ease;
+  width: 110px; /* Fixed width for square shape */
+  height: 90px; /* Fixed height for square shape */
+  border: 1px solid #525864; /* Light-colored border */
+  display: flex; 
+  justify-content: center; 
+  align-items: center; /* Center text vertically */
+  font-size: 14px;
 }
 
 .example-prompts div:hover {
-  background-color: #3d3d5c;
+  background-color: #1A1F2E; /* Slightly lighter on hover */
 }
 
 .consensus-toggle {
