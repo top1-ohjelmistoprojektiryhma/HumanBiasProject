@@ -1,13 +1,13 @@
 body {
   font-family: 'Istok Web', sans-serif;
   margin: 0;
-  background-color: #01040C; /* Dark background */
-  color: #ffffff; /* Light text for contrast */
+  background-color: #01040C;
+  color: #ffffff;
   white-space: pre-line;
 } 
 
 h1 {
-  color: #fff; /* White title color */
+  color: #fff;
   font-size: 24px;
 }
 
@@ -20,19 +20,26 @@ input, select, button {
 }
 
 input, select {
-  background-color: #131B2C; /* Dark background for inputs */
-  color: #ffffff; /* Light text color */
+  background-color: #131B2C;
+  color: #ffffff;
+  border-radius: 30px;
+  height: 35px;
+  padding: 10px;
+  padding-left: 30px;
+  border: none;
+  font-size: 16px;
+  box-shadow: inset 5px 5px 10px #0d141f, inset -5px -5px 10px #172036;
 }
 
 button {
-  background-color: #3d72de; /* Blue button background */
+  background-color: #3d72de;
   color: white;
   cursor: pointer;
   transition: background-color 0.3s ease;
 }
 
 button:hover {
-  background-color: #335ebb; /* Darker shade on hover */
+  background-color: #335ebb;
 }
 
 .app-container {
@@ -86,9 +93,8 @@ button:hover {
 
 .dialogs-bar li {
   margin-bottom: 5px;
-  color: #9b9bba; /* Slightly muted text for dialog list */
+  color: #9b9bba;
 }
-
 .dialogs-bar strong {
   cursor: pointer;
   color: #ffffff;
@@ -105,7 +111,7 @@ button:hover {
 }
 
 .error-message {
-  color: #ff6b6b; /* Red error message */
+  color: #ff6b6b;
   font-size: 14px;
   margin-top: 10px;
 }
@@ -158,28 +164,28 @@ input[type="text"] {
 
 .example-prompts {
   display: flex;
-  gap: 60px; /* Add space between boxes */
+  gap: 60px;
 }
 
 .example-prompts div {
-  background-color: #01040C; /* Same as the background */
+  background-color: #01040C;
   color: #525864;
-  padding: 30px; /* Add more space around the text */
+  padding: 30px;
   border-radius: 25px;
   text-align:left;
   cursor: pointer;
   transition: background-color 0.3s ease;
-  width: 110px; /* Fixed width for square shape */
-  height: 90px; /* Fixed height for square shape */
-  border: 1px solid #525864; /* Light-colored border */
+  width: 110px;
+  height: 90px;
+  border: 1px solid #525864;
   display: flex; 
   justify-content: center; 
-  align-items: center; /* Center text vertically */
+  align-items: center;
   font-size: 14px;
 }
 
 .example-prompts div:hover {
-  background-color: #1A1F2E; /* Slightly lighter on hover */
+  background-color: #1A1F2E;
 }
 
 .consensus-toggle {
@@ -198,24 +204,24 @@ input[type="text"] {
 }
 
 .agent-box {
-  background-color: #2b2b3d; /* Dark background for agent box */
+  background-color: #2b2b3d;
   color: #ffffff;
   padding: 10px;
   margin: 5px;
   border-radius: 8px;
   cursor: pointer;
-  display: inline-block; /* Display agents as small boxes */
+  display: inline-block;
   transition: background-color 0.3s ease;
-  border: 2px solid transparent; /* Add border to indicate selection */
+  border: 2px solid transparent;
 }
 
 .agent-box.active {
-  background-color: #3d72de; /* Highlight active agent */
-  border-color: #ffffff; /* White border to indicate active */
+  background-color: #3d72de;
+  border-color: #ffffff;
 }
 
 .agent-box:hover {
-  background-color: #3d3d5c; /* Slightly darker on hover */
+  background-color: #3d3d5c;
 }
 
 .generate-agents-container {
@@ -260,11 +266,11 @@ input[type="text"] {
 
 .agent-box-container {
   display: flex;
-  flex-wrap: wrap; /* Allows the boxes to wrap if there are too many */
+  flex-wrap: wrap;
 }
 
 .agent-box {
-  position: relative; /* To position the X button inside the box */
+  position: relative;
   background-color: #2b2b3d;
   color: #ffffff;
   padding: 10px;
@@ -293,13 +299,13 @@ input[type="text"] {
   right: 5px;
   background: none;
   border: none;
-  color: #ff6b6b; /* Red color for delete button */
-  font-size: 18px; /* Bigger size for the X symbol */
+  color: #ff6b6b;
+  font-size: 18px;
   cursor: pointer;
   padding: 0;
   line-height: 1;
 }
 
 .delete-button:hover {
-  color: #ff4c4c; /* Slightly darker red on hover */
+  color: #ff4c4c;
 } 
