@@ -26,6 +26,7 @@ input, select {
   height: 35px;
   padding: 10px;
   padding-left: 30px;
+  padding-right: 30px;
   border: none;
   font-size: 16px;
   box-shadow: inset 5px 5px 10px #0d141f, inset -5px -5px 10px #172036;
@@ -150,7 +151,7 @@ input[type="text"] {
   background-color: #2a52b2;
 }
 
-.generate-button, .continue-button, .stop-button {
+.continue-button, .stop-button {
   background-color: #2b2b3d;
   color: #ffffff;
   padding: 10px;
@@ -237,13 +238,47 @@ input[type="text"] {
   background-color: #3d3d5c;
 }
 
+
 .generate-agents-container {
-  margin-top: 20px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  width: 100%;
-  max-width: 400px;
+  display: flex; /* Asettaa pudotusvalikon ja napin vierekkäin */
+  align-items: center; /* Keskittää ne pystysuunnassa */
+  gap: 10px; /* Lisää tilaa niiden väliin */
+}
+
+.select-dropdown {
+  padding: 8px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  font-size: 16px;
+}
+
+.generate-agents-container {
+  display: flex; /* Asettaa pudotusvalikon ja napin vierekkäin */
+  align-items: center; /* Keskittää ne pystysuunnassa */
+  gap: 10px; /* Lisää tilaa niiden väliin */
+}
+
+.select-dropdown {
+  padding: 8px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  font-size: 16px;
+}
+
+.generate-button {
+  padding: 10px 15px;
+  border-radius: 5px;
+  background-color: #B7C0D0;
+  color: #01040C;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+  border-radius: 30px;
+  height: 50px;
+  padding: 10px;
+  padding-left: 30px;
+  padding-right: 30px;
+  font-weight: bold;
 }
 
 .label {
@@ -258,19 +293,6 @@ input[type="text"] {
   color: #ffffff;
   border-radius: 8px;
   border: none;
-}
-
-.generate-button {
-  background-color: #3d72de;
-  color: #ffffff;
-  padding: 10px 20px;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
-.generate-button:hover {
-  background-color: #2a52b2;
 }
 
 .perspective-selector-container {

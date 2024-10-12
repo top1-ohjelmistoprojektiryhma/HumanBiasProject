@@ -9,9 +9,7 @@ const GenerateAgents = ({ onSubmit }) => {
 
   return (
     <div className="generate-agents-container">
-      <label htmlFor="numAgents" className="label">
-        Number of Agents:
-      </label>
+      {/* Dropdown for selecting the number of agents */}
       <select
         id="numAgents"
         value={numAgents}
@@ -24,6 +22,8 @@ const GenerateAgents = ({ onSubmit }) => {
           </option>
         ))}
       </select>
+
+      {/* Button for generating agents */}
       <button onClick={handleSubmit} className="generate-button">
         Generate Agents
       </button>
@@ -32,3 +32,4 @@ const GenerateAgents = ({ onSubmit }) => {
 };
 
 export default GenerateAgents;
+
