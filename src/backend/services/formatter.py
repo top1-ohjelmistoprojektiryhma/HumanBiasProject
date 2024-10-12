@@ -9,7 +9,7 @@ def format_multiple(role_list, prompt):
     for role in role_list:
         response_list.append(format_single(role, prompt))
     return response_list
-oli_aluksi = "hold your ground"
+
 def format_single(role, prompt):
     role = role if role not in (None, "") else "Yourself"
     return PROMPTS["format_single"].format(role=str(role), prompt=str(prompt))

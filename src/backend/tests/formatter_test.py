@@ -90,6 +90,6 @@ class TestFormatter(unittest.TestCase):
                 "text": "output"
             }
         ]
-        result = formatter.format_dialog_prompt_with_unseen(agent, unseen_prompts)
+        result = formatter.format_dialog_prompt_with_unseen(agent, unseen_prompts, "dialog - no consensus")
         expected = f"""['student has given the following response: output']"""
         self.assertIn(expected, result)
