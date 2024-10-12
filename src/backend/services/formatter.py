@@ -9,19 +9,24 @@ def format_multiple(role_list, prompt):
     for role in role_list:
         response_list.append(format_single(role, prompt))
     return response_list
-
+oli_aluksi = "hold your ground"
 def format_single(role, prompt):
     role = role if role not in (None, "") else "Yourself"
     return PROMPTS["format_single"].format(role=str(role), prompt=str(prompt))
 
-def format_dialog_prompt_with_unseen(agent, unseen_prompts):
+def format_dialog_prompt_with_unseen(agent, unseen_prompts, dialog_format):
     print(f"Agent: {agent}, Unseen Prompts: {unseen_prompts}")
     unseen = [
         PROMPTS["format_unseen"].format(role=prompt['agent'].role, text=prompt['text'])
         for prompt in unseen_prompts
     ]
+    if dialog_format == "dialog - no consensus":
+        format_text = "hold your ground"
+    else:
+        format_text = "update your viewpoint" # place holder
+
     return PROMPTS["format_dialog_prompt_with_unseen"].format(
-        role=str(agent.role), unseen=str(unseen))
+                role=str(agent.role), consensus=format_text, unseen=str(unseen))
 
 def format_generate_agents_prompt(prompt, desired_number_of_agents, list_of_agents):
     """

@@ -40,7 +40,9 @@ class Dialog:
         else:
             agent = self.get_next_agent()
             unseen_prompts = agent.get_unseen_prompts()
-            prompt = formatter.format_dialog_prompt_with_unseen(agent, unseen_prompts)
+            prompt = formatter.format_dialog_prompt_with_unseen(agent,
+                                                                unseen_prompts,
+                                                                self.dialog_format)
             prompts_list = [{"agent": agent, "text": prompt}]
 
         api_input_list = [
