@@ -305,42 +305,52 @@ input[type="text"] {
 }
 
 .agent-box {
+  border: 1px solid #B7C0D0;
   position: relative;
-  background-color: #2b2b3d;
+  background-color: #01040C;
   color: #ffffff;
-  padding: 10px;
   margin: 5px;
-  border-radius: 8px;
+  border-radius: 30px;
   cursor: pointer;
   transition: background-color 0.3s ease;
-  border: 2px solid transparent;
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
   min-width: 100px;
   text-align: center;
+  padding-left: 30px;
+  padding-right: 30px;
+  padding-top: 5px;
+  padding-bottom: 5px;
 }
 
 .agent-box.active {
-  background-color: #3d72de;
-  border-color: #ffffff;
+  background-color: #B7C0D0;
+  color: #01040C;
+  border-color: #B7C0D0;
 }
 
 .agent-box:hover {
-  background-color: #3d3d5c;
+  background-color: #1A1F2E;
 }
 
 .delete-button {
-  position: absolute;
-  top: 5px;
-  right: 5px;
   background: none;
   border: none;
   color: #ff6b6b;
-  font-size: 18px;
+  font-size: 24px;
   cursor: pointer;
-  padding: 0;
+  width: 20px;
+  height: 20px;
   line-height: 1;
+  margin-left: 20px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: background-color 0.3s ease;
 }
 
 .delete-button:hover {
-  color: #ff4c4c;
-} 
+  background-color: #ff4c4c;
+  color: white;
+}
