@@ -7,8 +7,6 @@ class ServiceHandler:
         self.agent_manager = agent_manager
         self.api_manager = api_manager
         self.session_manager = session_manager
-        default_agents = ["farmer", "elder", "student"]
-        self.create_agents(default_agents)
 
     def start_new_session(self, text, session_format):
         """
