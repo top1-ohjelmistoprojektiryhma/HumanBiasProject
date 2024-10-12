@@ -182,7 +182,7 @@ const App = () => {
         <h1>Human Bias Project</h1>
         {!dialogStarted && (
           <>
-            <ExamplePrompts />
+            <ExamplePrompts setPrompt={setPrompt} /> 
             <InputForm prompt={prompt} setPrompt={setPrompt} />
             <GenerateAgents onSubmit={handleGenerateAgents} />
             <PerspectiveSelector

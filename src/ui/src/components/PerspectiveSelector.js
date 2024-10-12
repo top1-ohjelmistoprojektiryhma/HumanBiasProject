@@ -48,7 +48,6 @@ const PerspectiveSelector = ({ perspectives, selectedPerspectives, setSelectedPe
 
   return (
     <div className="perspective-selector-container">
-      <label>Select perspectives:</label>
 
       <div className="agent-box-container">
         {perspectives.map((perspective, index) => (
