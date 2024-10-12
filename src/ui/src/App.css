@@ -31,6 +31,19 @@ input, select {
   box-shadow: inset 5px 5px 10px #0d141f, inset -5px -5px 10px #172036;
 }
 
+.input-form {
+  width: 100%;
+}
+
+.add-perspective-form {
+  width: 200px !important;
+}
+
+input::placeholder {
+  color: #B7C0D0;
+  opacity: 1;
+}
+
 button {
   background-color: #3d72de;
   color: white;

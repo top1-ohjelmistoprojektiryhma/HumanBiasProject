@@ -20,11 +20,9 @@ const AddAgentForm = ({ perspectives, setPerspectives }) => {
    * @function
    */
   const handleAddPerspective = async () => {
-    // Ensure the perspective is not empty
     if (perspective.trim() === '') return;
 
     try {
-      // Send POST request to add the new perspective
       const response = await fetch('/api/add-perspective', {
         method: 'POST',
         headers: {
@@ -35,10 +33,7 @@ const AddAgentForm = ({ perspectives, setPerspectives }) => {
       const result = await response.json();
       console.log('Added perspective:', result);
 
-      // Update the list of perspectives in the state
       setPerspectives([...perspectives, perspective]);
-
-      // Clear the input field after successful addition
       setPerspective('');
     } catch (error) {
       console.error('Error adding perspective:', error);
@@ -47,14 +42,13 @@ const AddAgentForm = ({ perspectives, setPerspectives }) => {
 
   return (
     <div>
-      {/* Label for the input field */}
-      <label>Enter a new perspective: </label>
-
-      {/* Input field for entering a new perspective */}
+      {/* Input field with placeholder */}
       <input
         type="text"
         value={perspective}
         onChange={(e) => setPerspective(e.target.value)}
+        placeholder="Enter a new perspective"
+        className="add-perspective-form"
       />
 
       {/* Button to add the new perspective */}

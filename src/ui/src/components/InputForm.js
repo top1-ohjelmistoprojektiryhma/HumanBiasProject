@@ -10,14 +10,13 @@ import React from 'react';
 const InputForm = ({ prompt, setPrompt }) => {
   return (
     <div>
-      {/* Label for the input field */}
-      <label>Enter your statement:</label>
-
-      {/* Input field for entering the statement */}
+      {/* Input field with placeholder */}
       <input
         type="text"
         value={prompt}
         onChange={(e) => setPrompt(e.target.value)}
+        placeholder="Enter your statement"
+        className="input-form"
       />
     </div>
   );
