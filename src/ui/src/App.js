@@ -3,7 +3,6 @@ import InputForm from './components/InputForm';
 import PerspectiveSelector from './components/PerspectiveSelector';
 import SubmitButton from './components/SubmitButton';
 import ResponseDisplay from './components/ResponseDisplay';
-import AddPerspectiveForm from './components/AddPerspectiveForm';
 import GenerateAgents from './components/GenerateAgents';
 import DialogsBar from './components/DialogsBar';
 import DialogDisplay from './components/DialogDisplay';
@@ -184,14 +183,13 @@ const App = () => {
           <>
             <ExamplePrompts setPrompt={setPrompt} /> 
             <InputForm prompt={prompt} setPrompt={setPrompt} />
-            <GenerateAgents onSubmit={handleGenerateAgents} />
+            <GenerateAgents perspectives={perspectives} setPerspectives={setPerspectives} onSubmit={handleGenerateAgents} />
             <PerspectiveSelector
               perspectives={perspectives}
               selectedPerspectives={selectedPerspectives}
               setSelectedPerspectives={setSelectedPerspectives}
               setPerspectives={setPerspectives}
             />
-            <AddPerspectiveForm perspectives={perspectives} setPerspectives={setPerspectives} />
             <FormatSelector formatOptions={formatOptions} setSelectedFormat={setSelectedFormat} />
             <SubmitButton onSubmit={handleSubmit} />
             {error && <div className="error-message">{error}</div>}
