@@ -35,7 +35,7 @@ const App = () => {
   const [error, setError] = useState("");
   const [formatOptions, setFormatOptions] = useState([]);
   const [isDialogsBarVisible, setIsDialogsBarVisible] = useState(false); // New state for visibility
-
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -73,6 +73,14 @@ const App = () => {
     if (!validateUserInput()) {
       return;
     }
+
+    // Clear displayed session and summary
+    setDisplayedSession(null);
+    setSummary('');
+
+    // Set loading to true to display the loading spinner
+    setLoading(true);
+
     const requestData = {
       prompt: prompt,
       perspective: selectedPerspectives,
@@ -100,6 +108,9 @@ const App = () => {
     } catch (error) {
       console.error('Error processing the statement:', error);
     }
+
+    // Set loading to false to hide the loading spinner
+    setLoading(false);
   };
   const handleGenerateAgents = async (numAgents) => {
     const requestData = {
@@ -117,6 +128,8 @@ const App = () => {
     }
   };
   const handleContinue = async () => {
+    // Set loading to true to display the loading spinner
+    setLoading(true);
     try {
       const data = await continueSession(displayedSession);
       const newSessionId = data.session_id;
@@ -136,6 +149,9 @@ const App = () => {
     } catch (error) {
       console.error('Error continuing the dialog:', error);
     }
+
+    // Set loading to false to hide the loading spinner
+    setLoading(false);
   };
 
   const handleStop = () => {
@@ -208,6 +224,11 @@ const App = () => {
               />
               <FormatSelector formatOptions={formatOptions} setSelectedFormat={setSelectedFormat} />
               <SubmitButton onSubmit={handleSubmit} />
+              {loading ? (
+                <div className="spinner-container">
+                  <div className="spinner"></div>
+                </div>
+              ) : null}
               {error && <div className="error-message">{error}</div>}
             </>
           )}
@@ -216,17 +237,22 @@ const App = () => {
           {displayedSession !== null && dialogs[displayedSession] && (
             <>
               <DialogDisplay dialogId={displayedSession} dialog={dialogs[displayedSession]} />
+              {loading ? (
+                <div className="spinner-container">
+                  <div className="spinner"></div>
+                </div>
+              ) : null}
+              {dialogStarted && <ContinueButton onSubmit={handleContinue} />}
+              {dialogStarted && <StopButton onSubmit={handleStop} />}
               {summary && (
                 <div className="summary-section">
                   <h2>Summary</h2>
                   <p>{summary}</p>
                 </div>
               )}
+              {dialogStarted && <SummaryButton onClick={handleSummaryClick} />}
             </>
           )}
-          {dialogStarted && <ContinueButton onSubmit={handleContinue} />}
-          {dialogStarted && <StopButton onSubmit={handleStop} />}
-          {dialogStarted && <SummaryButton onClick={handleSummaryClick} />}
         </div>
       </div>
     </div>
