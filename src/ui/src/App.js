@@ -168,7 +168,13 @@ const App = () => {
   };
 
   return (
-    <div className={`app-container ${isDialogsBarVisible ? 'dialogs-visible' : 'dialogs-hidden'}`}>
+    <div className="app-container">
+      {/* Menu Symbol */}
+      <div className="menu-symbol" onClick={handleToggleDialogsBar}>
+        &#9776; {/* Unicode character for the menu symbol */}
+      </div>
+  
+      {/* DialogsBar: Siirretään tämä pois main contentin sisältä */}
       <div className={`dialogs-bar ${isDialogsBarVisible ? '' : 'dialogs-bar-hidden'}`}>
         <DialogsBar
           dialogs={dialogs}
@@ -176,8 +182,9 @@ const App = () => {
           toggleDialog={setExpandedDialogs}
         />
       </div>
-
-      <div className="main-content">
+  
+      {/* Main content liikkuu oikealle, kun dialogs bar on näkyvissä */}
+      <div className={`main-content ${isDialogsBarVisible ? 'main-content-shift' : ''}`}>
         <h1>Human Bias Project</h1>
         {!dialogStarted && (
           <>
@@ -196,7 +203,6 @@ const App = () => {
           </>
         )}
         {response && <ResponseDisplay response={response} />}
-        {/* Display the dialog content */}
         {displayedSession !== null && dialogs[displayedSession] && (
           <>
             <DialogDisplay dialogId={displayedSession} dialog={dialogs[displayedSession]} />
@@ -210,13 +216,7 @@ const App = () => {
         )}
         {dialogStarted && <ContinueButton onSubmit={handleContinue} />}
         {dialogStarted && <StopButton onSubmit={handleStop} />}
-        {/* Pass the correct dialog data to handleSummaryClick */}
         {dialogStarted && <SummaryButton onClick={handleSummaryClick} />}
-      </div>
-
-      {/* Menu Symbol */}
-      <div className="menu-symbol" onClick={handleToggleDialogsBar}>
-        &#9776; {/* Unicode character for the menu symbol */}
       </div>
     </div>
   );
