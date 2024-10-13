@@ -167,14 +167,14 @@ const App = () => {
     setIsDialogsBarVisible(!isDialogsBarVisible);
   };
 
+
+
   return (
     <div className="app-container">
-      {/* Menu Symbol */}
       <div className="menu-symbol" onClick={handleToggleDialogsBar}>
         &#9776; {/* Unicode character for the menu symbol */}
       </div>
-  
-      {/* DialogsBar: Siirretään tämä pois main contentin sisältä */}
+
       <div className={`dialogs-bar ${isDialogsBarVisible ? '' : 'dialogs-bar-hidden'}`}>
         <DialogsBar
           dialogs={dialogs}
@@ -182,41 +182,52 @@ const App = () => {
           toggleDialog={setExpandedDialogs}
         />
       </div>
-  
-      {/* Main content liikkuu oikealle, kun dialogs bar on näkyvissä */}
+
       <div className={`main-content ${isDialogsBarVisible ? 'main-content-shift' : ''}`}>
         <h1>Human Bias Project</h1>
-        {!dialogStarted && (
-          <>
-            <ExamplePrompts setPrompt={setPrompt} /> 
-            <InputForm prompt={prompt} setPrompt={setPrompt} />
-            <GenerateAgents perspectives={perspectives} setPerspectives={setPerspectives} onSubmit={handleGenerateAgents} />
-            <PerspectiveSelector
-              perspectives={perspectives}
-              selectedPerspectives={selectedPerspectives}
-              setSelectedPerspectives={setSelectedPerspectives}
-              setPerspectives={setPerspectives}
-            />
-            <FormatSelector formatOptions={formatOptions} setSelectedFormat={setSelectedFormat} />
-            <SubmitButton onSubmit={handleSubmit} />
-            {error && <div className="error-message">{error}</div>}
-          </>
-        )}
-        {response && <ResponseDisplay response={response} />}
-        {displayedSession !== null && dialogs[displayedSession] && (
-          <>
-            <DialogDisplay dialogId={displayedSession} dialog={dialogs[displayedSession]} />
-            {summary && (
-              <div className="summary-section">
-                <h2>Summary</h2>
-                <p>{summary}</p>
+        <ExamplePrompts setPrompt={setPrompt} />
+        <InputForm prompt={prompt} setPrompt={setPrompt} />
+
+        <div className="centered-column">
+          {!dialogStarted && (
+            <>
+
+              <div className="generate-agents-container">
+                <GenerateAgents
+                  perspectives={perspectives}
+                  setPerspectives={setPerspectives}
+                  onSubmit={handleGenerateAgents}
+                />
               </div>
-            )}
-          </>
-        )}
-        {dialogStarted && <ContinueButton onSubmit={handleContinue} />}
-        {dialogStarted && <StopButton onSubmit={handleStop} />}
-        {dialogStarted && <SummaryButton onClick={handleSummaryClick} />}
+
+              <PerspectiveSelector
+                perspectives={perspectives}
+                selectedPerspectives={selectedPerspectives}
+                setSelectedPerspectives={setSelectedPerspectives}
+                setPerspectives={setPerspectives}
+              />
+              <FormatSelector formatOptions={formatOptions} setSelectedFormat={setSelectedFormat} />
+              <SubmitButton onSubmit={handleSubmit} />
+              {error && <div className="error-message">{error}</div>}
+            </>
+          )}
+
+          {response && <ResponseDisplay response={response} />}
+          {displayedSession !== null && dialogs[displayedSession] && (
+            <>
+              <DialogDisplay dialogId={displayedSession} dialog={dialogs[displayedSession]} />
+              {summary && (
+                <div className="summary-section">
+                  <h2>Summary</h2>
+                  <p>{summary}</p>
+                </div>
+              )}
+            </>
+          )}
+          {dialogStarted && <ContinueButton onSubmit={handleContinue} />}
+          {dialogStarted && <StopButton onSubmit={handleStop} />}
+          {dialogStarted && <SummaryButton onClick={handleSummaryClick} />}
+        </div>
       </div>
     </div>
   );

@@ -4,11 +4,28 @@ body {
   background-color: #01040C;
   color: #ffffff;
   white-space: pre-line;
+  height: 100vh;
+  overflow-x: hidden;
 } 
 
 h1 {
   color: #fff;
   font-size: 24px;
+}
+
+.app-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.centered-column {
+  width: 750px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
 }
 
 input, select, button {
@@ -32,8 +49,25 @@ input, select {
   box-shadow: inset 5px 5px 10px #0d141f, inset -5px -5px 10px #172036;
 }
 
+.input-form-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 30px;
+}
+
 .input-form {
   width: 100%;
+  max-width: 600px;
+  padding: 10px 20px;
+  padding-left: 30px;
+  padding-right: 30px;
+  border-radius: 30px;
+  background-color: #131B2C;
+  color: white;
+  font-size: 16px;
+  border: none;
+  box-shadow: inset 5px 5px 10px #0d141f, inset -5px -5px 10px #172036; 
 }
 
 .add-perspective-form {
@@ -54,12 +88,6 @@ button {
 
 button:hover {
   background-color: #335ebb;
-}
-
-.app-container {
-  display: flex;
-  height: 100vh;
-  position: relative;
 }
 
 .menu-symbol {
@@ -122,6 +150,7 @@ button:hover {
   width: 100%;
   height: 100vh;
   margin-left: 0;
+  box-sizing: border-box;
 }
 
 .main-content-shift {
@@ -186,7 +215,9 @@ input[type="text"] {
 
 .example-prompts {
   display: flex;
-  gap: 60px;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
 }
 
 .example-prompts div {
@@ -194,14 +225,14 @@ input[type="text"] {
   color: #525864;
   padding: 30px;
   border-radius: 25px;
-  text-align:left;
+  text-align: left;
   cursor: pointer;
   transition: background-color 0.3s ease;
   width: 110px;
   height: 90px;
   border: 1px solid #525864;
   display: flex; 
-  justify-content: center; 
+  justify-content: center;
   align-items: center;
   font-size: 14px;
 }
@@ -209,6 +240,7 @@ input[type="text"] {
 .example-prompts div:hover {
   background-color: #1A1F2E;
 }
+
 
 .consensus-toggle {
   display: flex;
@@ -246,11 +278,11 @@ input[type="text"] {
   background-color: #3d3d5c;
 }
 
-
 .generate-agents-container {
   display: flex;
   align-items: center;
   gap: 10px;
+  justify-content: left;
 }
 
 .select-dropdown {

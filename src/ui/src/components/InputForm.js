@@ -9,7 +9,7 @@ import React from 'react';
  */
 const InputForm = ({ prompt, setPrompt }) => {
   return (
-    <div>
+    <div className="input-form-container">
       <input
         type="text"
         value={prompt}
@@ -22,4 +22,3 @@ const InputForm = ({ prompt, setPrompt }) => {
 };
 
 export default InputForm;
-
