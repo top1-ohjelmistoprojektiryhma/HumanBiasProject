@@ -6,8 +6,7 @@ const FormatSelector = ({ formatOptions, setSelectedFormat }) => {
   };
 
   return (
-    <div>
-      <label htmlFor="format-select">Select Format:</label>
+    <div className="format-selector">
       <select id="format-select" onChange={handleFormatChange}>
         {formatOptions.map((format) => (
           <option key={format} value={format}>

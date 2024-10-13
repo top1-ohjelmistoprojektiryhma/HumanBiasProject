@@ -354,3 +354,28 @@ input[type="text"] {
   background-color: #ff4c4c;
   color: white;
 }
+
+.format-selector {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  margin-bottom: 20px;
+  font-family: Arial, sans-serif;
+}
+
+.format-selector select {
+  padding: 8px 12px;
+  font-size: 14px;
+  border-radius: 30px;
+  background-color: #B7C0D0;
+  cursor: pointer;
+  transition: border-color 0.3s ease;
+  font-weight: bold;
+  color: #01040C;
+  font-size: 16px;
+  height: 50px;
+  padding: 10px;
+  padding-left: 30px;
+  padding-right: 30px;
+}
+
