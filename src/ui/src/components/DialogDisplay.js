@@ -33,29 +33,26 @@ const DialogDisplay = ({ dialogId, dialog }) => {
   }
 
   return (
-    <div>
+    <div className="dialog-container">
       <h3>Dialog ID: {dialogId}</h3>
       <p>Initial Prompt: {dialog.initial_prompt}</p>
       <div>
         {Object.keys(dialog.rounds).map((roundId) => (
-          <div key={roundId}>
-            <h4 onClick={() => handleToggleRound(roundId)} style={{ cursor: 'pointer' }}>
+          <div key={roundId} className="dialog-round">
+            <h4 onClick={() => handleToggleRound(roundId)}>
               {parseInt(roundId) === 1 ? `Round ${parseInt(roundId)}: Opening statements` : `Round ${parseInt(roundId)}: ${dialog.rounds[roundId][0]?.agent || 'Unknown Agent'}`}
             </h4>
             {expandedRounds[roundId] && (
               <ul>
                 {dialog.rounds[roundId].map((prompt, index) => (
-                  <li key={index} style={{ marginBottom: '10px' }}>
+                  <li key={index}>
                     <strong>Agent:</strong> {prompt.agent} <br />
                     <strong>Output:</strong> {prompt.output} <br />
-                    <span
-                      onClick={() => handleToggleInfo(roundId, index)}
-                    >
+                    <span onClick={() => handleToggleInfo(roundId, index)}>
                       {expandedInfo[roundId]?.[index] ? 'Hide model and input' : 'Show model and input'}
                     </span>
                     {expandedInfo[roundId]?.[index] && (
                       <div>
-
                         <strong>Model:</strong> {prompt.model} <br />
                         <strong>Input:</strong> {prompt.input} <br />
                       </div>

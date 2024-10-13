@@ -240,9 +240,9 @@ input[type="text"] {
 
 
 .generate-agents-container {
-  display: flex; /* Asettaa pudotusvalikon ja napin vierekkäin */
-  align-items: center; /* Keskittää ne pystysuunnassa */
-  gap: 10px; /* Lisää tilaa niiden väliin */
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 
 .select-dropdown {
@@ -253,9 +253,9 @@ input[type="text"] {
 }
 
 .generate-agents-container {
-  display: flex; /* Asettaa pudotusvalikon ja napin vierekkäin */
-  align-items: center; /* Keskittää ne pystysuunnassa */
-  gap: 10px; /* Lisää tilaa niiden väliin */
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 
 .select-dropdown {
@@ -379,3 +379,63 @@ input[type="text"] {
   padding-right: 30px;
 }
 
+.dialog-container {
+  background-color: #0A101C;
+  color: #ffffff;
+  padding: 20px;
+  border-radius: 10px;
+  margin-bottom: 20px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  border: 1px solid #AEB5C0;
+}
+
+.dialog-container h3 {
+  margin-top: 0;
+  color: #AEB5C0;
+}
+
+.dialog-container p {
+  margin-bottom: 15px;
+  font-size: 16px;
+}
+
+.dialog-round {
+  margin-bottom: 15px;
+}
+
+.dialog-round h4 {
+  cursor: pointer;
+  color: #6499ff;
+  margin: 0;
+}
+
+.dialog-round ul {
+  list-style-type: none;
+  padding-left: 0;
+}
+
+.dialog-round li {
+  margin-bottom: 15px;
+  padding: 10px;
+  background-color: #131B2C;
+  border-radius: 8px;
+}
+
+.dialog-round li strong {
+  color: #AEB5C0;
+}
+
+.dialog-round li span {
+  cursor: pointer;
+  color: #6499ff;
+  display: block;
+  margin-top: 5px;
+}
+
+.dialog-round li div {
+  margin-top: 10px;
+  background-color: #0A101C;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #AEB5C0;
+}
