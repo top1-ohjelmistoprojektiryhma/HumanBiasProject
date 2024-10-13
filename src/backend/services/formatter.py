@@ -20,13 +20,9 @@ def format_dialog_prompt_with_unseen(agent, unseen_prompts, dialog_format):
         PROMPTS["format_unseen"].format(role=prompt['agent'].role, text=prompt['text'])
         for prompt in unseen_prompts
     ]
-    if dialog_format == "dialog - no consensus":
-        format_text = "hold your ground"
-    else:
-        format_text = "update your viewpoint" # place holder
 
-    return PROMPTS["format_dialog_prompt_with_unseen"].format(
-                role=str(agent.role), consensus=format_text, unseen=str(unseen))
+    return PROMPTS["format_dialog_prompt_with_unseen"][dialog_format].format(
+                role=str(agent.role), unseen=str(unseen))
 
 def format_generate_agents_prompt(prompt, desired_number_of_agents, list_of_agents):
     """
