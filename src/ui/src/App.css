@@ -310,7 +310,7 @@ input[type="text"] {
   background-color: #01040C;
   color: #ffffff;
   margin: 5px;
-  border-radius: 30px;
+  border-radius: 8px;
   cursor: pointer;
   transition: background-color 0.3s ease;
   display: inline-flex;
@@ -324,9 +324,9 @@ input[type="text"] {
 }
 
 .agent-box.active {
-  background-color: #B7C0D0;
-  color: #01040C;
-  border-color: #B7C0D0;
+  background-color: #131B2C;
+  color: #ffffff;
+  border-color: #6499ff;
 }
 
 .agent-box:hover {
