@@ -182,6 +182,12 @@ class TestServiceHandler(unittest.TestCase):
         summary = self._handler.get_summary_from_ai("dialog data")
         self._mock_api_manager.send_prompts.assert_called_once()
         self.assertEqual(summary, "summary from AI")
+    
+    def test_get_summary_from_ai_returns_none(self):
+        self._mock_api_manager.send_prompts.return_value = []
+        summary = self._handler.get_summary_from_ai("dialog data")
+        self._mock_api_manager.send_prompts.assert_called_once()
+        self.assertIsNone(summary)
 
     def test_get_bias_from_ai(self):
         self._mock_api_manager.send_prompts.return_value = [
@@ -190,3 +196,15 @@ class TestServiceHandler(unittest.TestCase):
         biases = self._handler.get_bias_from_ai("dialog data")
         self._mock_api_manager.send_prompts.assert_called_once()
         self.assertEqual(biases, "biases from AI")
+
+    def test_get_bias_from_ai_returns_none(self):
+        self._mock_api_manager.send_prompts.return_value = []
+        bias = self._handler.get_bias_from_ai("dialog data")
+        self._mock_api_manager.send_prompts.assert_called_once()
+        self.assertIsNone(bias)
+
+    def test_get_all_formats(self):
+        self._mock_session_manager.get_all_formats.return_value = "formats"
+        result = self._handler.get_all_formats()
+        self._mock_session_manager.get_all_formats.assert_called_once()
+        self.assertEqual(result, "formats")
