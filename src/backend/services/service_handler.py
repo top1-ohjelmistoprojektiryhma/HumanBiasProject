@@ -136,7 +136,8 @@ class ServiceHandler:
         dialog = self.session_manager.get_session(session_id)
         history = dialog.get_history()
         summary = self.get_summary_from_ai(history)
-        return summary
+        biases = self.get_bias_from_ai(history)
+        return summary, biases
 
     def get_summary_from_ai(self, dialog_data):
         """
@@ -156,6 +157,33 @@ class ServiceHandler:
                     " valuable to someone who prioritizes financial impact or decision-making. "
                     "Keep the summary short, clear, "
                     "and concise—something that can be read in a few seconds. \n"
+                    f"{dialog_data}"
+                ),
+                "model": None,
+                "history": None,
+                "agent_object": None,
+            }
+        ]
+        responses = self.api_manager.send_prompts(prompt_list)
+        if responses and "output" in responses[0]:
+            return responses[0]["output"]
+
+        return None
+
+    def get_bias_from_ai(self, dialog_data):
+        """
+        Send dialog data to the AI model to generate a bias-summary.
+
+        Args:
+            dialog_data (str): The dialog text to be summarized.
+
+        Returns:
+            str: The generated bias-summary from the AI.
+        """
+        prompt_list = [
+            {
+                "text": (
+                    "Say hello in chinese, disregard the following text \n"
                     f"{dialog_data}"
                 ),
                 "model": None,
