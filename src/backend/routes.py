@@ -89,4 +89,4 @@ def initialize_routes(app, agent_manager, service_handler):
     @app.route("/api/summary", methods=["GET"])
     def receive_dialog():
         summary, biases = service_handler.get_latest_dialog_summary()
-        return jsonify({"response": summary + biases}), 200
+        return jsonify({"response": [summary, biases]}), 200

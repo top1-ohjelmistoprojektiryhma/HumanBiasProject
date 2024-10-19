@@ -32,6 +32,7 @@ const App = () => {
   const [selectedFormat, setSelectedFormat] = useState('');
   const [dialogStarted, setDialogStarted] = useState(false)
   const [summary, setSummary] = useState('');
+  const [biases, setBiases] = useState('');
   const [error, setError] = useState("");
   const [formatOptions, setFormatOptions] = useState([]);
   const [isDialogsBarVisible, setIsDialogsBarVisible] = useState(false); // New state for visibility
@@ -173,7 +174,8 @@ const App = () => {
       .then((response) => response.json())
       .then((data) => {
         console.log('Summary:', data.response);
-        setSummary(data.response);
+        setSummary(data.response[0]); // summary index in array
+        setBiases(data.response[1]); // biases index in array
       })
       .catch((error) => {
         console.error('Error sending dialog data:', error);
@@ -248,6 +250,8 @@ const App = () => {
                 <div className="summary-section">
                   <h2>Summary</h2>
                   <p>{summary}</p>
+                  <h2>Biases</h2>
+                  <p>{biases}</p>
                 </div>
               )}
               {dialogStarted && <SummaryButton onClick={handleSummaryClick} />}
