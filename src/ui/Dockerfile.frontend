@@ -4,8 +4,8 @@ FROM node:16
 # Set working directory
 WORKDIR /app
 
-#  Copy src/ui
-COPY ./ ./
+# Copy frontend files
+COPY . .
 
 # Install dependencies
 RUN npm ci
@@ -13,6 +13,9 @@ RUN npm ci
 # Build the application
 RUN npm run build
 
+# Install a static file server to serve the built application
+RUN npm install -g serve
+
 # Expose port and start the application
 EXPOSE 3000
-CMD ["npm", "start"]
+CMD ["serve", "-s", "build"]
