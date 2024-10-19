@@ -5,14 +5,16 @@ FROM python:3.9
 WORKDIR /app
 
 # Poetryn asennus ja riippuvuudet
-COPY pyproject.toml poetry.lock* /app/
+COPY pyproject.toml poetry.lock* ./
 RUN pip install poetry \
     && poetry config virtualenvs.create false \
     && poetry install --no-interaction --no-ansi
 
-# Kopioi backendin koodi
-COPY . /app
+# Copy backend files
+COPY prompts.json ./
+COPY src/backend ./src/backend
+COPY src/services ./src/services
 
-# Avaa portti ja määritä käynnistyskomento
+# Expose port and start the application in src/backend/main.py
 EXPOSE 8000
-CMD ["python", "app.py"]
+CMD ["python", "src/backend/main.py"]

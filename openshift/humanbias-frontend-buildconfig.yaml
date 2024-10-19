@@ -1,0 +1,25 @@
+apiVersion: build.openshift.io/v1
+kind: BuildConfig
+metadata:
+  name: humanbias-frontend-test
+spec:
+  source:
+    type: Git
+    git:
+      uri: https://github.com/top1-ohjelmistoprojektiryhma/HumanBiasProject.git
+      ref: main
+      contextDir: ./src/ui
+  strategy:
+    type: Docker
+    dockerStrategy:
+      dockerfilePath: Dockerfile.frontend
+  output:
+    to:
+      kind: ImageStreamTag
+      name: humanbias-frontend-image:latest
+  triggers:
+    - type: GitHub
+      github:
+        secret: humanbias-webhook
+    - type: ImageChange
+    - type: ConfigChange

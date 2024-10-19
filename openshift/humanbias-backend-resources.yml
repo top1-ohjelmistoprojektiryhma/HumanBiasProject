@@ -1,0 +1,60 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: humanbias-backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: humanbias-backend
+  template:
+    metadata:
+      labels:
+        app: humanbias-backend
+    spec:
+      containers:
+      - name: backend
+        image: backend:latest
+        ports:
+        - containerPort: 8000
+        env:
+        - name: FLASK_ENV
+          value: "development"
+        - name: GEMINI_KEY
+          valueFrom:
+            secretKeyRef:
+              name: gemini-secret
+              key: GEMINI_KEY
+        - name: OPENAI_KEY
+          valueFrom:
+            secretKeyRef:
+              name: openai-secret
+              key: OPENAI_KEY
+        - name: ANTHROPIC_KEY
+          valueFrom:
+            secretKeyRef:
+              name: anthropic-secret
+              key: ANTHROPIC_KEY
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: humanbias-backend
+spec:
+  selector:
+    app: humanbias-backend
+  ports:
+    - protocol: TCP
+      port: 8000
+      targetPort: 8000
+---
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  name: humanbias-backend
+spec:
+  to:
+    kind: Service
+    name: humanbias-backend
+  port:
+    targetPort: 8000

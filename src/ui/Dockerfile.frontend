@@ -1,19 +1,18 @@
-# Frontendin peruskuva (Node.js)
+# Description: Dockerfile for the frontend application
 FROM node:16
 
-# Työskentelyhakemisto
+# Set working directory
 WORKDIR /app
 
-# Asenna frontendin riippuvuudet
-COPY package.json package-lock.json /app/
-RUN npm install
+#  Copy src/ui
+COPY ./ ./
 
-# Kopioi frontendin koodi
-COPY . /app
+# Install dependencies
+RUN npm ci
 
-# Rakenna sovellus
+# Build the application
 RUN npm run build
 
-# Avaa portti ja käynnistä sovellus
+# Expose port and start the application
 EXPOSE 3000
 CMD ["npm", "start"]

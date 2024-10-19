@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: humanbias-frontend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: humanbias-frontend
+  template:
+    metadata:
+      labels:
+        app: humanbias-frontend
+    spec:
+      containers:
+      - name: frontend
+        image: frontend:latest
+        ports:
+        - containerPort: 3000
+        env:
+        - name: REACT_APP_BACKEND_URL
+          value: "http://humanbias-backend:8000"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: humanbias-frontend
+spec:
+  selector:
+    app: humanbias-frontend
+  ports:
+    - protocol: TCP
+      port: 3000
+      targetPort: 3000
+---
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  name: humanbias-frontend
+spec:
+  to:
+    kind: Service
+    name: humanbias-frontend
+  port:
+    targetPort: 3000
