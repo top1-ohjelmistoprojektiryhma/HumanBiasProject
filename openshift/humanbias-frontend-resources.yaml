@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: frontend
-        image: humanbias-frontend-image:latest
+        image: image-registry.openshift-image-registry.svc:5000/ohtuprojekti-staging/humanbias-frontend-image:latest
         ports:
         - containerPort: 3000
         env:
@@ -43,3 +43,6 @@ spec:
     name: humanbias-frontend
   port:
     targetPort: 3000
+  tls:
+    termination: edge
+    insecureEdgeTerminationPolicy: Redirect
