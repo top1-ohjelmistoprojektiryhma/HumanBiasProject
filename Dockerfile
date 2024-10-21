@@ -28,7 +28,6 @@ RUN pip install poetry \
 # Copy backend files
 COPY prompts.json ./
 COPY src/backend ./src/backend
-COPY src/services ./src/services
 
 # Copy the built frontend files from the frontend-builder stage
 COPY --from=frontend-builder /app/build ./src/ui/build
