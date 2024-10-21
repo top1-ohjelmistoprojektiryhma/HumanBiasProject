@@ -7,6 +7,9 @@ WORKDIR /app
 # Copy frontend files
 COPY . .
 
+# Show package.json
+RUN cat package.json
+
 # Install dependencies
 RUN npm ci
 

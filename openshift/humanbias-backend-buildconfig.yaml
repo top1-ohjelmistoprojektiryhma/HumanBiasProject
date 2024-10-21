@@ -20,6 +20,8 @@ spec:
   triggers:
     - type: GitHub
       github:
-        secret: humanbias-webhook
+        secretReference:
+          name: humanbias-webhook
     - type: ImageChange
     - type: ConfigChange
+  runPolicy: Serial

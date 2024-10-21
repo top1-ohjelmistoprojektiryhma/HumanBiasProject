@@ -12,7 +12,7 @@ spec:
   strategy:
     type: Docker
     dockerStrategy:
-      dockerfilePath: Dockerfile.frontend
+      dockerfilePath: src/ui/Dockerfile.frontend
   output:
     to:
       kind: ImageStreamTag
@@ -20,6 +20,7 @@ spec:
   triggers:
     - type: GitHub
       github:
-        secret: humanbias-webhook
+        secretReference:
+          name: humanbias-webhook
     - type: ImageChange
     - type: ConfigChange
