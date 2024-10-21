@@ -1,20 +1,20 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: humanbias-backend
+  name: humanbias-test
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: humanbias-backend
+      app: humanbias-test
   template:
     metadata:
       labels:
-        app: humanbias-backend
+        app: humanbias-test
     spec:
       containers:
-      - name: backend
-        image: humanbias-backend-image:latest
+      - name: humanbias-test
+        image: image-registry.openshift-image-registry.svc:5000/ohtuprojekti-staging/humanbias-test-image:latest
         ports:
         - containerPort: 8000
         env:
@@ -35,15 +35,29 @@ spec:
             secretKeyRef:
               name: anthropic-secret
               key: ANTHROPIC_KEY
----
+--- 
 apiVersion: v1
 kind: Service
 metadata:
-  name: humanbias-backend
+  name: humanbias-test
 spec:
   selector:
-    app: humanbias-backend
+    app: humanbias-test
   ports:
     - protocol: TCP
       port: 8000
       targetPort: 8000
+---
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  name: humanbias-test
+spec:
+  to:
+    kind: Service
+    name: humanbias-test
+  port:
+    targetPort: 8000
+  tls:
+    termination: edge
+    insecureEdgeTerminationPolicy: Redirect

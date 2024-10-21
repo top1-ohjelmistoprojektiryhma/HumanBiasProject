@@ -50,6 +50,7 @@ instance/
 *.log
 
 # Build directories
+src/ui/build
 build/
 dist/
 

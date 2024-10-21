@@ -1,4 +1,4 @@
-const BASE_URL = process.env.REACT_APP_BACKEND_URL || 'http://localhost:8000';
+const BASE_URL = process.env.REACT_APP_BACKEND_URL || '';
 
 export const fetchAgents = async () => {
     const response = await fetch(`${BASE_URL}/api/agents`);

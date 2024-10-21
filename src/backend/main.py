@@ -1,5 +1,5 @@
 import os
-from flask import Flask
+from flask import Flask, send_from_directory
 from flask_cors import CORS
 from dotenv import load_dotenv
 from services.agent_manager import AgentManager
@@ -11,7 +11,7 @@ from services.api import openai
 from services.api import anthropic
 
 # Initialize Flask
-app = Flask(__name__)
+app = Flask(__name__, static_folder='../ui/build')
 CORS(app)  # Use CORS for frontend
 
 # get env variables

@@ -1,8 +1,16 @@
 # pylint: skip-file
-from flask import request, jsonify
+from flask import request, jsonify, send_from_directory
 
 
 def initialize_routes(app, agent_manager, service_handler):
+    @app.route('/')
+    def serve_index():
+        return send_from_directory(app.static_folder, 'index.html')
+    
+    @app.route('/<path:path>')
+    def serve_static(path):
+        return send_from_directory(app.static_folder, path)
+
     @app.route("/api/agents", methods=["GET"])
     def get_agents():
         agents = [agent.role for agent in agent_manager.list_of_agents]
