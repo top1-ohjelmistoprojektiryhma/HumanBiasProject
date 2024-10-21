@@ -17,21 +17,21 @@ CORS(app)  # Use CORS for frontend
 # get env variables
 load_dotenv()
 GEMINI_KEY = os.getenv("GEMINI_KEY")
-OPENAI_KEY = os.getenv("OPEN_AI_KEY")
-ANTHROPIC_KEY = os.getenv("ANTHROPIC_KEY")
+OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
+ANTHROPIC_API_KEY = os.getenv("ANTHROPIC_API_KEY")
 
 # Initialize services
 agent_manager = AgentManager()
 session_manager = SessionManager()
 gemini_api = gemini.GeminiApi(gemini_key=GEMINI_KEY)
-openai_api = openai.OpenAiApi(openai_key=OPENAI_KEY)
-anthropic_api = anthropic.AnthropicApi(anthropic_key=ANTHROPIC_KEY)
+openai_api = openai.OpenAiApi(openai_key=OPENAI_API_KEY)
+anthropic_api = anthropic.AnthropicApi(anthropic_key=ANTHROPIC_API_KEY)
 api_manager = ApiManager(
     gemini_key=GEMINI_KEY,
     gemini_api=gemini_api,
-    openai_key=OPENAI_KEY,
+    openai_key=OPENAI_API_KEY,
     openai_api=openai_api,
-    anthropic_key=ANTHROPIC_KEY,
+    anthropic_key=ANTHROPIC_API_KEY,
     anthropic_api=anthropic_api,
 )
 
