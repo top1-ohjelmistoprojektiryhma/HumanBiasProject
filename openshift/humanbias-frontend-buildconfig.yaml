@@ -8,11 +8,11 @@ spec:
     git:
       uri: https://github.com/top1-ohjelmistoprojektiryhma/HumanBiasProject.git
       ref: main
-      contextDir: ./src/ui
+      contextDir: src/ui
   strategy:
     type: Docker
     dockerStrategy:
-      dockerfilePath: src/ui/Dockerfile.frontend
+      dockerfilePath: Dockerfile.frontend
   output:
     to:
       kind: ImageStreamTag
