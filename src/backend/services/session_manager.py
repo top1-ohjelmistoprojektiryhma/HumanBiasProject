@@ -10,7 +10,10 @@ class SessionManager:
 
     def __init__(self):
         self._sessions = {}
-        self._all_formats = {"dialog - no consensus":Dialog, "dialog - consensus":Dialog}
+        self._all_formats = {
+            "dialog - no consensus": Dialog,
+            "dialog - consensus": Dialog,
+        }
 
     def get_all_formats(self):
         return list(self._all_formats.keys())
@@ -53,8 +56,6 @@ class SessionManager:
         self._sessions[session_id].update_with_responses(responses)
 
     def get_session(self, session_id):
-        print(self._sessions)
-        print(session_id)
         return self._sessions[session_id]
 
     def delete_session(self, session_id):
