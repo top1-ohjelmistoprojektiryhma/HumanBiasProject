@@ -244,7 +244,7 @@ const App = () => {
               ) : null}
               {dialogStarted && (
                 <>
-                  <CommentInput comment={comment} setComment={setComment} />
+                  {selectedFormat === "dialog - user comments" && <CommentInput comment={comment} setComment={setComment} />}
                   <div className='button-group'>
                     <ContinueButton onSubmit={handleContinue} />
                     <StopButton onSubmit={handleStop} />
