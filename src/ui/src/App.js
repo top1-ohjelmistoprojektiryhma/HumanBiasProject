@@ -11,6 +11,7 @@ import ContinueButton from './components/ContinueButton';
 import StopButton from './components/StopButton';
 import SummaryButton from './components/SummaryButton';
 import ExamplePrompts from './components/ExamplePrompts';
+import CommentInput from './components/CommentInput';
 import {
   fetchAgents,
   fetchDialogs,
@@ -37,6 +38,7 @@ const App = () => {
   const [formatOptions, setFormatOptions] = useState([]);
   const [isDialogsBarVisible, setIsDialogsBarVisible] = useState(false); // New state for visibility
   const [loading, setLoading] = useState(false);
+  const [comment, setComment] = useState('');
 
   useEffect(() => {
     const fetchData = async () => {
@@ -74,12 +76,8 @@ const App = () => {
     if (!validateUserInput()) {
       return;
     }
-
-    // Clear displayed session and summary
     setDisplayedSession(null);
     setSummary('');
-
-    // Set loading to true to display the loading spinner
     setLoading(true);
 
     const requestData = {
@@ -109,9 +107,8 @@ const App = () => {
     } catch (error) {
       console.error('Error processing the statement:', error);
     }
-
-    // Set loading to false to hide the loading spinner
     setLoading(false);
+    setPrompt('');
   };
   const handleGenerateAgents = async (numAgents) => {
     const requestData = {
@@ -129,10 +126,10 @@ const App = () => {
     }
   };
   const handleContinue = async () => {
-    // Set loading to true to display the loading spinner
+    console.log(comment)
     setLoading(true);
     try {
-      const data = await continueSession(displayedSession);
+      const data = await continueSession(displayedSession, comment);
       const newSessionId = data.session_id;
       const newDialog = data.dialog;
 
@@ -147,11 +144,10 @@ const App = () => {
 
       setDisplayedSession(newSessionId);
       setResponse("");
+      setComment("");
     } catch (error) {
       console.error('Error continuing the dialog:', error);
     }
-
-    // Set loading to false to hide the loading spinner
     setLoading(false);
   };
 
@@ -203,13 +199,15 @@ const App = () => {
 
       <div className={`main-content ${isDialogsBarVisible ? 'main-content-shift' : ''}`}>
         <h1>Human Bias Project</h1>
-        <ExamplePrompts setPrompt={setPrompt} />
-        <InputForm prompt={prompt} setPrompt={setPrompt} />
-
+        {!dialogStarted && (
+          <>
+            <ExamplePrompts setPrompt={setPrompt} />
+            <InputForm prompt={prompt} setPrompt={setPrompt} />
+          </>
+        )}
         <div className="centered-column">
           {!dialogStarted && (
             <>
-
               <div className="generate-agents-container">
                 <GenerateAgents
                   perspectives={perspectives}
@@ -244,17 +242,24 @@ const App = () => {
                   <div className="spinner"></div>
                 </div>
               ) : null}
-              {dialogStarted && <ContinueButton onSubmit={handleContinue} />}
-              {dialogStarted && <StopButton onSubmit={handleStop} />}
-              {summary && (
-                <div className="summary-section">
-                  <h2>Summary</h2>
-                  <p>{summary}</p>
-                  <h2>Biases</h2>
-                  <p>{biases}</p>
-                </div>
+              {dialogStarted && (
+                <>
+                  <CommentInput comment={comment} setComment={setComment} />
+                  <div className='button-group'>
+                    <ContinueButton onSubmit={handleContinue} />
+                    <StopButton onSubmit={handleStop} />
+                    <SummaryButton onClick={handleSummaryClick} />
+                    {summary && (
+                      <div className="summary-section">
+                        <h2>Summary</h2>
+                        <p>{summary}</p>
+                        <h2>Biases</h2>
+                        <p>{biases}</p>
+                      </div>
+                    )}
+                  </div>
+                </>
               )}
-              {dialogStarted && <SummaryButton onClick={handleSummaryClick} />}
             </>
           )}
         </div>
