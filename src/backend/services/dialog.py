@@ -1,4 +1,5 @@
 from . import formatter
+from . import agent
 
 
 class Dialog:
@@ -56,6 +57,28 @@ class Dialog:
         ]
 
         return api_input_list
+
+    def update_with_comment(self, comment):
+        """Update the dialog with a comment
+
+        Args:
+            comment (str): The comment
+        """
+        self.add_round(
+            len(self.rounds) + 1,
+            [
+                {
+                    "agent": agent.Agent("User"),
+                    "model": "User",
+                    "input": "None",
+                    "output": comment,
+                }
+            ],
+        )
+        # Add comment to all agents' unseen list
+        for agent_obj in self.agents:
+            unseen = [{"agent": agent.Agent("User"), "text": comment}]
+            agent_obj.add_unseen_prompts(unseen)
 
     def update_with_responses(self, responses):
         """Update the dialog with responses
@@ -120,7 +143,11 @@ class Dialog:
         """
         agent = None
         agents = list(self.agents.keys())
-        if self.dialog_format in ("dialog - no consensus", "dialog - consensus"):
+        if self.dialog_format in (
+            "dialog - no consensus",
+            "dialog - consensus",
+            "dialog - user comments",
+        ):
             agent = agents[(len(self.rounds) - 1) % len(agents)]
         else:
             print("DIALOG.PY: Agent is None")
@@ -152,10 +179,10 @@ class Dialog:
         for r, prompts in self.rounds.items():
             rounds[r] = []
             for p in prompts:
-                # change agent object to agent role
+                agent_role = p["agent"].role if p["agent"] is not None else "User"
                 rounds[r].append(
                     {
-                        "agent": p["agent"].role,
+                        "agent": agent_role,
                         "model": p["model"],
                         "input": p["input"],
                         "output": p["output"],

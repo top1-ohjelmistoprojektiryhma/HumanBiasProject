@@ -18,14 +18,18 @@ def format_single(role, prompt):
 
 
 def format_dialog_prompt_with_unseen(agent, unseen_prompts, dialog_format):
-    unseen = [
-        PROMPTS["format_unseen"].format(role=prompt["agent"].role, text=prompt["text"])
-        for prompt in unseen_prompts
-    ]
+    unseen = []
+    for prompt in unseen_prompts:
+        unseen.append(
+            PROMPTS["format_unseen"].format(
+                role=prompt["agent"].role, text=prompt["text"]
+            )
+        )
 
-    return PROMPTS["format_dialog_prompt_with_unseen"][dialog_format].format(
-        role=str(agent.role), unseen=str(unseen)
-    )
+    formatted_prompt = PROMPTS["format_dialog_prompt_with_unseen"][
+        dialog_format
+    ].format(role=str(agent.role), unseen=str(unseen))
+    return formatted_prompt
 
 
 def format_generate_agents_prompt(prompt, desired_number_of_agents, list_of_agents):

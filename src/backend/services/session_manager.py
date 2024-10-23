@@ -13,6 +13,7 @@ class SessionManager:
         self._all_formats = {
             "dialog - no consensus": Dialog,
             "dialog - consensus": Dialog,
+            "dialog - user comments": Dialog,
         }
 
     def get_all_formats(self):
@@ -44,7 +45,17 @@ class SessionManager:
         Returns:
             list: A list of prompts for the next round
         """
-        return self._sessions[session_id].get_prompts()
+        prompts = self._sessions[session_id].get_prompts()
+        return prompts
+
+    def update_session_with_comment(self, session_id, comment):
+        """Update a session with a comment
+
+        Args:
+            session_id (int): The id of the session
+            comment (str): The comment
+        """
+        self._sessions[session_id].update_with_comment(comment)
 
     def update_session_with_responses(self, session_id, responses):
         """Update a session with responses

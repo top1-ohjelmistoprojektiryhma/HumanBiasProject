@@ -37,6 +37,7 @@ class ServiceHandler:
 
         Args:
             session_id (int): The id of the session to continue.
+            comment (str): The user comment to add to the session.
 
         Returns:
             The session as a dict.
@@ -49,6 +50,8 @@ class ServiceHandler:
             responses = self.api_manager.send_prompts(api_input_list)
             # Update the session with responses
             self.session_manager.update_session_with_responses(session_id, responses)
+            if comment:
+                self.session_manager.update_session_with_comment(session_id, comment)
             return "Success", self.session_manager.get_session(session_id).to_dict()
         return None, None
 
