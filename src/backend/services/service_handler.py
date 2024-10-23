@@ -32,7 +32,7 @@ class ServiceHandler:
         )
         return new_session_id, True
 
-    def continue_session(self, session_id):
+    def continue_session(self, session_id, comment):
         """Continue a session with the input prompts.
 
         Args:
@@ -41,6 +41,7 @@ class ServiceHandler:
         Returns:
             The session as a dict.
         """
+        print(f"SERVICE HANDLER: Comment: {comment} Session ID: {session_id}")
         if self.api_manager.gemini_key is not None:
             # Get the prompts from session
             api_input_list = self.session_manager.get_session_prompts(session_id)
@@ -181,19 +182,19 @@ class ServiceHandler:
             str: The generated bias-summary from the AI.
         """
         prompt_list = [
-    {
-        "text": (
-            "Analyze the following dialog and provide a summary that highlights any biases, assumptions, "
-            "or subjective viewpoints expressed by the participants. Focus on identifying potential biases in "
-            "their reasoning, language, or decision-making. Ensure the summary is concise and captures key instances "
-            "where bias or subjectivity may have influenced the discussion. \n"
-            f"{dialog_data}"
-        ),
-        "model": None,
-        "history": None,
-        "agent_object": None,
-    }
-]
+            {
+                "text": (
+                    "Analyze the following dialog and provide a summary that highlights any biases, assumptions, "
+                    "or subjective viewpoints expressed by the participants. Focus on identifying potential biases in "
+                    "their reasoning, language, or decision-making. Ensure the summary is concise and captures key instances "
+                    "where bias or subjectivity may have influenced the discussion. \n"
+                    f"{dialog_data}"
+                ),
+                "model": None,
+                "history": None,
+                "agent_object": None,
+            }
+        ]
 
         responses = self.api_manager.send_prompts(prompt_list)
         if responses and "output" in responses[0]:
