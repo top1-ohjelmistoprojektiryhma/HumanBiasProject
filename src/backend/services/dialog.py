@@ -40,9 +40,9 @@ class Dialog:
         else:
             agent = self.get_next_agent()
             unseen_prompts = agent.get_unseen_prompts()
-            prompt = formatter.format_dialog_prompt_with_unseen(agent,
-                                                                unseen_prompts,
-                                                                self.dialog_format)
+            prompt = formatter.format_dialog_prompt_with_unseen(
+                agent, unseen_prompts, self.dialog_format
+            )
             prompts_list = [{"agent": agent, "text": prompt}]
 
         api_input_list = [
@@ -123,7 +123,7 @@ class Dialog:
         if self.dialog_format in ("dialog - no consensus", "dialog - consensus"):
             agent = agents[(len(self.rounds) - 1) % len(agents)]
         else:
-            print("Agent is None")
+            print("DIALOG.PY: Agent is None")
         return agent
 
     def get_agent_history(self, agent_obj):
