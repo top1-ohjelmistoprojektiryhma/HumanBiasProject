@@ -3,11 +3,11 @@ from flask import request, jsonify, send_from_directory
 
 
 def initialize_routes(app, agent_manager, service_handler):
-    @app.route('/')
+    @app.route("/")
     def serve_index():
-        return send_from_directory(app.static_folder, 'index.html')
-    
-    @app.route('/<path:path>')
+        return send_from_directory(app.static_folder, "index.html")
+
+    @app.route("/<path:path>")
     def serve_static(path):
         return send_from_directory(app.static_folder, path)
 
@@ -19,7 +19,7 @@ def initialize_routes(app, agent_manager, service_handler):
     @app.route("/api/formats", methods=["GET"])
     def get_formats():
         format_options = service_handler.get_all_formats()
-        print(f"Format options: {format_options}")
+        print(f"ROUTES.PY: Format options: {format_options}")
         return jsonify(format_options)
 
     @app.route("/api/new-session", methods=["POST"])
@@ -28,16 +28,18 @@ def initialize_routes(app, agent_manager, service_handler):
         prompt = data.get("prompt")
         format = data.get("format")
         perspectives = data.get("perspective")
-        print(f"Prompt: {prompt}, Perspective: {perspectives}, Format: {format}")
+        print(
+            f"ROUTES.PY: Prompt: {prompt}, Perspective: {perspectives}, Format: {format}"
+        )
         agent_manager.set_selected_agents(perspectives)
         result, successful = service_handler.start_new_session(prompt, format)
         if not successful:
             return jsonify({"response": result})
         new_id = result
-        response, dialog_dict = service_handler.continue_session(new_id)
+        response, dialog_dict = service_handler.continue_session(new_id, comment="")
         if dialog_dict is None:
             return jsonify({"response": "Missing gemini key"})
-        print(f"Response: {dialog_dict}, Dialog ID: {new_id}")
+        print(f"ROUTES.PY: Response: Placeholder, Dialog ID: {new_id}")
         return jsonify(
             {"response": response, "session_id": new_id, "dialog": dialog_dict}
         )
@@ -47,11 +49,10 @@ def initialize_routes(app, agent_manager, service_handler):
         data = request.json
         session_id = data.get("session_id")
         prompt = data.get("prompt")
-        print(f"Dialog ID: {session_id}, Prompt: {prompt}")
-        response, dialog_dict = service_handler.continue_session(session_id)
+        comment = data.get("comment")
+        response, dialog_dict = service_handler.continue_session(session_id, comment)
         if dialog_dict is None:
             return jsonify({"response": "Missing gemini key"})
-        print(f"Response: {dialog_dict}, Dialog ID: {session_id}")
         return jsonify(
             {"response": response, "session_id": session_id, "dialog": dialog_dict}
         )
@@ -60,7 +61,7 @@ def initialize_routes(app, agent_manager, service_handler):
     def delete_perspective():
         data = request.json
         perspective = data.get("perspective")
-        print(f"Deleting perspective: {perspective}")
+        print(f"ROUTES.PY: Deleting perspective: {perspective}")
         agent_manager.delete_agent(perspective)
         return jsonify({"response": "Perspective deleted"})
 
@@ -68,7 +69,7 @@ def initialize_routes(app, agent_manager, service_handler):
     def add_perspective():
         data = request.json
         perspective = data.get("perspective")
-        print(f"Adding perspective: {perspective}")
+        print(f"ROUTES.PY: Adding perspective: {perspective}")
         agent_manager.add_agent(perspective)
         return jsonify({"response": "Perspective added"})
 
@@ -78,7 +79,7 @@ def initialize_routes(app, agent_manager, service_handler):
         prompt = data.get("prompt")
         num_agents = data.get("num_agents", 3)
         format = data.get("format")
-        print(f"Generating {num_agents} agents for prompt: {prompt}")
+        print(f"ROUTES.PY: Generating {num_agents} agents for prompt: {prompt}")
 
         # Pass the number of agents to the service handler
         response = service_handler.generate_agents(
