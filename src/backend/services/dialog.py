@@ -7,7 +7,7 @@ class Dialog:
 
     Attributes:
         initial_prompt (str): The initial prompt for the dialog
-        agents (list): A dictionary of agents {"AgentObj": "model"}
+        agents (list): A dictionary of agents {"AgentObj": {"model": modelname}}
         rounds (dict): A dictionary of rounds identified by round number
         dialog_format (str): The format of the dialog
         history (list): A list of dictionaries representing the dialog history
