@@ -5,12 +5,16 @@ from backend.services.dialog import Dialog
 class ExampleAgent:
     def __init__(self):
         self.role = "student"
+        self.unseen = []
 
     def get_chat_history(self):
         return ["history"]
 
     def get_unseen_prompts(self):
         return [{"agent": self, "text": "unseen prompt"}]
+
+    def add_unseen_prompts(self, prompts):
+        self.unseen.extend(prompts)
 
 class TestDialog(unittest.TestCase):
     def setUp(self):
@@ -52,6 +56,24 @@ class TestDialog(unittest.TestCase):
         self.assertEqual(result[0]["model"], "None" )
         self.assertListEqual(result[0]["history"], ["history"])
         self.assertEqual(result[0]["agent_object"], self.test_agents[0])
+
+    def test_update_with_comment_works(self):
+        self.dialog.update_with_comment("This is a comment")
+        added_round = self.dialog.rounds[1]
+        self.assertEqual(added_round[0]["agent"].role, "User")
+        self.assertEqual(added_round[0]["model"], "User")
+        self.assertEqual(added_round[0]["input"], "None")
+        self.assertEqual(added_round[0]["output"], "This is a comment")
+
+        for agent in self.dialog.agents:
+            self.assertEqual(agent.unseen[0]["agent"].role, "User")
+            self.assertEqual(agent.unseen[0]["text"], "This is a comment")
+
+    def test_add_unseen_prompts_works(self):
+        test_unseen = [{"agent": "Agent1", "output": "This is the output"}]
+        self.dialog.add_unseen_prompts(self.test_agents[0], test_unseen)
+        result = self.test_agents[0].unseen
+        self.assertListEqual(result, [{"agent": "Agent1", "text": "This is the output"}])
 
     def test_add_round_works(self):
         self.dialog.add_round(1, ["Prompt 1", "Prompt 2"])
@@ -118,3 +140,7 @@ class TestDialog(unittest.TestCase):
             self.dialog.get_agent_history(agent),
             [{"role": "user", "text": "input"}, {"role": "model", "text": "output"}],
         )
+
+    def test_get_history_works(self):
+        self.dialog.history.append(":)")
+        self.assertListEqual(self.dialog.get_history(), [":)"])
