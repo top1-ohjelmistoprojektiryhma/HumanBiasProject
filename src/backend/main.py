@@ -1,5 +1,5 @@
 import os
-from flask import Flask, send_from_directory, session
+from flask import Flask
 from flask_cors import CORS
 from dotenv import load_dotenv
 from services.agent_manager import AgentManager
