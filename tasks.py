@@ -20,7 +20,7 @@ def lint(ctx):
 
 @task
 def backend(ctx):
-    ctx.run("source venv/bin/activate && python3 src/backend/main.py", pty=True)
+    ctx.run("source venv/bin/activate && export FLASK_ENV=development && python3 src/backend/main.py", pty=True)
 
 
 @task

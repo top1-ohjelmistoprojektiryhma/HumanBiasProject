@@ -43,7 +43,7 @@ class ServiceHandler:
             The session as a dict.
         """
         print(f"SERVICE HANDLER: Comment: {comment} Session ID: {session_id}")
-        if self.api_manager.gemini_key is not None:
+        if self.api_manager.available_models():
             # Get the prompts from session
             api_input_list = self.session_manager.get_session_prompts(session_id)
             # Send prompts to the API and collect responses
@@ -53,7 +53,7 @@ class ServiceHandler:
             if comment:
                 self.session_manager.update_session_with_comment(session_id, comment)
             return "Success", self.session_manager.get_session(session_id).to_dict()
-        return None, None
+        return "No API keys available", None
 
     def create_agents(self, list_of_roles):
         for role in list_of_roles:
@@ -69,7 +69,7 @@ class ServiceHandler:
         prompt_list = [generate_agents_prompt]
         perspectives = []  # Initialize perspectives to avoid UnboundLocalError
         output = ""  # Default to empty response
-        if self.api_manager.gemini_key is not None:
+        if self.api_manager.available_models():
             input_list = [
                 {"text": prompt, "model": None, "history": None}
                 for prompt in prompt_list

@@ -1,10 +1,44 @@
 # pylint: skip-file
-from flask import request, jsonify, send_from_directory
+import uuid
+import os
+from flask import request, jsonify, send_from_directory, session, render_template_string
 
+# calling sessions instances until name for custom class session is changed
+def initialize_routes(app, instances, create_service_handler, cd_password):
+    def get_service_handler():
+        # skip password if in development
+        if app.config['ENV'] == 'development' and not session.get('instance_id'):
+            create_new_instance()
+        instance_id = session.get('instance_id')
+        if not instance_id or instance_id not in instances:
+            print(f"ROUTES.PY: Invalid instance ID: {instance_id}")
+            return None, jsonify({"error": "Invalid instance ID"}), 400
+        return instances[instance_id]['service_handler'], None, None
 
-def initialize_routes(app, agent_manager, service_handler):
-    @app.route("/")
+    def create_new_instance():
+        instance_id = str(uuid.uuid4())
+        session['instance_id'] = instance_id
+        instances[instance_id] = {'service_handler': create_service_handler()}
+        return instance_id
+    
+    @app.route("/", methods=["GET", "POST"])
     def serve_index():
+        form_html = '''
+        <form method="post">
+            <label for="secret_password">Enter password:</label>
+            <input type="password" id="secret_password" name="secret_password">
+        </form>
+        '''
+        if request.method == "POST":
+            secret_password = request.form.get("secret_password")
+            if secret_password != cd_password:
+                return render_template_string(form_html)
+            create_new_instance()
+            return send_from_directory(app.static_folder, "index.html")
+        
+        if 'instance_id' not in session or session['instance_id'] not in instances:
+            return render_template_string(form_html)
+
         return send_from_directory(app.static_folder, "index.html")
 
     @app.route("/<path:path>")
@@ -13,17 +47,26 @@ def initialize_routes(app, agent_manager, service_handler):
 
     @app.route("/api/agents", methods=["GET"])
     def get_agents():
-        agents = [agent.role for agent in agent_manager.list_of_agents]
+        service_handler, error_response, status_code = get_service_handler()
+        if error_response:
+            return error_response, status_code
+        agents = [agent.role for agent in service_handler.agent_manager.list_of_agents]
         return jsonify(agents)
 
     @app.route("/api/formats", methods=["GET"])
     def get_formats():
+        service_handler, error_response, status_code = get_service_handler()
+        if error_response:
+            return error_response, status_code
         format_options = service_handler.get_all_formats()
         print(f"ROUTES.PY: Format options: {format_options}")
         return jsonify(format_options)
 
     @app.route("/api/new-session", methods=["POST"])
     def new_session():
+        service_handler, error_response, status_code = get_service_handler()
+        if error_response:
+            return error_response, status_code
         data = request.json
         prompt = data.get("prompt")
         format = data.get("format")
@@ -31,7 +74,7 @@ def initialize_routes(app, agent_manager, service_handler):
         print(
             f"ROUTES.PY: Prompt: {prompt}, Perspective: {perspectives}, Format: {format}"
         )
-        agent_manager.set_selected_agents(perspectives)
+        service_handler.agent_manager.set_selected_agents(perspectives)
         result, successful = service_handler.start_new_session(prompt, format)
         if not successful:
             return jsonify({"response": result})
@@ -46,39 +89,50 @@ def initialize_routes(app, agent_manager, service_handler):
 
     @app.route("/api/continue-session", methods=["POST"])
     def continue_session():
+        service_handler, error_response, status_code = get_service_handler()
+        if error_response:
+            return error_response, status_code
         data = request.json
         session_id = data.get("session_id")
         prompt = data.get("prompt")
         comment = data.get("comment")
         response, dialog_dict = service_handler.continue_session(session_id, comment)
         if dialog_dict is None:
-            return jsonify({"response": "Missing gemini key"})
+            return jsonify({"response": response})
         return jsonify(
             {"response": response, "session_id": session_id, "dialog": dialog_dict}
         )
 
     @app.route("/api/delete-perspective", methods=["POST"])
     def delete_perspective():
+        service_handler, error_response, status_code = get_service_handler()
+        if error_response:
+            return error_response, status_code
         data = request.json
         perspective = data.get("perspective")
         print(f"ROUTES.PY: Deleting perspective: {perspective}")
-        agent_manager.delete_agent(perspective)
+        service_handler.agent_manager.delete_agent(perspective)
         return jsonify({"response": "Perspective deleted"})
 
     @app.route("/api/add-perspective", methods=["POST"])
     def add_perspective():
+        service_handler, error_response, status_code = get_service_handler()
+        if error_response:
+            return error_response, status_code
         data = request.json
         perspective = data.get("perspective")
         print(f"ROUTES.PY: Adding perspective: {perspective}")
-        agent_manager.add_agent(perspective)
+        service_handler.agent_manager.add_agent(perspective)
         return jsonify({"response": "Perspective added"})
 
     @app.route("/api/generate-agents", methods=["POST"])
     def generate_agents():
+        service_handler, error_response, status_code = get_service_handler()
+        if error_response:
+            return error_response, status_code
         data = request.json
         prompt = data.get("prompt")
         num_agents = data.get("num_agents", 3)
-        format = data.get("format")
         print(f"ROUTES.PY: Generating {num_agents} agents for prompt: {prompt}")
 
         # Pass the number of agents to the service handler
@@ -92,10 +146,16 @@ def initialize_routes(app, agent_manager, service_handler):
 
     @app.route("/api/all-sessions", methods=["GET"])
     def get_all_sessions():
+        service_handler, error_response, status_code = get_service_handler()
+        if error_response:
+            return error_response, status_code
         sessions = service_handler.get_all_sessions()
         return jsonify(sessions)
 
     @app.route("/api/summary", methods=["GET"])
     def receive_dialog():
+        service_handler, error_response, status_code = get_service_handler()
+        if error_response:
+            return error_response, status_code
         summary, biases = service_handler.get_latest_dialog_summary()
         return jsonify({"response": [summary, biases]}), 200

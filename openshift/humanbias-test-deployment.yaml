@@ -1,12 +1,11 @@
-apiVersion: apps/v1
-kind: Deployment
+apiVersion: apps.openshift.io/v1
+kind: DeploymentConfig
 metadata:
   name: humanbias-test
 spec:
   replicas: 1
   selector:
-    matchLabels:
-      app: humanbias-test
+    app: humanbias-test
   template:
     metadata:
       labels:
@@ -14,7 +13,7 @@ spec:
     spec:
       containers:
       - name: humanbias-test
-        image: image-registry.openshift-image-registry.svc:5000/ohtuprojekti-staging/humanbias-test-image:latest
+        image: image-registry.openshift-image-registry.svc:5000/ohtuprojekti-staging/humanbias-test-image
         ports:
         - containerPort: 8000
         env:
@@ -35,6 +34,16 @@ spec:
             secretKeyRef:
               name: anthropic-secret
               key: ANTHROPIC_API_KEY
+  triggers:
+    - type: ImageChange
+      imageChangeParams:
+        automatic: true
+        containerNames:
+          - humanbias-test
+        from:
+          kind: ImageStreamTag
+          name: humanbias-test-image:latest
+    - type: ConfigChange
 --- 
 apiVersion: v1
 kind: Service

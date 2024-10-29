@@ -26,12 +26,13 @@ class ApiManager:
         Returns:
             list: List of dictionaries containing given prompt, model name, and the model's response
         """
-
-        model_map = {
-            "gemini": self.gemini_api.get_chat_response,
-            "openai": self.openai_api.get_chat_response,
-            "anthropic": self.anthropic_api.get_chat_response
+        model_functions = {
+            "gemini": self.gemini_api.get_chat_response if self.gemini_key else None,
+            "openai": self.openai_api.get_chat_response if self.openai_key else None,
+            "anthropic": self.anthropic_api.get_chat_response if self.anthropic_key else None
         }
+        # Filter out None values
+        model_map = {model: func for model, func in model_functions.items() if func is not None}
         response_list = []
         model_names = list(model_map.keys())
 
@@ -50,3 +51,14 @@ class ApiManager:
             )
 
         return response_list
+
+    def available_models(self):
+        """Returns a list of available models"""
+        available = []
+        if self.gemini_key:
+            available.append("gemini")
+        if self.openai_key:
+            available.append("openai")
+        if self.anthropic_key:
+            available.append("anthropic")
+        return available
