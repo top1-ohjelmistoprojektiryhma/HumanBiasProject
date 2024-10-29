@@ -39,8 +39,8 @@ Siirry projektin juurihakemistoon
 Luo tiedosto ```.env``` **_ja_** määritä se muotoon
 ```
 GEMINI_KEY=<gemini-api-key>
-OPEN_AI_KEY=<openai-api-key>
-ANTHROPIC-KEY=<anthropic-api-key>
+OPENAI_API_KEY=<openai-api-key>
+ANTHROPIC_API_KEY=<anthropic-api-key>
 ```
 
 Luo virtuaaliympäristö sovellusta varten
