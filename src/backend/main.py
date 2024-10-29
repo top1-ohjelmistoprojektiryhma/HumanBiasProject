@@ -1,5 +1,4 @@
 import os
-import sys
 from flask import Flask, send_from_directory, session
 from flask_cors import CORS
 from dotenv import load_dotenv
