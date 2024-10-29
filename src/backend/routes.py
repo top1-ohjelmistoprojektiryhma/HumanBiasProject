@@ -12,7 +12,7 @@ def initialize_routes(app, instances, create_service_handler, cd_password):
         instance_id = session.get('instance_id')
         if not instance_id or instance_id not in instances:
             print(f"ROUTES.PY: Invalid instance ID: {instance_id}")
-            return None, jsonify({"error": "Invalid instance ID"}), 400
+            return None, jsonify({"error": "Permission denied"}), 400
         return instances[instance_id]['service_handler'], None, None
 
     def create_new_instance():
@@ -23,27 +23,21 @@ def initialize_routes(app, instances, create_service_handler, cd_password):
     
     @app.route("/", methods=["GET", "POST"])
     def serve_index():
-        form_html = '''
-        <form method="post">
-            <label for="secret_password">Enter password:</label>
-            <input type="password" id="secret_password" name="secret_password">
-        </form>
-        '''
-        if request.method == "POST":
-            secret_password = request.form.get("secret_password")
-            if secret_password != cd_password:
-                return render_template_string(form_html)
-            create_new_instance()
-            return send_from_directory(app.static_folder, "index.html")
-        
-        if 'instance_id' not in session or session['instance_id'] not in instances:
-            return render_template_string(form_html)
-
         return send_from_directory(app.static_folder, "index.html")
 
     @app.route("/<path:path>")
     def serve_static(path):
         return send_from_directory(app.static_folder, path)
+    
+    @app.route("/api/submit-password", methods=["POST"])
+    def submit_password():
+        data = request.json
+        secret_password = data.get("secret_password")
+        if secret_password != cd_password:
+            return jsonify({"error": "Invalid password"}), 401
+        if not session.get('instance_id'):
+            create_new_instance()
+        return jsonify({"message": "Password accepted"}), 200
 
     @app.route("/api/agents", methods=["GET"])
     def get_agents():
@@ -81,7 +75,7 @@ def initialize_routes(app, instances, create_service_handler, cd_password):
         new_id = result
         response, dialog_dict = service_handler.continue_session(new_id, comment="")
         if dialog_dict is None:
-            return jsonify({"response": "Missing gemini key"})
+            return jsonify({"response": "Missing api keys"})
         print(f"ROUTES.PY: Response: Placeholder, Dialog ID: {new_id}")
         return jsonify(
             {"response": response, "session_id": new_id, "dialog": dialog_dict}

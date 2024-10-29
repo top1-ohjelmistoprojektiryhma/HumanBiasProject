@@ -12,6 +12,7 @@ import StopButton from './components/StopButton';
 import SummaryButton from './components/SummaryButton';
 import ExamplePrompts from './components/ExamplePrompts';
 import CommentInput from './components/CommentInput';
+import PasswordInput from './components/PasswordInput';
 import {
   fetchAgents,
   fetchDialogs,
@@ -19,6 +20,7 @@ import {
   startNewSession,
   generateAgents,
   continueSession,
+  submitPassword,
 } from './api';
 
 
@@ -40,25 +42,40 @@ const App = () => {
   const [loading, setLoading] = useState(false);
   const [comment, setComment] = useState('');
   const [showInput, setShowInput] = useState(false);
+  const [password, setPassword] = useState(''); // New state for password
+  const [isAuthenticated, setIsAuthenticated] = useState(false); // New state for authentication
+
+  const handlePasswordSubmit = async () => {
+    try {
+      await submitPassword(password);
+      setIsAuthenticated(true);
+      setError('');
+    } catch (error) {
+      console.error('Error submitting password:', error);
+      setError('Incorrect password');
+    }
+  };
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const agentsData = await fetchAgents();
-        setPerspectives(agentsData);
+    if (isAuthenticated || process.env.NODE_ENV === 'development') {
+      const fetchData = async () => {
+        try {
+          const agentsData = await fetchAgents();
+          setPerspectives(agentsData);
 
-        const dialogsData = await fetchDialogs();
-        setDialogs(dialogsData);
+          const dialogsData = await fetchDialogs();
+          setDialogs(dialogsData);
 
-        const formatsData = await fetchFormats();
-        setFormatOptions(formatsData);
-        setSelectedFormat(formatsData[0])
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      }
-    };
-    fetchData();
-  }, []);
+          const formatsData = await fetchFormats();
+          setFormatOptions(formatsData);
+          setSelectedFormat(formatsData[0]);
+        } catch (error) {
+          console.error('Error fetching data:', error);
+        }
+      };
+      fetchData();
+    }
+  }, [isAuthenticated]);
 
   const validateUserInput = () => {
     if (selectedPerspectives.length === 0) {
@@ -183,89 +200,100 @@ const App = () => {
     setIsDialogsBarVisible(!isDialogsBarVisible);
   };
 
-
-
   return (
     <div className="app-container">
-      <div className="menu-symbol" onClick={handleToggleDialogsBar}>
-        &#9776; {/* Unicode character for the menu symbol */}
-      </div>
+      {!isAuthenticated && process.env.NODE_ENV !== 'development' ? (
+        <div className="password-container">
+          <PasswordInput
+            password={password}
+            setPassword={setPassword}
+          />
+          <button classnName="submit-button" onClick={handlePasswordSubmit}>Submit password</button>
+          {error && <div className="error-message">{error}</div>}
+        </div>
+      ) : (
+        <>
+          <div className="menu-symbol" onClick={handleToggleDialogsBar}>
+            &#9776; {/* Unicode character for the menu symbol */}
+          </div>
 
-      <div className={`dialogs-bar ${isDialogsBarVisible ? '' : 'dialogs-bar-hidden'}`}>
-        <DialogsBar
-          dialogs={dialogs}
-          expandedDialogs={expandedDialogs}
-          toggleDialog={setExpandedDialogs}
-        />
-      </div>
+          <div className={`dialogs-bar ${isDialogsBarVisible ? '' : 'dialogs-bar-hidden'}`}>
+            <DialogsBar
+              dialogs={dialogs}
+              expandedDialogs={expandedDialogs}
+              toggleDialog={setExpandedDialogs}
+            />
+          </div>
 
-      <div className={`main-content ${isDialogsBarVisible ? 'main-content-shift' : ''}`}>
-        <h1>Human Bias Project</h1>
-        {!dialogStarted && (
-          <>
-            <ExamplePrompts setPrompt={setPrompt} />
-            <InputForm prompt={prompt} setPrompt={setPrompt} />
-          </>
-        )}
-        <div className="centered-column">
-          {!dialogStarted && (
-            <>
-              <div className="generate-agents-container">
-                <GenerateAgents
-                  perspectives={perspectives}
-                  setPerspectives={setPerspectives}
-                  onSubmit={handleGenerateAgents}
-                />
-              </div>
-
-              <PerspectiveSelector
-                perspectives={perspectives}
-                selectedPerspectives={selectedPerspectives}
-                setSelectedPerspectives={setSelectedPerspectives}
-                setPerspectives={setPerspectives}
-              />
-              <FormatSelector formatOptions={formatOptions} setSelectedFormat={setSelectedFormat} />
-              <SubmitButton onSubmit={handleSubmit} />
-              {loading ? (
-                <div className="spinner-container">
-                  <div className="spinner"></div>
-                </div>
-              ) : null}
-              {error && <div className="error-message">{error}</div>}
-            </>
-          )}
-
-          {response && <ResponseDisplay response={response} />}
-          {displayedSession !== null && dialogs[displayedSession] && (
-            <>
-              <DialogDisplay dialogId={displayedSession} dialog={dialogs[displayedSession]} />
-              {loading ? (
-                <div className="spinner-container">
-                  <div className="spinner"></div>
-                </div>
-              ) : null}
-              {dialogStarted && (
+          <div className={`main-content ${isDialogsBarVisible ? 'main-content-shift' : ''}`}>
+            <h1>Human Bias Project</h1>
+            {!dialogStarted && (
+              <>
+                <ExamplePrompts setPrompt={setPrompt} />
+                <InputForm prompt={prompt} setPrompt={setPrompt} />
+              </>
+            )}
+            <div className="centered-column">
+              {!dialogStarted && (
                 <>
-                  <CommentInput comment={comment} setComment={setComment} showInput={showInput} setShowInput={setShowInput} />
-                  <div className='button-group'>
-                    <ContinueButton onSubmit={handleContinue} />
-                    <StopButton onSubmit={handleStop} />
-                    <SummaryButton onClick={handleSummaryClick} />
-                    {summary && (
-                      <div className="summary-section">
-                        <h2>Summary</h2>
-                        <p>{summary}</p>
-                        <h2>Biases</h2>
-                        <p>{biases}</p>
-                      </div>
-                    )}
+                  <div className="generate-agents-container">
+                    <GenerateAgents
+                      perspectives={perspectives}
+                      setPerspectives={setPerspectives}
+                      onSubmit={handleGenerateAgents}
+                    />
                   </div>
+
+                  <PerspectiveSelector
+                    perspectives={perspectives}
+                    selectedPerspectives={selectedPerspectives}
+                    setSelectedPerspectives={setSelectedPerspectives}
+                    setPerspectives={setPerspectives}
+                  />
+                  <FormatSelector formatOptions={formatOptions} setSelectedFormat={setSelectedFormat} />
+                  <SubmitButton onSubmit={handleSubmit} />
+                  {loading ? (
+                    <div className="spinner-container">
+                      <div className="spinner"></div>
+                    </div>
+                  ) : null}
+                  {error && <div className="error-message">{error}</div>}
                 </>
               )}
-            </>
-          )}
-        </div>
-      </div>
+
+              {response && <ResponseDisplay response={response} />}
+              {displayedSession !== null && dialogs[displayedSession] && (
+                <>
+                  <DialogDisplay dialogId={displayedSession} dialog={dialogs[displayedSession]} />
+                  {loading ? (
+                    <div className="spinner-container">
+                      <div className="spinner"></div>
+                    </div>
+                  ) : null}
+                  {dialogStarted && (
+                    <>
+                      <CommentInput comment={comment} setComment={setComment} showInput={showInput} setShowInput={setShowInput} />
+                      <div className='button-group'>
+                        <ContinueButton onSubmit={handleContinue} />
+                        <StopButton onSubmit={handleStop} />
+                        <SummaryButton onClick={handleSummaryClick} />
+                        {summary && (
+                          <div className="summary-section">
+                            <h2>Summary</h2>
+                            <p>{summary}</p>
+                            <h2>Biases</h2>
+                            <p>{biases}</p>
+                          </div>
+                        )}
+                      </div>
+                    </>
+                  )}
+                </>
+              )}
+            </div>
+          </div>
+        </>
+      )}
     </div>
   );
 };

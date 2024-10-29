@@ -73,6 +73,14 @@ select {
   box-shadow: inset 5px 5px 10px #0d141f, inset -5px -5px 10px #172036;
 }
 
+.password-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-top: 20px;
+}
+
 .add-perspective-form {
   width: 200px !important;
 }
