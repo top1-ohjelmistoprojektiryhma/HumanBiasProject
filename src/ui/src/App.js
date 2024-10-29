@@ -39,6 +39,7 @@ const App = () => {
   const [isDialogsBarVisible, setIsDialogsBarVisible] = useState(false); // New state for visibility
   const [loading, setLoading] = useState(false);
   const [comment, setComment] = useState('');
+  const [showInput, setShowInput] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -145,6 +146,7 @@ const App = () => {
       setDisplayedSession(newSessionId);
       setResponse("");
       setComment("");
+      setShowInput(false);
     } catch (error) {
       console.error('Error continuing the dialog:', error);
     }
@@ -244,7 +246,7 @@ const App = () => {
               ) : null}
               {dialogStarted && (
                 <>
-                  {selectedFormat === "dialog - user comments" && <CommentInput comment={comment} setComment={setComment} />}
+                  <CommentInput comment={comment} setComment={setComment} showInput={showInput} setShowInput={setShowInput} />
                   <div className='button-group'>
                     <ContinueButton onSubmit={handleContinue} />
                     <StopButton onSubmit={handleStop} />

@@ -146,7 +146,6 @@ class Dialog:
         if self.dialog_format in (
             "dialog - no consensus",
             "dialog - consensus",
-            "dialog - user comments",
         ):
             agent = agents[(len(self.rounds) - 1) % len(agents)]
         else:

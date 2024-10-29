@@ -13,7 +13,6 @@ class SessionManager:
         self._all_formats = {
             "dialog - no consensus": Dialog,
             "dialog - consensus": Dialog,
-            "dialog - user comments": Dialog,
         }
 
     def get_all_formats(self):
