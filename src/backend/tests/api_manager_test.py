@@ -10,7 +10,7 @@ class Agent():
 
 class TestApiManager(unittest.TestCase):
     def setUp(self):
-        self._api_manager = ApiManager()
+        self._api_manager = ApiManager(gemini_key="key", openai_key="key", anthropic_key="key")
         self._api_manager.gemini_api = Mock()
         self._api_manager.openai_api = Mock()
         self._api_manager.anthropic_api = Mock()

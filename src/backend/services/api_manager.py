@@ -33,6 +33,8 @@ class ApiManager:
         }
         # Filter out None values
         model_map = {model: func for model, func in model_functions.items() if func is not None}
+        if not model_map:
+            return []
         response_list = []
         model_names = list(model_map.keys())
 

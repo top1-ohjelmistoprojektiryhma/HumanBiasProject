@@ -60,12 +60,12 @@ class TestServiceHandler(unittest.TestCase):
         id, result = self._handler.start_new_session(text, "dialog")
         self.assertEqual(result, False)
 
-    def test_continue_session_no_gemini_key(self):
-        self._handler.api_manager.gemini_key = None
+    def test_continue_session_no_api_keys(self):
+        self._handler.api_manager.available_models.return_value = []
         session_id = 1
         result = self._handler.continue_session(session_id, comment="comment")
 
-        self.assertEqual(result, (None, None))
+        self.assertEqual(result, ("No API keys available", None))
 
     def test_continue_session_with_gemini_key(self):
         self._handler.api_manager.gemini_key = "valid_key"
@@ -96,7 +96,7 @@ class TestServiceHandler(unittest.TestCase):
 
     def test_generate_agents_with_no_api_key(self):
         test_text = "Generate new agents based on this input."
-        self._mock_api_manager.gemini_key = None
+        self._mock_api_manager.available_models.return_value = []
         response = self._handler.generate_agents(test_text)
         self.assertEqual(response, {"response": "", "perspectives": []})
 
