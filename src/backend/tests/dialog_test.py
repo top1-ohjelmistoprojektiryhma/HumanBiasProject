@@ -6,6 +6,7 @@ class ExampleAgent:
     def __init__(self):
         self.role = "student"
         self.unseen = []
+        self.history = []
 
     def get_chat_history(self):
         return ["history"]
@@ -16,12 +17,16 @@ class ExampleAgent:
     def add_unseen_prompts(self, prompts):
         self.unseen.extend(prompts)
 
+    def add_chat_to_history(self, chat):
+        self.history.extend(chat)
+
+
 class TestDialog(unittest.TestCase):
     def setUp(self):
         self.test_agents = [ExampleAgent(), ExampleAgent()]
         self.dialog = Dialog(
             "Initial prompt",
-            {self.test_agents[0]: {"model":"None"}, self.test_agents[1]: {"model":"None"}},
+            {self.test_agents[0]: {"model": None}, self.test_agents[1]: {"model": "Gemini"}},
             "dialog - no consensus"
         )
 
@@ -43,8 +48,8 @@ class TestDialog(unittest.TestCase):
         for agent ...]
         """
         result = self.dialog.get_prompts()
-        self.assertEqual(result[0]["model"], "None")
-        self.assertEqual(result[1]["model"], "None")
+        self.assertIsNone(result[0]["model"])
+        self.assertEqual(result[1]["model"], "Gemini")
         self.assertListEqual(result[0]["history"], ["history"])
         self.assertListEqual(result[1]["history"], ["history"])
         self.assertEqual(result[0]["agent_object"], self.test_agents[0])
@@ -53,7 +58,7 @@ class TestDialog(unittest.TestCase):
     def test_get_prompts_works_after_first_round(self):
         self.dialog.rounds["2"] = ["test"]
         result = self.dialog.get_prompts()
-        self.assertEqual(result[0]["model"], "None" )
+        self.assertIsNone(result[0]["model"])
         self.assertListEqual(result[0]["history"], ["history"])
         self.assertEqual(result[0]["agent_object"], self.test_agents[0])
 
@@ -68,6 +73,36 @@ class TestDialog(unittest.TestCase):
         for agent in self.dialog.agents:
             self.assertEqual(agent.unseen[0]["agent"].role, "User")
             self.assertEqual(agent.unseen[0]["text"], "This is a comment")
+
+    def test_update_with_responses_works(self):
+        test_responses = [
+            {
+                "prompt": {
+                "agent_object": self.test_agents[0],
+                "text": "This is the prompt text"
+                },
+                "model": "Open_AI",
+                "output": "This is the model output"
+            },
+            {
+                "prompt": {
+                "agent_object": self.test_agents[1],
+                "text": "This is the prompt text"
+                },
+                "model": "Gemini",
+                "output": "This is the model output"
+            }
+        ]
+        self.dialog.update_with_responses(test_responses)
+        for agent in self.test_agents:
+            self.assertListEqual(agent.history, [
+                {"role": "user", "text": "This is the prompt text"},
+                {"role": "model", "text": "This is the model output"}
+            ])
+            self.assertTrue(len(agent.unseen) == 1)
+
+        self.assertEqual(self.dialog.agents[self.test_agents[0]]["model"], "Open_AI")
+        self.assertIsNotNone(self.dialog.rounds.get(1, None))
 
     def test_add_unseen_prompts_works(self):
         test_unseen = [{"agent": "Agent1", "output": "This is the output"}]

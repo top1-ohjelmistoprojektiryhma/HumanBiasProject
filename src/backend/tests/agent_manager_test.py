@@ -38,3 +38,8 @@ class TestAgentManager(unittest.TestCase):
             self.agent_manager.selected_agents[0].role, "22-year-old CS student"
         )
         self.assertEqual(self.agent_manager.selected_agents[1].role, "CS Professor")
+
+    def test_get_agents_as_list_of_strings_works(self):
+        self.agent_manager.list_of_agents.append(ExampleAgent("student"))
+        result = self.agent_manager.get_agents_as_list_of_strings()
+        self.assertListEqual(result, ["student"])
