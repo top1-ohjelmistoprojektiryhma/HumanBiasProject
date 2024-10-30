@@ -1,6 +1,6 @@
+import re
 from . import formatter
 from . import agent
-
 
 class Dialog:
     """Represents a dialog
@@ -88,6 +88,11 @@ class Dialog:
         """
         prompts = []
         for response in responses:
+            # Extract the confidence score using regex
+            score_match = re.search(r'\|(\d+)/10\|', response["output"])
+            score = int(score_match.group(1)) / 10 if score_match else None
+
+            # Store the response and add to history
             prompts.append(
                 {
                     "agent": response["prompt"]["agent_object"],
@@ -96,25 +101,27 @@ class Dialog:
                     "output": response["output"],
                 }
             )
-            # Add chat history to specific agents
             response["prompt"]["agent_object"].add_chat_to_history(
                 [
                     {"role": "user", "text": response["prompt"]["text"]},
                     {"role": "model", "text": response["output"]},
                 ]
             )
-            # Change agent model if it is None
+
+            # If a score was found, add it to the agent's confidence scores
+            if score is not None:
+                response["prompt"]["agent_object"].add_confidence_score(score)
+
+            # Set model if unset
             if self.agents[response["prompt"]["agent_object"]]["model"] is None:
                 self.agents[response["prompt"]["agent_object"]]["model"] = response[
                     "model"
                 ]
         self.add_round(len(self.rounds) + 1, prompts)
-        # Add other agents' outputs to each agent's unseen list
         for agent_obj in self.agents:
             unseen = [prompt for prompt in prompts if prompt["agent"] != agent_obj]
             if unseen:
                 self.add_unseen_prompts(agent_obj, unseen)
-
     def add_unseen_prompts(self, agent_obj, unseen):
         """Add unseen prompts to an agent's unseen list
 

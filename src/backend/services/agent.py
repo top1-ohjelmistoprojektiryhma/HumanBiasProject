@@ -9,6 +9,7 @@ class Agent:
         self.role = str(role)
         self._history = []
         self._unseen = []
+        self._confidence_scores = []  # New attribute to store confidence scores
 
     def add_chat_to_history(self, chat):
         """Add a chat to the agent's history
@@ -36,3 +37,15 @@ class Agent:
             list: A list of unseen prompts
         """
         return self._unseen
+
+    def add_confidence_score(self, score):
+        """Add a confidence score to the agent's list of scores
+        Args:
+            score (float): Confidence score to be added
+        """
+        self._confidence_scores.append(score)
+        print(f"{self.role}s confidence scores: {self._confidence_scores}")
+
+    def get_confidence_scores(self):
+        """Get the list of confidence scores for the agent"""
+        return self._confidence_scores
