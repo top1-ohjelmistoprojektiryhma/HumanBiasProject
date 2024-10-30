@@ -1,3 +1,26 @@
+import time
+from functools import wraps
+
+class RateLimitException(Exception):
+    pass
+
+def rate_limiter(max_calls, period):
+    calls = []
+
+    def decorator(func):
+        @wraps(func)
+        def wrapper(*args, **kwargs):
+            nonlocal calls
+            now = time.time()
+            # Remove calls that are outside the time window
+            calls = [call for call in calls if call > now - period]
+            if len(calls) >= max_calls:
+                raise RateLimitException("Rate limit exceeded")
+            calls.append(now)
+            return func(*args, **kwargs)
+        return wrapper
+    return decorator
+
 class ApiManager:
     """Class for managing interaction with multiple APIs"""
     def __init__(
@@ -16,6 +39,7 @@ class ApiManager:
         self.anthropic_key = anthropic_key
         self.anthropic_api = anthropic_api
 
+    @rate_limiter(500, 86400)
     def send_prompts(self, prompt_list):
         """Sends any number of prompts to available or selected models
 

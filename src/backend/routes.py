@@ -1,10 +1,25 @@
 # pylint: skip-file
 import uuid
-import os
-from flask import request, jsonify, send_from_directory, session, render_template_string
+from flask import request, jsonify, send_from_directory, session
+from flask_limiter import Limiter
+from flask_limiter.util import get_remote_address
 
 # calling sessions instances until name for custom class session is changed
-def initialize_routes(app, instances, create_service_handler, cd_password):
+def initialize_routes(app, instances, create_service_handler, cd_password, unlock_password):
+    def rate_limit_exceeded():
+        app.config['LOCKED'] = True
+        return jsonify({"error": "Rate limit exceeded. Application is locked."}), 429
+    
+    limiter = Limiter(
+        get_remote_address,
+        app=app
+    )
+
+    @app.before_request
+    def check_rate_limit():
+        if app.config.get('LOCKED') and request.path != '/api/unlock':
+            return jsonify({"error": "Rate limit exceeded. Application is locked."}), 429
+
     def get_service_handler():
         # skip password if in development
         if app.config['ENV'] == 'development' and not session.get('instance_id'):
@@ -57,6 +72,7 @@ def initialize_routes(app, instances, create_service_handler, cd_password):
         return jsonify(format_options)
 
     @app.route("/api/new-session", methods=["POST"])
+    @limiter.limit("100 per day", error_message=rate_limit_exceeded)
     def new_session():
         service_handler, error_response, status_code = get_service_handler()
         if error_response:
@@ -82,6 +98,7 @@ def initialize_routes(app, instances, create_service_handler, cd_password):
         )
 
     @app.route("/api/continue-session", methods=["POST"])
+    @limiter.limit("200 per day", error_message=rate_limit_exceeded)
     def continue_session():
         service_handler, error_response, status_code = get_service_handler()
         if error_response:
@@ -120,6 +137,7 @@ def initialize_routes(app, instances, create_service_handler, cd_password):
         return jsonify({"response": "Perspective added"})
 
     @app.route("/api/generate-agents", methods=["POST"])
+    @limiter.limit("100 per day", error_message=rate_limit_exceeded)
     def generate_agents():
         service_handler, error_response, status_code = get_service_handler()
         if error_response:
@@ -147,9 +165,21 @@ def initialize_routes(app, instances, create_service_handler, cd_password):
         return jsonify(sessions)
 
     @app.route("/api/summary", methods=["GET"])
+    @limiter.limit("100 per day", error_message=rate_limit_exceeded)
     def receive_dialog():
         service_handler, error_response, status_code = get_service_handler()
         if error_response:
             return error_response, status_code
         summary, biases = service_handler.get_latest_dialog_summary()
         return jsonify({"response": [summary, biases]}), 200
+    
+    @app.route("/api/unlock", methods=["POST"])
+    @limiter.limit("5 per day")
+    def unlock():
+        data = request.json
+        secret_password = data.get("secret_password")
+        if secret_password != unlock_password:
+            return jsonify({"error": "unauthorized"}), 401
+        app.config['LOCKED'] = False
+        limiter.reset()
+        return jsonify({"message": "Application unlocked"}), 200

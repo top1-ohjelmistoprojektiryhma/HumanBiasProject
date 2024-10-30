@@ -18,28 +18,31 @@ CORS(app)  # Use CORS for frontend
 # Load environment variables
 load_dotenv()
 app.config['ENV'] = os.getenv('FLASK_ENV', 'production')
+app.config['LOCKED'] = False # Rate limit lock
 GEMINI_KEY = os.getenv("GEMINI_KEY")
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 ANTHROPIC_API_KEY = os.getenv("ANTHROPIC_API_KEY")
-CD_PASSWORD = os.getenv("CD_PASSWORD")
+CD_PASSWORD = os.getenv("CD_PASSWORD") # production build password
+UNLOCK_PASSWORD = os.getenv("UNLOCK_PASSWORD") # password to unlock rate limit
 
 # session data for each user
 # calling this instances until naming for custom class session is changed
 instances = {}
+
+api_manager = ApiManager(
+    gemini_key=GEMINI_KEY,
+    gemini_api=gemini.GeminiApi(gemini_key=GEMINI_KEY),
+    openai_key=OPENAI_API_KEY,
+    openai_api=openai.OpenAiApi(openai_key=OPENAI_API_KEY),
+    anthropic_key=ANTHROPIC_API_KEY,
+    anthropic_api=anthropic.AnthropicApi(anthropic_key=ANTHROPIC_API_KEY)
+)
 
 def create_service_handler():
     # check that keys provided by user match ENV variables
     # api_manager wont use key if it is None
     agent_manager = AgentManager()
     session_manager = SessionManager()
-    api_manager = ApiManager(
-        gemini_key=GEMINI_KEY,
-        gemini_api=gemini.GeminiApi(gemini_key=GEMINI_KEY),
-        openai_key=OPENAI_API_KEY,
-        openai_api=openai.OpenAiApi(openai_key=OPENAI_API_KEY),
-        anthropic_key=ANTHROPIC_API_KEY,
-        anthropic_api=anthropic.AnthropicApi(anthropic_key=ANTHROPIC_API_KEY)
-    )
     return ServiceHandler(
         io=None,
         agent_manager=agent_manager,
@@ -50,8 +53,7 @@ def create_service_handler():
 # Create routes
 from routes import initialize_routes
 
-initialize_routes(app, instances, create_service_handler, CD_PASSWORD)
+initialize_routes(app, instances, create_service_handler, CD_PASSWORD, UNLOCK_PASSWORD)
 
-# Start app with ENV = development
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=8000, debug=True)
+    app.run(host="0.0.0.0", port=8000)
