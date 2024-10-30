@@ -39,12 +39,12 @@ class Dialog:
         if not self.rounds:
             prompts_list = self.initial_prompts(self.initial_prompt)
         else:
-            agent = self.get_next_agent()
-            unseen_prompts = agent.get_unseen_prompts()
+            next_agent = self.get_next_agent()
+            unseen_prompts = next_agent.get_unseen_prompts()
             prompt = formatter.format_dialog_prompt_with_unseen(
-                agent, unseen_prompts, self.dialog_format
+                next_agent, unseen_prompts, self.dialog_format
             )
-            prompts_list = [{"agent": agent, "text": prompt}]
+            prompts_list = [{"agent": next_agent, "text": prompt}]
 
         api_input_list = [
             {
@@ -148,16 +148,16 @@ class Dialog:
         Returns:
             Agent: The next agent to speak
         """
-        agent = None
+        next_agent = None
         agents = list(self.agents.keys())
         if self.dialog_format in (
             "dialog - no consensus",
             "dialog - consensus",
         ):
-            agent = agents[(len(self.rounds) - 1) % len(agents)]
+            next_agent = agents[(len(self.rounds) - 1) % len(agents)]
         else:
             print("DIALOG.PY: Agent is None")
-        return agent
+        return next_agent
 
     def get_agent_history(self, agent_obj):
         """Get the dialog history for a specific agent
