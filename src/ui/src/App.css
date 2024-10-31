@@ -536,3 +536,73 @@ input[type="text"] {
   margin-right: 0;
   /* Poista marginaali viimeiseltä painikkeelta */
 }
+
+/* Mobiilinäytöt */
+@media (max-width: 768px) {
+  .app-container {
+    flex-direction: column;
+    align-items: center;
+    height: auto;
+  }
+
+  .centered-column {
+    width: 90%;
+    max-width: 100%;
+    margin: 0 auto;
+  }
+
+  .dialogs-bar {
+    width: 100%;
+    height: 100vh;
+    position: fixed;
+    left: 0;
+    top: 0;
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
+    z-index: 1000;
+    width: 80vw; /* Määrittää leveyden suhteessa näkymään */
+    padding-top: 20px;
+    padding-left: 10px;
+  }
+  
+
+  .dialogs-bar-open .dialogs-bar {
+    transform: translateX(0);
+  }
+
+  .menu-symbol {
+    position: fixed;
+    left: 20px;
+    top: 20px;
+    z-index: 1100;
+  }
+
+  .generate-agents-container {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    align-items: center;
+    margin-top: 20px;
+  }
+
+  .agent-box-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+  }
+
+  .main-content {
+    padding: 10px;
+    margin-left: 0;
+    width: 100%;
+  }
+
+  .example-prompts {
+    display: none;
+    /* flex-direction: column;
+    gap: 10px;
+    align-items: center; */
+  }
+  
+}

@@ -223,9 +223,16 @@ const App = () => {
         console.error('Error sending dialog data:', error);
       });
   };
+  
   const handleToggleDialogsBar = () => {
     setIsDialogsBarVisible(!isDialogsBarVisible);
+    if (!isDialogsBarVisible) {
+      document.body.classList.add('dialogs-bar-open');
+    } else {
+      document.body.classList.remove('dialogs-bar-open');
+    }
   };
+  
 
   return (
     <div className="app-container">
