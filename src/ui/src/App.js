@@ -21,6 +21,7 @@ import {
   generateAgents,
   continueSession,
   submitPassword,
+  checkIfAuthenticated,
 } from './api';
 
 
@@ -49,6 +50,7 @@ const App = () => {
     try {
       await submitPassword(password);
       setIsAuthenticated(true);
+      localStorage.setItem('isAuthenticated', 'true');
       setError('');
     } catch (error) {
       console.error('Error submitting password:', error);
@@ -56,23 +58,48 @@ const App = () => {
     }
   };
 
+  // Check if the user is already authenticated
   useEffect(() => {
-    if (isAuthenticated || process.env.NODE_ENV === 'development') {
-      const fetchData = async () => {
+    const checkAuthStatus = async () => {
+      const storedAuth = localStorage.getItem('isAuthenticated');
+      setIsAuthenticated(storedAuth === 'true');
+      if (storedAuth === 'true') {
         try {
-          const agentsData = await fetchAgents();
-          setPerspectives(agentsData);
-
-          const dialogsData = await fetchDialogs();
-          setDialogs(dialogsData);
-
-          const formatsData = await fetchFormats();
-          setFormatOptions(formatsData);
-          setSelectedFormat(formatsData[0]);
+          const response = await checkIfAuthenticated();
+          if (response.authenticated) {
+            setIsAuthenticated(true);
+          } else {
+            localStorage.removeItem('isAuthenticated');
+            setIsAuthenticated(false);
+          }
         } catch (error) {
-          console.error('Error fetching data:', error);
+          console.error('Error checking session:', error);
+          localStorage.removeItem('isAuthenticated');
         }
-      };
+      }
+    };
+
+    checkAuthStatus();
+  }, []);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const agentsData = await fetchAgents();
+        setPerspectives(agentsData);
+
+        const dialogsData = await fetchDialogs();
+        setDialogs(dialogsData);
+
+        const formatsData = await fetchFormats();
+        setFormatOptions(formatsData);
+        setSelectedFormat(formatsData[0]);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+
+    if (isAuthenticated || process.env.NODE_ENV === 'development') {
       fetchData();
     }
   }, [isAuthenticated]);

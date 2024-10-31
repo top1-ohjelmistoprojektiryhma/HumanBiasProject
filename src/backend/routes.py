@@ -1,5 +1,6 @@
 # pylint: skip-file
 import uuid
+import bcrypt
 from flask import request, jsonify, send_from_directory, session
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
@@ -44,11 +45,22 @@ def initialize_routes(app, instances, create_service_handler, cd_password, unloc
     def serve_static(path):
         return send_from_directory(app.static_folder, path)
     
+    @app.route("/api/check-authentication", methods=["GET"])
+    def check_authentication():
+        if app.config['ENV'] == 'development' and not session.get('instance_id'):
+            create_new_instance()
+            return jsonify({"authenticated": True})
+        if not session.get('instance_id'):
+            return jsonify({"authenticated": False})
+        return jsonify({"authenticated": True})
+    
     @app.route("/api/submit-password", methods=["POST"])
+    @limiter.limit("10 per minute", error_message="Too many attempts, please try again later.")
     def submit_password():
         data = request.json
-        secret_password = data.get("secret_password")
-        if secret_password != cd_password:
+        provided_password = data.get("secret_password")
+        provided_password = provided_password.encode("utf-8")
+        if not bcrypt.checkpw(provided_password, cd_password.encode("utf-8")):
             return jsonify({"error": "Invalid password"}), 401
         if not session.get('instance_id'):
             create_new_instance()
@@ -174,11 +186,12 @@ def initialize_routes(app, instances, create_service_handler, cd_password, unloc
         return jsonify({"response": [summary, biases]}), 200
     
     @app.route("/api/unlock", methods=["POST"])
-    @limiter.limit("5 per day")
+    @limiter.limit("3 per minute")
     def unlock():
         data = request.json
-        secret_password = data.get("secret_password")
-        if secret_password != unlock_password:
+        provided_password = data.get("secret_password")
+        provided_password = provided_password.encode("utf-8")
+        if not bcrypt.checkpw(provided_password, unlock_password.encode("utf-8")):
             return jsonify({"error": "unauthorized"}), 401
         app.config['LOCKED'] = False
         limiter.reset()

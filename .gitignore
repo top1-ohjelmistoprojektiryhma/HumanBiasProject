@@ -103,3 +103,6 @@ dist/
 
 # GitHub Actions
 .github/
+
+# Fly.io
+fly.toml

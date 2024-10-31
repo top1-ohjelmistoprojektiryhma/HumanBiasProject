@@ -14,6 +14,14 @@ export const submitPassword = async (secret_password) => {
     return response.json();
 }
 
+export const checkIfAuthenticated = async () => {
+    const response = await fetch(`${BASE_URL}/api/check-authentication`);
+    if (!response.ok) {
+        throw new Error('Network response was not ok');
+    }
+    return response.json();
+}
+
 export const fetchAgents = async () => {
     const response = await fetch(`${BASE_URL}/api/agents`);
     if (!response.ok) {
