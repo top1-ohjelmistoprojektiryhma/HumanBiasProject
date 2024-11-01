@@ -122,6 +122,9 @@ class Dialog:
             unseen = [prompt for prompt in prompts if prompt["agent"] != agent_obj]
             if unseen:
                 self.add_unseen_prompts(agent_obj, unseen)
+
+        return self._get_agent_scores()
+
     def add_unseen_prompts(self, agent_obj, unseen):
         """Add unseen prompts to an agent's unseen list
 
@@ -178,6 +181,12 @@ class Dialog:
 
     def get_history(self):
         return self.history
+
+    def _get_agent_scores(self):
+        scores = []
+        for agent_in_question in self.agents:
+            scores.append(agent_in_question.get_confidence_scores())
+        return scores
 
     def to_dict(self):
         init = self.initial_prompt

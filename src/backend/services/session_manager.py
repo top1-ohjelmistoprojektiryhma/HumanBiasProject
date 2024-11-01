@@ -63,7 +63,7 @@ class SessionManager:
             session_id (int): The id of the session
             responses (list): A list of responses
         """
-        self._sessions[session_id].update_with_responses(responses)
+        return self._sessions[session_id].update_with_responses(responses)
 
     def get_session(self, session_id):
         return self._sessions[session_id]

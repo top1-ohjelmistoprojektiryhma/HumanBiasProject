@@ -101,12 +101,17 @@ def initialize_routes(app, instances, create_service_handler, cd_password, unloc
         if not successful:
             return jsonify({"response": result})
         new_id = result
-        response, dialog_dict = service_handler.continue_session(new_id, comment="")
+        response, dialog_dict, confidence_scores = service_handler.continue_session(new_id, comment="")
         if dialog_dict is None:
             return jsonify({"response": "Missing api keys"})
         print(f"ROUTES.PY: Response: Placeholder, Dialog ID: {new_id}")
         return jsonify(
-            {"response": response, "session_id": new_id, "dialog": dialog_dict}
+            {
+                "response": response,
+                "session_id": new_id,
+                "dialog": dialog_dict,
+                "scores": confidence_scores
+            }
         )
 
     @app.route("/api/continue-session", methods=["POST"])
@@ -118,11 +123,16 @@ def initialize_routes(app, instances, create_service_handler, cd_password, unloc
         data = request.json
         session_id = data.get("session_id")
         comment = data.get("comment")
-        response, dialog_dict = service_handler.continue_session(session_id, comment)
+        response, dialog_dict, confidence_scores = service_handler.continue_session(session_id, comment)
         if dialog_dict is None:
             return jsonify({"response": response})
         return jsonify(
-            {"response": response, "session_id": session_id, "dialog": dialog_dict}
+            {
+                "response": response,
+                "session_id": session_id,
+                "dialog": dialog_dict,
+                "scores": confidence_scores
+            }
         )
 
     @app.route("/api/delete-perspective", methods=["POST"])
