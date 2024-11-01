@@ -7,6 +7,7 @@ class ExampleAgent:
         self.role = "student"
         self.unseen = []
         self.history = []
+        self.conf_scores = []
 
     def get_chat_history(self):
         return ["history"]
@@ -19,6 +20,12 @@ class ExampleAgent:
 
     def add_chat_to_history(self, chat):
         self.history.extend(chat)
+
+    def get_confidence_scores(self):
+        return self.conf_scores
+
+    def add_confidence_score(self, score):
+        self.conf_scores.append(score)
 
 
 class TestDialog(unittest.TestCase):
@@ -74,7 +81,7 @@ class TestDialog(unittest.TestCase):
             self.assertEqual(agent.unseen[0]["agent"].role, "User")
             self.assertEqual(agent.unseen[0]["text"], "This is a comment")
 
-    def test_update_with_responses_works(self):
+    def test_update_with_responses_works_without_conf_scores(self):
         test_responses = [
             {
                 "prompt": {
@@ -103,6 +110,31 @@ class TestDialog(unittest.TestCase):
 
         self.assertEqual(self.dialog.agents[self.test_agents[0]]["model"], "Open_AI")
         self.assertIsNotNone(self.dialog.rounds.get(1, None))
+        self.assertListEqual([], self.test_agents[0].conf_scores)
+        self.assertListEqual([], self.test_agents[1].conf_scores)
+
+    def test_update_with_responses_works_with_conf_scores(self):
+        test_responses = [
+            {
+                "prompt": {
+                "agent_object": self.test_agents[0],
+                "text": "This is the prompt text"
+                },
+                "model": "Open_AI",
+                "output": "This is the model output |2/10|"
+            },
+            {
+                "prompt": {
+                "agent_object": self.test_agents[1],
+                "text": "This is the prompt text"
+                },
+                "model": "Gemini",
+                "output": "This is the model output |8/10|"
+            }
+        ]
+        self.dialog.update_with_responses(test_responses)
+        self.assertListEqual(self.test_agents[0].conf_scores, [0.2])
+        self.assertListEqual(self.test_agents[1].conf_scores, [0.8])
 
     def test_add_unseen_prompts_works(self):
         test_unseen = [{"agent": "Agent1", "output": "This is the output"}]
@@ -179,3 +211,9 @@ class TestDialog(unittest.TestCase):
     def test_get_history_works(self):
         self.dialog.history.append(":)")
         self.assertListEqual(self.dialog.get_history(), [":)"])
+
+    def test_get_agent_scores_works(self):
+        self.test_agents[0].add_confidence_score(0.2)
+        self.test_agents[1].add_confidence_score(0.8)
+        result = self.dialog._get_agent_scores()
+        self.assertListEqual(result, [[0.2], [0.8]])
