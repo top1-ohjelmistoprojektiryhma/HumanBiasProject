@@ -117,7 +117,6 @@ def initialize_routes(app, instances, create_service_handler, cd_password, unloc
             return error_response, status_code
         data = request.json
         session_id = data.get("session_id")
-        prompt = data.get("prompt")
         comment = data.get("comment")
         response, dialog_dict = service_handler.continue_session(session_id, comment)
         if dialog_dict is None:
