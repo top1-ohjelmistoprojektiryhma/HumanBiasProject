@@ -13,6 +13,7 @@ import SummaryButton from './components/SummaryButton';
 import ExamplePrompts from './components/ExamplePrompts';
 import CommentInput from './components/CommentInput';
 import PasswordInput from './components/PasswordInput';
+import ConfidenceChart from './components/ConfidenceChart';
 import {
   fetchAgents,
   fetchDialogs,
@@ -45,6 +46,8 @@ const App = () => {
   const [showInput, setShowInput] = useState(false);
   const [password, setPassword] = useState(''); // New state for password
   const [isAuthenticated, setIsAuthenticated] = useState(false); // New state for authentication
+  const [chartData, setChartData] = useState([[1]]);
+  const [showChart, setShowChart] = useState(false);
 
   const handlePasswordSubmit = async () => {
     try {
@@ -135,7 +138,8 @@ const App = () => {
       const data = await startNewSession(requestData);
       const newSessionId = data.session_id;
       const newDialog = data.dialog;
-
+      const scores = data.scores;
+      setChartData(scores);
       setDialogs((prevState) => ({
         ...prevState,
         [newSessionId]: newDialog,
@@ -171,13 +175,13 @@ const App = () => {
     }
   };
   const handleContinue = async () => {
-    console.log(comment)
     setLoading(true);
     try {
       const data = await continueSession(displayedSession, comment);
       const newSessionId = data.session_id;
       const newDialog = data.dialog;
-
+      const scores = data.scores;
+      setChartData(scores);
       setDialogs((prevState) => ({
         ...prevState,
         [newSessionId]: newDialog
@@ -215,7 +219,6 @@ const App = () => {
     })
       .then((response) => response.json())
       .then((data) => {
-        console.log('Summary:', data.response);
         setSummary(data.response[0]); // summary index in array
         setBiases(data.response[1]); // biases index in array
       })
@@ -223,7 +226,7 @@ const App = () => {
         console.error('Error sending dialog data:', error);
       });
   };
-  
+
   const handleToggleDialogsBar = () => {
     setIsDialogsBarVisible(!isDialogsBarVisible);
     if (!isDialogsBarVisible) {
@@ -232,7 +235,11 @@ const App = () => {
       document.body.classList.remove('dialogs-bar-open');
     }
   };
-  
+
+  const toggleChart = () => {
+    setShowChart((prevShowChart) => !prevShowChart);
+  };
+
 
   return (
     <div className="app-container">
@@ -306,6 +313,10 @@ const App = () => {
                   ) : null}
                   {dialogStarted && (
                     <>
+                      {showChart && <ConfidenceChart data={chartData} agents={selectedPerspectives} />}
+                      <button onClick={toggleChart}>
+                        {showChart ? "Hide Chart" : "Show Chart"}
+                      </button>
                       <CommentInput comment={comment} setComment={setComment} showInput={showInput} setShowInput={setShowInput} />
                       <div className='button-group'>
                         <ContinueButton onSubmit={handleContinue} />
