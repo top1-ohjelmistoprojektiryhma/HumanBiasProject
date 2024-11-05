@@ -27,6 +27,8 @@ class ExampleAgent:
     def add_confidence_score(self, score):
         self.conf_scores.append(score)
 
+    def reset_unseen_list(self):
+        self.unseen = []
 
 class TestDialog(unittest.TestCase):
     def setUp(self):

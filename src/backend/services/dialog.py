@@ -41,6 +41,7 @@ class Dialog:
         else:
             next_agent = self.get_next_agent()
             unseen_prompts = next_agent.get_unseen_prompts()
+            next_agent.reset_unseen_list()
             prompt = formatter.format_dialog_prompt_with_unseen(
                 next_agent, unseen_prompts, self.dialog_format
             )

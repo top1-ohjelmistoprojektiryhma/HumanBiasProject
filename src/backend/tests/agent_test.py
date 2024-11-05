@@ -40,3 +40,8 @@ class TestAgent(unittest.TestCase):
         self.agent.add_unseen_prompts(prompts)
         self.assertEqual(self.agent._unseen[0],
                          {"role": "user", "text": "hello"})
+
+    def test_reset_unseen_list_works(self):
+        self.agent._unseen.append("Unseen History")
+        self.agent.reset_unseen_list()
+        self.assertEqual(len(self.agent._unseen), 0)
