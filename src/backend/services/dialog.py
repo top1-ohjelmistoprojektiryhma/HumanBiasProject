@@ -116,7 +116,7 @@ class Dialog:
                 self.agents[response["prompt"]["agent_object"]]["model"] = response[
                     "model"
                 ]
-   
+
         self.add_round(len(self.rounds) + 1, prompts)
         for agent_obj in self.agents:
             unseen = [prompt for prompt in prompts if prompt["agent"] != agent_obj]
