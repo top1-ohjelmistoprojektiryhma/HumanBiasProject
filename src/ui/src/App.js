@@ -46,7 +46,7 @@ const App = () => {
   const [showInput, setShowInput] = useState(false);
   const [password, setPassword] = useState(''); // New state for password
   const [isAuthenticated, setIsAuthenticated] = useState(false); // New state for authentication
-  const [chartData, setChartData] = useState([[1]]);
+  const [chartData, setChartData] = useState({});
   const [showChart, setShowChart] = useState(false);
 
   const handlePasswordSubmit = async () => {
@@ -120,6 +120,30 @@ const App = () => {
     return true;
   };
 
+  const collectScores = (newDialog) => {
+    const scores = {};
+    const rounds = newDialog['rounds'];
+    for (const round in rounds) {
+      if (Array.isArray(rounds[round])) {
+        for (const entry of rounds[round]) {
+          const agent_role = entry.agent;
+          const conf_score = entry.conf_score;
+          if (agent_role !== undefined && conf_score !== undefined) {
+            if (!scores[agent_role]) {
+              scores[agent_role] = [];
+            }
+            scores[agent_role].push([agent_role, conf_score]);
+          } else {
+            console.warn(`Missing agent_role or conf_score in entry:`, entry);
+          }
+        }
+      } else {
+        console.warn(`Expected an array for round ${round}, but got:`, newDialog[round]);
+      }
+    }
+    return scores;
+  };
+
   const handleSubmit = async () => {
     if (!validateUserInput()) {
       return;
@@ -138,8 +162,10 @@ const App = () => {
       const data = await startNewSession(requestData);
       const newSessionId = data.session_id;
       const newDialog = data.dialog;
-      const scores = data.scores;
+    
+      const scores = collectScores(newDialog, chartData);
       setChartData(scores);
+
       setDialogs((prevState) => ({
         ...prevState,
         [newSessionId]: newDialog,
@@ -180,8 +206,9 @@ const App = () => {
       const data = await continueSession(displayedSession, comment);
       const newSessionId = data.session_id;
       const newDialog = data.dialog;
-      const scores = data.scores;
+      const scores = collectScores(newDialog, chartData);
       setChartData(scores);
+      
       setDialogs((prevState) => ({
         ...prevState,
         [newSessionId]: newDialog

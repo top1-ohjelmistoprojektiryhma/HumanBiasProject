@@ -37,15 +37,3 @@ class Agent:
             list: A list of unseen prompts
         """
         return self._unseen
-
-    def add_confidence_score(self, score):
-        """Add a confidence score to the agent's list of scores
-        Args:
-            score (float): Confidence score to be added
-        """
-        self._confidence_scores.append(score)
-        print(f"{self.role}s confidence scores: {self._confidence_scores}")
-
-    def get_confidence_scores(self):
-        """Get the list of confidence scores for the agent"""
-        return self._confidence_scores

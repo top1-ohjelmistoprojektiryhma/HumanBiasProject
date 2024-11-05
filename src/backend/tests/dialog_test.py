@@ -113,7 +113,7 @@ class TestDialog(unittest.TestCase):
         self.assertListEqual([], self.test_agents[0].conf_scores)
         self.assertListEqual([], self.test_agents[1].conf_scores)
 
-    def test_update_with_responses_works_with_conf_scores(self):
+    def test_update_with_responses_works(self):
         test_responses = [
             {
                 "prompt": {
@@ -133,8 +133,16 @@ class TestDialog(unittest.TestCase):
             }
         ]
         self.dialog.update_with_responses(test_responses)
-        self.assertListEqual(self.test_agents[0].conf_scores, [0.2])
-        self.assertListEqual(self.test_agents[1].conf_scores, [0.8])
+        agent1_unseen = self.test_agents[0].unseen
+        agent2_unseen = self.test_agents[1].unseen
+        self.assertListEqual(
+            agent1_unseen, 
+            [{"agent": self.test_agents[1], "text": "This is the model output |8/10|"}]
+        )
+        self.assertListEqual(
+            agent2_unseen,
+            [{"agent": self.test_agents[0], "text": "This is the model output |2/10|"}]
+        )
 
     def test_add_unseen_prompts_works(self):
         test_unseen = [{"agent": "Agent1", "output": "This is the output"}]
@@ -161,6 +169,7 @@ class TestDialog(unittest.TestCase):
                     "model": "model",
                     "input": "input",
                     "output": "output",
+                    "conf_score": 50,
                 }
             ],
         )
@@ -175,6 +184,7 @@ class TestDialog(unittest.TestCase):
                             "model": "model",
                             "input": "input",
                             "output": "output",
+                            "conf_score": 50,
                         }
                     ]
                 },
@@ -211,9 +221,3 @@ class TestDialog(unittest.TestCase):
     def test_get_history_works(self):
         self.dialog.history.append(":)")
         self.assertListEqual(self.dialog.get_history(), [":)"])
-
-    def test_get_agent_scores_works(self):
-        self.test_agents[0].add_confidence_score(0.2)
-        self.test_agents[1].add_confidence_score(0.8)
-        result = self.dialog._get_agent_scores()
-        self.assertListEqual(result, [[0.2], [0.8]])

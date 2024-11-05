@@ -90,7 +90,8 @@ class Dialog:
         for response in responses:
             # Extract the confidence score using regex
             score_match = re.search(r'\|(\d+)/10\|', response["output"])
-            score = int(score_match.group(1)) / 10 if score_match else None
+            # score between 0-100%
+            score = int(score_match.group(1)) * 10 if score_match else None
 
             # Store the response and add to history
             prompts.append(
@@ -99,6 +100,7 @@ class Dialog:
                     "model": response["model"],
                     "input": response["prompt"]["text"],
                     "output": response["output"],
+                    "conf_score": score,
                 }
             )
             response["prompt"]["agent_object"].add_chat_to_history(
@@ -108,22 +110,17 @@ class Dialog:
                 ]
             )
 
-            # If a score was found, add it to the agent's confidence scores
-            if score is not None:
-                response["prompt"]["agent_object"].add_confidence_score(score)
-
             # Set model if unset
             if self.agents[response["prompt"]["agent_object"]]["model"] is None:
                 self.agents[response["prompt"]["agent_object"]]["model"] = response[
                     "model"
                 ]
+   
         self.add_round(len(self.rounds) + 1, prompts)
         for agent_obj in self.agents:
             unseen = [prompt for prompt in prompts if prompt["agent"] != agent_obj]
             if unseen:
                 self.add_unseen_prompts(agent_obj, unseen)
-
-        return self._get_agent_scores()
 
     def add_unseen_prompts(self, agent_obj, unseen):
         """Add unseen prompts to an agent's unseen list
@@ -182,12 +179,6 @@ class Dialog:
     def get_history(self):
         return self.history
 
-    def _get_agent_scores(self):
-        scores = []
-        for agent_in_question in self.agents:
-            scores.append(agent_in_question.get_confidence_scores())
-        return scores
-
     def to_dict(self):
         init = self.initial_prompt
         rounds = {}
@@ -201,6 +192,7 @@ class Dialog:
                         "model": p["model"],
                         "input": p["input"],
                         "output": p["output"],
+                        "conf_score": p["conf_score"],
                     }
                 )
         return {"initial_prompt": init, "rounds": rounds}

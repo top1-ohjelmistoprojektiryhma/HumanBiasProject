@@ -40,12 +40,3 @@ class TestAgent(unittest.TestCase):
         self.agent.add_unseen_prompts(prompts)
         self.assertEqual(self.agent._unseen[0],
                          {"role": "user", "text": "hello"})
-
-    def test_add_confidence_score_works(self):
-        self.agent.add_confidence_score(1)
-        self.assertEqual(self.agent._confidence_scores[0], 1)
-        self.assertEqual(len(self.agent._confidence_scores), 1)
-
-    def test_get_confidence_scores_works(self):
-        self.agent._confidence_scores.append(2)
-        self.assertListEqual(self.agent.get_confidence_scores(), [2])

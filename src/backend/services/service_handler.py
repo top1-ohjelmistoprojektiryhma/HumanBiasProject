@@ -49,10 +49,10 @@ class ServiceHandler:
             # Send prompts to the API and collect responses
             responses = self.api_manager.send_prompts(api_input_list)
             # Update the session with responses
-            conf_scores = self.session_manager.update_session_with_responses(session_id, responses)
+            self.session_manager.update_session_with_responses(session_id, responses)
             if comment:
                 self.session_manager.update_session_with_comment(session_id, comment)
-            return "Success", self.session_manager.get_session(session_id).to_dict(), conf_scores
+            return "Success", self.session_manager.get_session(session_id).to_dict()
 
         return "No API keys available", None
 

@@ -86,7 +86,7 @@ class TestServiceHandler(unittest.TestCase):
         ]
         text = "prompt"
         id, result = self._handler.start_new_session(text, "dialog")
-        response, session_dict, scores = self._handler.continue_session(id, comment="comment")
+        response, session_dict = self._handler.continue_session(id, comment="comment")
         self.assertEqual(response, "Success")
 
     def test_set_selected_agents_works(self):
