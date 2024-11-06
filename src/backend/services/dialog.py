@@ -2,6 +2,7 @@ import re
 from . import formatter
 from . import agent
 
+
 class Dialog:
     """Represents a dialog
 
@@ -90,7 +91,7 @@ class Dialog:
         prompts = []
         for response in responses:
             # Extract the confidence score using regex
-            score_match = re.search(r'\|(\d+)/10\|', response["output"])
+            score_match = re.search(r"\|(\d+)/10\|", response["output"])
             # score between 0-100%
             score = int(score_match.group(1)) * 10 if score_match else None
 
@@ -154,6 +155,7 @@ class Dialog:
         if self.dialog_format in (
             "dialog - no consensus",
             "dialog - consensus",
+            "bias finder",
         ):
             next_agent = agents[(len(self.rounds) - 1) % len(agents)]
         else:

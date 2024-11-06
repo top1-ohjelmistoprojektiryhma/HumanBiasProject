@@ -13,6 +13,7 @@ class SessionManager:
         self._all_formats = {
             "dialog - no consensus": Dialog,
             "dialog - consensus": Dialog,
+            "bias finder": Dialog,
         }
 
     def get_all_formats(self):

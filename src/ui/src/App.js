@@ -14,6 +14,7 @@ import ExamplePrompts from './components/ExamplePrompts';
 import CommentInput from './components/CommentInput';
 import PasswordInput from './components/PasswordInput';
 import ConfidenceChart from './components/ConfidenceChart';
+import FileInput from './components/FileInput';
 import {
   fetchAgents,
   fetchDialogs,
@@ -162,7 +163,7 @@ const App = () => {
       const data = await startNewSession(requestData);
       const newSessionId = data.session_id;
       const newDialog = data.dialog;
-    
+
       const scores = collectScores(newDialog, chartData);
       setChartData(scores);
 
@@ -208,7 +209,7 @@ const App = () => {
       const newDialog = data.dialog;
       const scores = collectScores(newDialog, chartData);
       setChartData(scores);
-      
+
       setDialogs((prevState) => ({
         ...prevState,
         [newSessionId]: newDialog
@@ -297,8 +298,15 @@ const App = () => {
             <h1>Human Bias Project</h1>
             {!dialogStarted && (
               <>
-                <ExamplePrompts setPrompt={setPrompt} />
-                <InputForm prompt={prompt} setPrompt={setPrompt} />
+                <>
+                  <ExamplePrompts setPrompt={setPrompt} />
+                  <InputForm prompt={prompt} setPrompt={setPrompt} />
+                </>
+                {selectedFormat === 'bias finder' && (
+                  <div className="file-input">
+                    <FileInput prompt={prompt} setPrompt={setPrompt} />
+                  </div>
+                )}
               </>
             )}
             <div className="centered-column">
