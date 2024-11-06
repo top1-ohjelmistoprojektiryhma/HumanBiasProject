@@ -135,7 +135,7 @@ const App = () => {
             if (!scores[agent_role]) {
               scores[agent_role] = [];
             }
-            scores[agent_role].push([score_summary, conf_score]);
+            scores[agent_role].push([`"${score_summary}"`, conf_score]);
           } else {
             console.warn(`Missing agent_role or conf_score in entry:`, entry);
           }

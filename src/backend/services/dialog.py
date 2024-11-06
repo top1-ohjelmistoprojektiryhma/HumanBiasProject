@@ -98,7 +98,7 @@ class Dialog:
             score = int(score.group(1)) * 10 if score else None
             # Extract score summary from ||summary text||
             score_summary = re.search(r"\|\|.*?\|\|", response["output"])
-            score_summary = score_summary.group(0)[2:-2] if score_summary else None
+            score_summary = score_summary.group(0)[2:-2].strip() if score_summary else None
 
             # Store the response and add to history
             prompts.append(

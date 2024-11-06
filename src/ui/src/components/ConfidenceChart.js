@@ -36,6 +36,27 @@ const ConfidenceChart = ({ data }) => {
     })),
   };
 
+  const splitLongText = (text, maxLength) => {
+    const words = text.split(' ');
+    const lines = [];
+    let currentLine = '';
+
+    words.forEach(word => {
+      if ((currentLine + word).length <= maxLength) {
+        currentLine += `${word} `;
+      } else {
+        lines.push(currentLine.trim());
+        currentLine = `${word} `;
+      }
+    });
+
+    if (currentLine.length > 0) {
+      lines.push(currentLine.trim());
+    }
+
+    return lines;
+  };
+
   useEffect(() => {
     if (chartRef.current) {
       chartRef.current.destroy();
@@ -67,14 +88,15 @@ const ConfidenceChart = ({ data }) => {
         },
         plugins: {
           tooltip: {
+            position: 'nearest', // Adjust tooltip position to stay within the chart area
             callbacks: {
               label: function(context) {
                 const role = context.dataset.label;
                 const score = context.raw.y;
                 const summary = context.raw.summary;
-                // Split the summary into multiple lines
-                const summaryLines = summary.match(/.{1,50}/g) || []; // Adjust the number to control line length
-                return [`Agent: ${role}`, `Confidence score: ${score}%`, ...summaryLines];
+                // Split the summary into multiple lines without breaking words
+                const summaryLines = splitLongText(summary, 50); // Adjust the number to control line length
+                return [`Agent: ${role}`, `Confidence score: ${score}%`, '', ...summaryLines, ''];
               }
             }
           }
