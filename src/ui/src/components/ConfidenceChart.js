@@ -6,8 +6,6 @@ Chart.register(...registerables);
 
 const ConfidenceChart = ({ data }) => {
   const chartRef = useRef(null);
-  console.log(data);
-  // Extract agent roles and their corresponding scores
   const agents = Object.keys(data);
 
   const colors = [
@@ -59,7 +57,7 @@ const ConfidenceChart = ({ data }) => {
             },
             ticks: {
               callback: function(value) {
-                return value + '%'; // Add '%' to the y-axis labels
+                return value + '%';
               }
             }
           }

@@ -123,7 +123,7 @@ class TestDialog(unittest.TestCase):
                 "text": "This is the prompt text"
                 },
                 "model": "Open_AI",
-                "output": "This is the model output |2/10|"
+                "output": "This is the model output |2/10| ||summary||"
             },
             {
                 "prompt": {
@@ -131,7 +131,7 @@ class TestDialog(unittest.TestCase):
                 "text": "This is the prompt text"
                 },
                 "model": "Gemini",
-                "output": "This is the model output |8/10|"
+                "output": "This is the model output |8/10| ||summary||"
             }
         ]
         self.dialog.update_with_responses(test_responses)
@@ -139,11 +139,11 @@ class TestDialog(unittest.TestCase):
         agent2_unseen = self.test_agents[1].unseen
         self.assertListEqual(
             agent1_unseen, 
-            [{"agent": self.test_agents[1], "text": "This is the model output |8/10|"}]
+            [{"agent": self.test_agents[1], "text": "This is the model output"}]
         )
         self.assertListEqual(
             agent2_unseen,
-            [{"agent": self.test_agents[0], "text": "This is the model output |2/10|"}]
+            [{"agent": self.test_agents[0], "text": "This is the model output"}]
         )
 
     def test_add_unseen_prompts_works(self):

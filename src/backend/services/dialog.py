@@ -74,6 +74,7 @@ class Dialog:
                     "model": "User",
                     "input": "None",
                     "output": comment,
+                    "conf_score": 0
                 }
             ],
         )
@@ -131,9 +132,15 @@ class Dialog:
             agent_obj (Agent): The agent object
             unseen (list): A list of unseen prompts
         """
-        agent_obj.add_unseen_prompts(
-            [{"agent": prompt["agent"], "text": prompt["output"]} for prompt in unseen]
-        )
+        # Remove |n/10| score and ||summary|| from the unseen prompts
+        unseen = [
+            {
+                "agent": prompt["agent"],
+                "text": re.sub(r"\|\d+/10\||\|\|.*?\|\|", "", prompt["output"]).strip()
+            }
+            for prompt in unseen
+        ]
+        agent_obj.add_unseen_prompts(unseen)
 
     def add_round(self, round_num, prompts):
         """Add a round to the dialog
