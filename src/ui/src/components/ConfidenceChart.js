@@ -1,4 +1,5 @@
 import React, { useEffect, useRef } from 'react';
+import { Line } from 'react-chartjs-2';
 import { Chart, registerables } from 'chart.js';
 
 // Register all necessary components
@@ -6,6 +7,8 @@ Chart.register(...registerables);
 
 const ConfidenceChart = ({ data }) => {
   const chartRef = useRef(null);
+  console.log(data);
+  // Extract agent roles and their corresponding scores
   const agents = Object.keys(data);
 
   const colors = [
@@ -21,7 +24,7 @@ const ConfidenceChart = ({ data }) => {
     labels: Array.from({ length: Math.max(...Object.values(data).map(scores => scores.length)) }, (_, i) => i + 1),
     datasets: agents.map((agent, index) => ({
       label: agent,
-      data: data[agent].map(([_, score]) => score), // Extract scores
+      data: data[agent].map(([summary, score], i) => ({ x: i + 1, y: score, summary })), // Include summary in data points
       backgroundColor: colors[index % colors.length].background,
       borderColor: colors[index % colors.length].border,
       borderWidth: 3,
@@ -57,7 +60,7 @@ const ConfidenceChart = ({ data }) => {
             },
             ticks: {
               callback: function(value) {
-                return value + '%';
+                return value + '%'; // Add '%' to the y-axis labels
               }
             }
           }
@@ -67,8 +70,11 @@ const ConfidenceChart = ({ data }) => {
             callbacks: {
               label: function(context) {
                 const role = context.dataset.label;
-                const score = context.raw;
-                return [`Agent: ${role}`, `Confidence score: ${score}%`];
+                const score = context.raw.y;
+                const summary = context.raw.summary;
+                // Split the summary into multiple lines
+                const summaryLines = summary.match(/.{1,50}/g) || []; // Adjust the number to control line length
+                return [`Agent: ${role}`, `Confidence score: ${score}%`, ...summaryLines];
               }
             }
           }

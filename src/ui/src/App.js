@@ -130,11 +130,12 @@ const App = () => {
         for (const entry of rounds[round]) {
           const agent_role = entry.agent;
           const conf_score = entry.conf_score;
+          const score_summary = entry.score_summary;
           if (agent_role !== undefined && conf_score !== undefined) {
             if (!scores[agent_role]) {
               scores[agent_role] = [];
             }
-            scores[agent_role].push([agent_role, conf_score]);
+            scores[agent_role].push([score_summary, conf_score]);
           } else {
             console.warn(`Missing agent_role or conf_score in entry:`, entry);
           }

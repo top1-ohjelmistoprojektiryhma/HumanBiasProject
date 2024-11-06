@@ -172,6 +172,7 @@ class TestDialog(unittest.TestCase):
                     "input": "input",
                     "output": "output",
                     "conf_score": 50,
+                    "score_summary": "summary",
                 }
             ],
         )
@@ -187,6 +188,7 @@ class TestDialog(unittest.TestCase):
                             "input": "input",
                             "output": "output",
                             "conf_score": 50,
+                            "score_summary": "summary",
                         }
                     ]
                 },

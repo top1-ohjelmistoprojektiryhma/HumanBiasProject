@@ -74,7 +74,8 @@ class Dialog:
                     "model": "User",
                     "input": "None",
                     "output": comment,
-                    "conf_score": 0
+                    "conf_score": 0,
+                    "score_summary": comment
                 }
             ],
         )
@@ -91,10 +92,13 @@ class Dialog:
         """
         prompts = []
         for response in responses:
-            # Extract the confidence score using regex
-            score_match = re.search(r"\|(\d+)/10\|", response["output"])
+            # Extract the confidence score from |n/10|
+            score = re.search(r"\|(\d+)/10\|", response["output"])
             # score between 0-100%
-            score = int(score_match.group(1)) * 10 if score_match else None
+            score = int(score.group(1)) * 10 if score else None
+            # Extract score summary from ||summary text||
+            score_summary = re.search(r"\|\|.*?\|\|", response["output"])
+            score_summary = score_summary.group(0)[2:-2] if score_summary else None
 
             # Store the response and add to history
             prompts.append(
@@ -104,6 +108,7 @@ class Dialog:
                     "input": response["prompt"]["text"],
                     "output": response["output"],
                     "conf_score": score,
+                    "score_summary": score_summary,
                 }
             )
             response["prompt"]["agent_object"].add_chat_to_history(
@@ -203,6 +208,7 @@ class Dialog:
                         "input": p["input"],
                         "output": p["output"],
                         "conf_score": p["conf_score"],
+                        "score_summary": p["score_summary"],
                     }
                 )
         return {"initial_prompt": init, "rounds": rounds}
