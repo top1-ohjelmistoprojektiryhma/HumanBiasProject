@@ -49,6 +49,7 @@ const App = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false); // New state for authentication
   const [chartData, setChartData] = useState({});
   const [showChart, setShowChart] = useState(false);
+  const [file, setFile] = useState(null);
 
   const handlePasswordSubmit = async () => {
     try {
@@ -113,7 +114,7 @@ const App = () => {
       setError('Please select at least one perspective.');
       return false;
     }
-    if (prompt === '') {
+    if (prompt === '' && !file) {
       setError('Please enter a statement.');
       return false;
     }
@@ -146,6 +147,10 @@ const App = () => {
   };
 
   const handleSubmit = async () => {
+    let promptContent = prompt;
+    if (file) {
+      promptContent = await readTextFile(file);
+    }
     if (!validateUserInput()) {
       return;
     }
@@ -154,7 +159,7 @@ const App = () => {
     setLoading(true);
 
     const requestData = {
-      prompt: prompt,
+      prompt: promptContent,
       perspective: selectedPerspectives,
       format: selectedFormat,
     };
@@ -186,9 +191,19 @@ const App = () => {
     setLoading(false);
     setPrompt('');
   };
+
+  const readTextFile = async (file) => {
+    const text = await file.text();
+    return text;
+  };
+
   const handleGenerateAgents = async (numAgents) => {
+    let promptContent = prompt;
+    if (file) {
+      promptContent = await readTextFile(file);
+    }
     const requestData = {
-      prompt: prompt,
+      prompt: promptContent,
       num_agents: numAgents,
     };
 
@@ -304,7 +319,7 @@ const App = () => {
                 </>
                 {selectedFormat === 'bias finder' && (
                   <div className="file-input">
-                    <FileInput prompt={prompt} setPrompt={setPrompt} />
+                    <FileInput setFile={setFile} />
                   </div>
                 )}
               </>
