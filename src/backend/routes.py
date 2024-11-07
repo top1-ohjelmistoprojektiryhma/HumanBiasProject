@@ -5,12 +5,13 @@ from flask import request, jsonify, send_from_directory, session
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
 
+
 # calling sessions instances until name for custom class session is changed
 def initialize_routes(app, instances, create_service_handler, cd_password, unlock_password):
     def rate_limit_exceeded():
         app.config['LOCKED'] = True
         return jsonify({"error": "Rate limit exceeded. Application is locked."}), 429
-    
+
     limiter = Limiter(
         get_remote_address,
         app=app
@@ -36,7 +37,7 @@ def initialize_routes(app, instances, create_service_handler, cd_password, unloc
         session['instance_id'] = instance_id
         instances[instance_id] = {'service_handler': create_service_handler()}
         return instance_id
-    
+
     @app.route("/", methods=["GET", "POST"])
     def serve_index():
         return send_from_directory(app.static_folder, "index.html")
@@ -44,7 +45,7 @@ def initialize_routes(app, instances, create_service_handler, cd_password, unloc
     @app.route("/<path:path>")
     def serve_static(path):
         return send_from_directory(app.static_folder, path)
-    
+
     @app.route("/api/check-authentication", methods=["GET"])
     def check_authentication():
         if app.config['ENV'] == 'development' and not session.get('instance_id'):
@@ -53,7 +54,7 @@ def initialize_routes(app, instances, create_service_handler, cd_password, unloc
         if not session.get('instance_id'):
             return jsonify({"authenticated": False})
         return jsonify({"authenticated": True})
-    
+
     @app.route("/api/submit-password", methods=["POST"])
     @limiter.limit("10 per minute", error_message="Too many attempts, please try again later.")
     def submit_password():
@@ -192,7 +193,7 @@ def initialize_routes(app, instances, create_service_handler, cd_password, unloc
             return error_response, status_code
         summary, biases = service_handler.get_latest_dialog_summary()
         return jsonify({"response": [summary, biases]}), 200
-    
+
     @app.route("/api/unlock", methods=["POST"])
     @limiter.limit("3 per minute")
     def unlock():
