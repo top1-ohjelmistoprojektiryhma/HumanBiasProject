@@ -604,5 +604,8 @@ input[type="text"] {
     gap: 10px;
     align-items: center; */
   }
-  
+
+  .confidence-chart {
+    white-space: pre-line;
+  }
 }
