@@ -1,8 +1,5 @@
 from . import formatter
-from pypdf import PdfReader
-import docx
-from odf.opendocument import load
-from odf.text import P
+from . import file_reader
 
 
 class ServiceHandler:
@@ -49,13 +46,16 @@ class ServiceHandler:
         print(f"SERVICE HANDLER: Comment: {comment} Session ID: {session_id}")
         if self.api_manager.available_models():
             # Get the prompts from session
-            api_input_list = self.session_manager.get_session_prompts(session_id)
+            api_input_list = self.session_manager.get_session_prompts(
+                session_id)
             # Send prompts to the API and collect responses
             responses = self.api_manager.send_prompts(api_input_list)
             # Update the session with responses
-            self.session_manager.update_session_with_responses(session_id, responses)
+            self.session_manager.update_session_with_responses(
+                session_id, responses)
             if comment:
-                self.session_manager.update_session_with_comment(session_id, comment)
+                self.session_manager.update_session_with_comment(
+                    session_id, comment)
             return "Success", self.session_manager.get_session(session_id).to_dict()
 
         return "No API keys available", None
@@ -113,7 +113,8 @@ class ServiceHandler:
                 self.add_agent(str(role))
 
             # Extract perspectives or agents from agent manager
-            perspectives = [agent.role for agent in self.agent_manager.list_of_agents]
+            perspectives = [
+                agent.role for agent in self.agent_manager.list_of_agents]
             output = perspectives
 
         elif len(output_list) > desired_number_of_agents:
@@ -122,7 +123,8 @@ class ServiceHandler:
                 self.add_agent(str(role))
 
             # Extract perspectives or agents from agent manager
-            perspectives = [agent.role for agent in self.agent_manager.list_of_agents]
+            perspectives = [
+                agent.role for agent in self.agent_manager.list_of_agents]
             output = perspectives
 
         else:
@@ -224,37 +226,4 @@ class ServiceHandler:
 
     def read_file(self, file):
         print("reading file in backend")
-        try:
-            if file and file.filename.endswith(".txt"):
-                file_content = file.read().decode("utf-8")
-                return file_content
-            elif file and file.filename.endswith(".pdf"):
-                return self.read_pdf(file)
-            elif file and file.filename.endswith(".docx"):
-                return self.read_docx(file)
-            elif file and file.filename.endswith(".odt"):
-                return self.read_odt(file)
-            return None
-        except Exception as e:
-            print(f"Error reading file: {e}")
-            return None
-
-    def read_pdf(self, file):
-        pdf_reader = PdfReader(file)
-        page = pdf_reader.pages[0]
-        text = page.extract_text()
-        return text
-
-    def read_docx(self, file):
-        doc = docx.Document(file)
-        text = ""
-        for paragraph in doc.paragraphs:
-            text += paragraph.text + "\n"
-        return text
-
-    def read_odt(self, file):
-        odt_document = load(file)
-        text = ""
-        for paragraph in odt_document.getElementsByType(P):
-            text += paragraph.firstChild.data + "\n"
-        return text
+        return file_reader.read_file(file)
