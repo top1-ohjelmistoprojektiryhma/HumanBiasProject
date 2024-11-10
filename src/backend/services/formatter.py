@@ -5,16 +5,21 @@ with open("prompts.json", "r", encoding="utf-8") as file:
     PROMPTS = json.load(file)
 
 
-def format_multiple(role_list, prompt):
+def format_multiple(role_list, prompt, dialog_format):
+
     response_list = []
     for role in role_list:
-        response_list.append(format_single(role, prompt))
+        response_list.append(format_single(role, prompt, dialog_format))
     return response_list
 
 
-def format_single(role, prompt):
+def format_single(role, prompt, dialog_format):
     role = role if role not in (None, "") else "Yourself"
-    return PROMPTS["format_single"].format(role=str(role), prompt=str(prompt))
+    formatted_prompt = PROMPTS["format_single_opening_statement"][
+        dialog_format
+    ].format(role=str(role), prompt=str(prompt))
+
+    return formatted_prompt
 
 
 def format_dialog_prompt_with_unseen(agent, unseen_prompts, dialog_format):

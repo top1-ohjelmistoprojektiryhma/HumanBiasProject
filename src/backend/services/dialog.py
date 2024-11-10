@@ -28,7 +28,7 @@ class Dialog:
             text (str): The initial prompt text"""
         agent_list = list(self.agents.keys())
         prompt_list = formatter.format_multiple(
-            [agent.role for agent in agent_list], text
+            [agent.role for agent in agent_list], text, self.dialog_format
         )
         # Format the prompts into a list of dictionaries with agent roles and prompts
         for i, prompt in enumerate(prompt_list):
