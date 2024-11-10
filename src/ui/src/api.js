@@ -87,3 +87,16 @@ export const continueSession = async (sessionId, comment) => {
     }
     return response.json();
 };
+
+export const readFile = async (file) => {
+    const formData = new FormData();
+    formData.append('file', file);
+    const response = await fetch(`${BASE_URL}/api/read-file`, {
+        method: 'POST',
+        body: formData,
+    });
+    if (!response.ok) {
+        throw new Error('Network response was not ok');
+    }
+    return response.json();
+}

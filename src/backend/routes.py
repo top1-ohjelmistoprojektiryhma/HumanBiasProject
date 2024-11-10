@@ -7,35 +7,37 @@ from flask_limiter.util import get_remote_address
 
 
 # calling sessions instances until name for custom class session is changed
-def initialize_routes(app, instances, create_service_handler, cd_password, unlock_password):
+def initialize_routes(
+    app, instances, create_service_handler, cd_password, unlock_password
+):
     def rate_limit_exceeded():
-        app.config['LOCKED'] = True
+        app.config["LOCKED"] = True
         return jsonify({"error": "Rate limit exceeded. Application is locked."}), 429
 
-    limiter = Limiter(
-        get_remote_address,
-        app=app
-    )
+    limiter = Limiter(get_remote_address, app=app)
 
     @app.before_request
     def check_rate_limit():
-        if app.config.get('LOCKED') and request.path != '/api/unlock':
-            return jsonify({"error": "Rate limit exceeded. Application is locked."}), 429
+        if app.config.get("LOCKED") and request.path != "/api/unlock":
+            return (
+                jsonify({"error": "Rate limit exceeded. Application is locked."}),
+                429,
+            )
 
     def get_service_handler():
         # skip password if in development
-        if app.config['ENV'] == 'development' and not session.get('instance_id'):
+        if app.config["ENV"] == "development" and not session.get("instance_id"):
             create_new_instance()
-        instance_id = session.get('instance_id')
+        instance_id = session.get("instance_id")
         if not instance_id or instance_id not in instances:
             print(f"ROUTES.PY: Invalid instance ID: {instance_id}")
             return None, jsonify({"error": "Permission denied"}), 400
-        return instances[instance_id]['service_handler'], None, None
+        return instances[instance_id]["service_handler"], None, None
 
     def create_new_instance():
         instance_id = str(uuid.uuid4())
-        session['instance_id'] = instance_id
-        instances[instance_id] = {'service_handler': create_service_handler()}
+        session["instance_id"] = instance_id
+        instances[instance_id] = {"service_handler": create_service_handler()}
         return instance_id
 
     @app.route("/", methods=["GET", "POST"])
@@ -48,22 +50,24 @@ def initialize_routes(app, instances, create_service_handler, cd_password, unloc
 
     @app.route("/api/check-authentication", methods=["GET"])
     def check_authentication():
-        if app.config['ENV'] == 'development' and not session.get('instance_id'):
+        if app.config["ENV"] == "development" and not session.get("instance_id"):
             create_new_instance()
             return jsonify({"authenticated": True})
-        if not session.get('instance_id'):
+        if not session.get("instance_id"):
             return jsonify({"authenticated": False})
         return jsonify({"authenticated": True})
 
     @app.route("/api/submit-password", methods=["POST"])
-    @limiter.limit("10 per minute", error_message="Too many attempts, please try again later.")
+    @limiter.limit(
+        "10 per minute", error_message="Too many attempts, please try again later."
+    )
     def submit_password():
         data = request.json
         provided_password = data.get("secret_password")
         provided_password = provided_password.encode("utf-8")
         if not bcrypt.checkpw(provided_password, cd_password.encode("utf-8")):
             return jsonify({"error": "Invalid password"}), 401
-        if not session.get('instance_id'):
+        if not session.get("instance_id"):
             create_new_instance()
         return jsonify({"message": "Password accepted"}), 200
 
@@ -202,6 +206,17 @@ def initialize_routes(app, instances, create_service_handler, cd_password, unloc
         provided_password = provided_password.encode("utf-8")
         if not bcrypt.checkpw(provided_password, unlock_password.encode("utf-8")):
             return jsonify({"error": "unauthorized"}), 401
-        app.config['LOCKED'] = False
+        app.config["LOCKED"] = False
         limiter.reset()
         return jsonify({"message": "Application unlocked"}), 200
+
+    @app.route("/api/read-file", methods=["POST"])
+    def read_file():
+        if "file" not in request.files:
+            return jsonify({"error": "No file part"}), 400
+        file = request.files["file"]
+        service_handler, error_response, status_code = get_service_handler()
+        if error_response:
+            return error_response, status_code
+        file_content = service_handler.read_file(file)
+        return jsonify({"response": file_content})

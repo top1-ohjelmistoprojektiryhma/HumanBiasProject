@@ -24,6 +24,7 @@ import {
   continueSession,
   submitPassword,
   checkIfAuthenticated,
+  readFile,
 } from './api';
 
 
@@ -150,7 +151,9 @@ const App = () => {
   const handleSubmit = async () => {
     let promptContent = prompt;
     if (file) {
-      promptContent = await readTextFile(file);
+      const data = await readFile(file);
+      promptContent = data.response;
+      console.log('promptContent:', promptContent);
     }
     if (!validateUserInput()) {
       return;
@@ -193,15 +196,18 @@ const App = () => {
     setPrompt('');
   };
 
-  const readTextFile = async (file) => {
-    const text = await file.text();
-    return text;
-  };
-
   const handleGenerateAgents = async (numAgents) => {
     let promptContent = prompt;
     if (file) {
-      promptContent = await readTextFile(file);
+      const allowedExtensions = [".txt", ".pdf", ".docx", ".odt"];
+      const fileExtension = file.name.slice(file.name.lastIndexOf(".")).toLowerCase();
+
+      if (!allowedExtensions.includes(fileExtension)) {
+        setError("Invalid file type");
+        console.error("Invalid file type");
+        return;
+      }
+      promptContent = await readFile(file);
     }
     const requestData = {
       prompt: promptContent,
