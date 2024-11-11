@@ -5,24 +5,24 @@ with open("prompts.json", "r", encoding="utf-8") as file:
     PROMPTS = json.load(file)
 
 
-def format_multiple(role_list, prompt, dialog_format):
+def format_multiple(role_list, prompt, session_format):
 
     response_list = []
     for role in role_list:
-        response_list.append(format_single(role, prompt, dialog_format))
+        response_list.append(format_single(role, prompt, session_format))
     return response_list
 
 
-def format_single(role, prompt, dialog_format):
+def format_single(role, prompt, session_format):
     role = role if role not in (None, "") else "Yourself"
     formatted_prompt = PROMPTS["format_single_opening_statement"][
-        dialog_format
+        session_format
     ].format(role=str(role), prompt=str(prompt))
 
     return formatted_prompt
 
 
-def format_dialog_prompt_with_unseen(agent, unseen_prompts, dialog_format):
+def format_dialog_prompt_with_unseen(agent, unseen_prompts, session_format):
     unseen = []
     for prompt in unseen_prompts:
         unseen.append(
@@ -32,7 +32,7 @@ def format_dialog_prompt_with_unseen(agent, unseen_prompts, dialog_format):
         )
 
     formatted_prompt = PROMPTS["format_dialog_prompt_with_unseen"][
-        dialog_format
+        session_format
     ].format(role=str(agent.role), unseen=str(unseen))
     return formatted_prompt
 
@@ -59,8 +59,8 @@ def format_generate_agents_prompt(prompt, desired_number_of_agents, list_of_agen
 
     return combined_prompt
 
-def format_summary(dialog_data, dialog_format):
-    return PROMPTS["format_summary"][dialog_format].format(dialog_data=str(dialog_data))
+def format_summary(dialog_data, session_format):
+    return PROMPTS["format_summary"][session_format].format(dialog_data=str(dialog_data))
 
 def format_bias(dialog_data):
     return PROMPTS["format_get_bias"].format(dialog_data=str(dialog_data))
