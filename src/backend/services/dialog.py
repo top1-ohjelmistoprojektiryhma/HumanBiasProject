@@ -10,15 +10,15 @@ class Dialog:
         initial_prompt (str): The initial prompt for the dialog
         agents (list): A dictionary of agents {"AgentObj": {"model": modelname}}
         rounds (dict): A dictionary of rounds identified by round number
-        dialog_format (str): The format of the dialog
+        session_format (str): The format of the dialog
         history (list): A list of dictionaries representing the dialog history
     """
 
-    def __init__(self, initial_prompt="", agents=None, dialog_format="dialog"):
+    def __init__(self, initial_prompt="", agents=None, session_format="dialog"):
         self.initial_prompt = initial_prompt
         self.agents = {} if agents is None else agents
         self.rounds = {}
-        self.dialog_format = dialog_format
+        self.session_format = session_format
         self.history = []
 
     def initial_prompts(self, text):
@@ -28,7 +28,7 @@ class Dialog:
             text (str): The initial prompt text"""
         agent_list = list(self.agents.keys())
         prompt_list = formatter.format_multiple(
-            [agent.role for agent in agent_list], text, self.dialog_format
+            [agent.role for agent in agent_list], text, self.session_format
         )
         # Format the prompts into a list of dictionaries with agent roles and prompts
         for i, prompt in enumerate(prompt_list):
@@ -44,7 +44,7 @@ class Dialog:
             unseen_prompts = next_agent.get_unseen_prompts()
             next_agent.reset_unseen_list()
             prompt = formatter.format_dialog_prompt_with_unseen(
-                next_agent, unseen_prompts, self.dialog_format
+                next_agent, unseen_prompts, self.session_format
             )
             prompts_list = [{"agent": next_agent, "text": prompt}]
 
@@ -164,7 +164,7 @@ class Dialog:
         """
         next_agent = None
         agents = list(self.agents.keys())
-        if self.dialog_format in (
+        if self.session_format in (
             "dialog - no consensus",
             "dialog - consensus",
             "bias finder",

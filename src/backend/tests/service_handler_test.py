@@ -162,7 +162,7 @@ class TestServiceHandler(unittest.TestCase):
     def test_get_latest_dialog_summary(self):
         self._mock_session_manager.get_latest_session_id.return_value = "session123"
         dialog_mock = Mock()
-        dialog_mock.dialog_format = "dialog - consensus"
+        dialog_mock.session_format = "dialog - consensus"
         dialog_mock.get_history.return_value = "dialog history"
         self._mock_session_manager.get_session.return_value = dialog_mock
         self._handler.get_summary_from_ai = Mock(return_value="summary")

@@ -146,12 +146,12 @@ class ServiceHandler:
         session_id = self.session_manager.get_latest_session_id()
         dialog = self.session_manager.get_session(session_id)
         history = dialog.get_history()
-        dialog_format = dialog.dialog_format
-        summary = self.get_summary_from_ai(history, dialog_format)
+        session_format = dialog.session_format
+        summary = self.get_summary_from_ai(history, session_format)
         biases = self.get_bias_from_ai(history)
         return summary, biases
 
-    def get_summary_from_ai(self, dialog_data, dialog_format):
+    def get_summary_from_ai(self, dialog_data, session_format):
         """
         Send dialog data to the AI model to generate a summary.
 
@@ -163,7 +163,7 @@ class ServiceHandler:
         """
         prompt_list = [
             {
-                "text": formatter.format_summary(dialog_data, dialog_format),
+                "text": formatter.format_summary(dialog_data, session_format),
                 "model": None,
                 "history": None,
                 "agent_object": None,
