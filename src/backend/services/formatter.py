@@ -61,3 +61,6 @@ def format_generate_agents_prompt(prompt, desired_number_of_agents, list_of_agen
 
 def format_summary(dialog_data, dialog_format):
     return PROMPTS["format_summary"][dialog_format].format(dialog_data=str(dialog_data))
+
+def format_bias(dialog_data):
+    return PROMPTS["format_get_bias"].format(dialog_data=str(dialog_data))

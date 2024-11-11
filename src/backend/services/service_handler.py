@@ -187,15 +187,7 @@ class ServiceHandler:
         """
         prompt_list = [
             {
-                "text": (
-                    "Analyze the following dialog and provide a summary that highlights "
-                    "any biases, assumptions, or subjective viewpoints expressed by "
-                    "the participants. Focus on identifying potential biases in their "
-                    "reasoning, language, or decision-making. "
-                    "Ensure the summary is concise and captures key instances "
-                    "where bias or subjectivity may have influenced the discussion. \n"
-                    f"{dialog_data}"
-                ),
+                "text": formatter.format_bias(dialog_data),
                 "model": None,
                 "history": None,
                 "agent_object": None,
