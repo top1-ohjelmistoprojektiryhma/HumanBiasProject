@@ -161,15 +161,16 @@ class TestServiceHandler(unittest.TestCase):
 
     def test_get_latest_dialog_summary(self):
         self._mock_session_manager.get_latest_session_id.return_value = "session123"
-        self._mock_session_manager.get_session.return_value.get_history.return_value = (
-            "dialog history"
-        )
+        dialog_mock = Mock()
+        dialog_mock.dialog_format = "dialog - consensus"
+        dialog_mock.get_history.return_value = "dialog history"
+        self._mock_session_manager.get_session.return_value = dialog_mock
         self._handler.get_summary_from_ai = Mock(return_value="summary")
         self._handler.get_bias_from_ai = Mock(return_value="biases")
         summary, biases = self._handler.get_latest_dialog_summary()
         self._mock_session_manager.get_latest_session_id.assert_called_once()
         self._mock_session_manager.get_session.assert_called_once_with("session123")
-        self._handler.get_summary_from_ai.assert_called_once_with("dialog history")
+        self._handler.get_summary_from_ai.assert_called_once_with("dialog history", "dialog - consensus")
         self._handler.get_bias_from_ai.assert_called_once_with("dialog history")
         self.assertEqual(summary, "summary")
         self.assertEqual(biases, "biases")
@@ -178,13 +179,13 @@ class TestServiceHandler(unittest.TestCase):
         self._mock_api_manager.send_prompts.return_value = [
             {"output": "summary from AI"}
         ]
-        summary = self._handler.get_summary_from_ai("dialog data")
+        summary = self._handler.get_summary_from_ai("dialog data", "dialog - consensus")
         self._mock_api_manager.send_prompts.assert_called_once()
         self.assertEqual(summary, "summary from AI")
 
     def test_get_summary_from_ai_returns_none(self):
         self._mock_api_manager.send_prompts.return_value = []
-        summary = self._handler.get_summary_from_ai("dialog data")
+        summary = self._handler.get_summary_from_ai("dialog data", "dialog - consensus")
         self._mock_api_manager.send_prompts.assert_called_once()
         self.assertIsNone(summary)
 

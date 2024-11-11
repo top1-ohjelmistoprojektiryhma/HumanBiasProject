@@ -58,3 +58,6 @@ def format_generate_agents_prompt(prompt, desired_number_of_agents, list_of_agen
     combined_prompt += example_for_generation
 
     return combined_prompt
+
+def format_summary(dialog_data, dialog_format):
+    return PROMPTS["format_summary"][dialog_format].format(dialog_data=str(dialog_data))
