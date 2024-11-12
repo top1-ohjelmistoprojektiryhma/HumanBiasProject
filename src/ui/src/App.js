@@ -299,7 +299,7 @@ const App = () => {
             password={password}
             setPassword={setPassword}
           />
-          <button classnName="submit-button" onClick={handlePasswordSubmit}>Submit password</button>
+          <button className="submit-button" onClick={handlePasswordSubmit}>Submit password</button>
           {error && <div className="error-message">{error}</div>}
         </div>
       ) : (
@@ -307,7 +307,7 @@ const App = () => {
           <div className="menu-symbol" onClick={handleToggleDialogsBar}>
             &#9776; {/* Unicode character for the menu symbol */}
           </div>
-
+  
           <div className={`dialogs-bar ${isDialogsBarVisible ? '' : 'dialogs-bar-hidden'}`}>
             <DialogsBar
               dialogs={dialogs}
@@ -315,22 +315,23 @@ const App = () => {
               toggleDialog={setExpandedDialogs}
             />
           </div>
-
+  
           <div className={`main-content ${isDialogsBarVisible ? 'main-content-shift' : ''}`}>
             <h1>Human Bias Project</h1>
+            
             {!dialogStarted && (
               <>
-                <>
-                  <ExamplePrompts setPrompt={setPrompt} />
-                  <InputForm prompt={prompt} setPrompt={setPrompt} />
-                </>
-                {selectedFormat === 'bias finder' && (
-                  <div className="file-input">
-                    <FileInput setFile={setFile} />
-                  </div>
-                )}
+                <ExamplePrompts setPrompt={setPrompt} />
+                <InputForm prompt={prompt} setPrompt={setPrompt} />
               </>
             )}
+            
+  
+            <div className="file-drop-container">
+              <FileInput setFile={setFile} />
+            </div>
+  
+            {/* centered-column alkaa tästä */}
             <div className="centered-column">
               {!dialogStarted && (
                 <>
@@ -341,7 +342,7 @@ const App = () => {
                       onSubmit={handleGenerateAgents}
                     />
                   </div>
-
+  
                   <PerspectiveSelector
                     perspectives={perspectives}
                     selectedPerspectives={selectedPerspectives}
@@ -358,7 +359,7 @@ const App = () => {
                   {error && <div className="error-message">{error}</div>}
                 </>
               )}
-
+  
               {response && <ResponseDisplay response={response} />}
               {displayedSession !== null && dialogs[displayedSession] && (
                 <>
@@ -398,6 +399,11 @@ const App = () => {
       )}
     </div>
   );
+  
+
+
+
+
 };
 
 export default App;
