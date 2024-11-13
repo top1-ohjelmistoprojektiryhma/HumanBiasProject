@@ -45,8 +45,8 @@ const ConfidenceChart = ({ data }) => {
       pointHoverBackgroundColor: "#fff",
       pointHoverBorderColor: colors[index % colors.length].border,
       fill: false, // Ensure the area under the line is not filled
-      categoryPercentage: 1, // Adjusts group width on the x-axis
-      barPercentage: 1, // Adjusts bar width on the x-axis
+      categoryPercentage: 0.9, // Adjusts group width on the x-axis
+      barPercentage: 0.9, // Adjusts bar width on the x-axis
       skipNull: true
     })),
   };
