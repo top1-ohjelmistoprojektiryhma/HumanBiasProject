@@ -548,7 +548,7 @@ input[type="text"] {
   align-items: center;
   justify-content: center;
   height: 130px;
-  padding-bottom: 30px;
+  margin: 30px;
 }
 
 .drop-zone {
@@ -596,6 +596,12 @@ input[type="text"] {
 
 .file-name {
   margin-right: 10px; /* Tilaa tiedoston nimen ja poista-symbolin väliin */
+  display: inline-block;
+  max-width: 200px; /* Maksimileveys tiedoston nimelle */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis; /* Näyttää ... nimen keskellä */
+  vertical-align: middle;
 }
 
 .remove-file {

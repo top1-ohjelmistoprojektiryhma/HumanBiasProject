@@ -53,7 +53,7 @@ const FileInput = ({ setFile }) => {
       <p>
         {fileName ? (
           <>
-            File added: <span className="file-name">{fileName}</span>
+            <span className="file-name">{fileName}</span>
             <span className="remove-file" onClick={handleRemoveFile}>
               ✖ {/* Peruuta-symboli */}
             </span>
