@@ -62,15 +62,22 @@ select {
 .input-form {
   width: 100%;
   max-width: 600px;
-  padding: 10px 20px;
-  padding-left: 30px;
-  padding-right: 30px;
+  padding: 17px 20px;
+  padding-left: 25px;
+  padding-right: 25px;
   border-radius: 30px;
   background-color: #131B2C;
   color: white;
   font-size: 16px;
   border: none;
   box-shadow: inset 5px 5px 10px #0d141f, inset -5px -5px 10px #172036;
+  overflow-y: hidden; /* Hide vertical scrollbar */
+  resize: none; /* Prevent manual resizing */
+  font: inherit;
+}
+
+textarea::placeholder {
+  color: #B7C0D0;
 }
 
 .password-container {
