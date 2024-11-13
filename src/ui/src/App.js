@@ -346,7 +346,6 @@ const App = () => {
           </div>
   
           <div className={`main-content ${isDialogsBarVisible ? 'main-content-shift' : ''}`}>
-            <h1>Human Bias Project</h1>
             
             {!dialogStarted && (
               <>

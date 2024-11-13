@@ -77,7 +77,7 @@ select {
 }
 
 textarea::placeholder {
-  color: #666b77;
+  color: #B7C0D0;
 }
 
 .password-container {
@@ -246,7 +246,7 @@ input[type="text"] {
 
 .example-prompts div {
   background-color: #01040C;
-  color: #525864;
+  color: #78808f;
   padding: 30px;
   border-radius: 25px;
   text-align: left;
@@ -560,6 +560,7 @@ input[type="text"] {
   margin: 30px;
 }
 
+
 .drop-zone {
   width: 100%; /* Täyttää parent divin leveyden */
   max-width: 400px;
@@ -577,7 +578,8 @@ input[type="text"] {
   align-items: center;
   justify-content: center;
 
-  /* Syvennysefekti */
+  overflow: hidden; /* Estää sisältöä ylittämästä säilöä */
+
   background-color: #01040C;
   box-shadow: inset 0 4px 8px rgba(0, 0, 0, 0.6), /* Syvennysvarjo */
               0 2px 4px rgba(0, 0, 0, 0.5); /* Ulkopuolinen varjo */
@@ -590,9 +592,9 @@ input[type="text"] {
 }
 
 .drop-zone p {
-  margin: 0;
-  font-size: 16px;
-  color: #666b77;
+  margin: 20px;
+  font-size: 13px;
+  color: #B7C0D0;
 }
 
 .file-drop-container-hidden {
@@ -611,6 +613,8 @@ input[type="text"] {
   overflow: hidden;
   text-overflow: ellipsis; /* Näyttää ... nimen keskellä */
   vertical-align: middle;
+  color: #ffffff;
+  font-size: 16px;
 }
 
 .remove-file {
@@ -655,7 +659,7 @@ input[type="text"] {
     transition: transform 0.3s ease;
     z-index: 1000;
     width: 80vw; /* Määrittää leveyden suhteessa näkymään */
-    padding-top: 20px;
+    padding-top: 60px;
     padding-left: 10px;
   }
   
