@@ -30,13 +30,17 @@ class ExampleAgent:
     def reset_unseen_list(self):
         self.unseen = []
 
+
 class TestDialog(unittest.TestCase):
     def setUp(self):
         self.test_agents = [ExampleAgent(), ExampleAgent()]
         self.dialog = Dialog(
             "Initial prompt",
-            {self.test_agents[0]: {"model": None}, self.test_agents[1]: {"model": "Gemini"}},
-            "dialog - no consensus"
+            {
+                self.test_agents[0]: {"model": None},
+                self.test_agents[1]: {"model": "Gemini"},
+            },
+            "dialog - no consensus",
         )
 
     def test_initial_prompts_works(self):
@@ -47,11 +51,19 @@ class TestDialog(unittest.TestCase):
         self.assertEqual(len(result), 2)
         self.assertEqual(result[0]["agent"], self.test_agents[0])
         self.assertEqual(result[1]["agent"], self.test_agents[1])
-        self.assertTrue(result[0]["text"].startswith("Speak from the following perspective: student"))
-        self.assertTrue(result[1]["text"].startswith("Speak from the following perspective: student"))
+        self.assertTrue(
+            result[0]["text"].startswith(
+                "Speak from the following perspective: student"
+            )
+        )
+        self.assertTrue(
+            result[1]["text"].startswith(
+                "Speak from the following perspective: student"
+            )
+        )
 
     def test_get_prompts_works_at_start(self):
-        """ Result should look like this:
+        """Result should look like this:
         list = [{"text": "prompt",
         "model": "modelname", "history": [history], "agent_object": AgentObject}
         for agent ...]
@@ -87,27 +99,32 @@ class TestDialog(unittest.TestCase):
         test_responses = [
             {
                 "prompt": {
-                "agent_object": self.test_agents[0],
-                "text": "This is the prompt text"
+                    "agent_object": self.test_agents[0],
+                    "text": "This is the prompt text",
                 },
                 "model": "Open_AI",
-                "output": "This is the model output"
+                "output": "This is the model output",
+                "summary": "This is the model summary",
             },
             {
                 "prompt": {
-                "agent_object": self.test_agents[1],
-                "text": "This is the prompt text"
+                    "agent_object": self.test_agents[1],
+                    "text": "This is the prompt text",
                 },
                 "model": "Gemini",
-                "output": "This is the model output"
-            }
+                "output": "This is the model output",
+                "summary": "This is the model summary",
+            },
         ]
         self.dialog.update_with_responses(test_responses)
         for agent in self.test_agents:
-            self.assertListEqual(agent.history, [
-                {"role": "user", "text": "This is the prompt text"},
-                {"role": "model", "text": "This is the model output"}
-            ])
+            self.assertListEqual(
+                agent.history,
+                [
+                    {"role": "user", "text": "This is the prompt text"},
+                    {"role": "model", "text": "This is the model output"},
+                ],
+            )
             self.assertTrue(len(agent.unseen) == 1)
 
         self.assertEqual(self.dialog.agents[self.test_agents[0]]["model"], "Open_AI")
@@ -119,38 +136,40 @@ class TestDialog(unittest.TestCase):
         test_responses = [
             {
                 "prompt": {
-                "agent_object": self.test_agents[0],
-                "text": "This is the prompt text"
+                    "agent_object": self.test_agents[0],
+                    "text": "This is the prompt text",
                 },
                 "model": "Open_AI",
-                "output": "This is the model output |2/10| ||summary||"
+                "output": "This is the model output |2/10| ||summary||",
             },
             {
                 "prompt": {
-                "agent_object": self.test_agents[1],
-                "text": "This is the prompt text"
+                    "agent_object": self.test_agents[1],
+                    "text": "This is the prompt text",
                 },
                 "model": "Gemini",
-                "output": "This is the model output |8/10| ||summary||"
-            }
+                "output": "This is the model output |8/10| ||summary||",
+            },
         ]
         self.dialog.update_with_responses(test_responses)
         agent1_unseen = self.test_agents[0].unseen
         agent2_unseen = self.test_agents[1].unseen
         self.assertListEqual(
-            agent1_unseen, 
-            [{"agent": self.test_agents[1], "text": "This is the model output"}]
+            agent1_unseen,
+            [{"agent": self.test_agents[1], "text": "This is the model output"}],
         )
         self.assertListEqual(
             agent2_unseen,
-            [{"agent": self.test_agents[0], "text": "This is the model output"}]
+            [{"agent": self.test_agents[0], "text": "This is the model output"}],
         )
 
     def test_add_unseen_prompts_works(self):
         test_unseen = [{"agent": "Agent1", "output": "This is the output"}]
         self.dialog.add_unseen_prompts(self.test_agents[0], test_unseen)
         result = self.test_agents[0].unseen
-        self.assertListEqual(result, [{"agent": "Agent1", "text": "This is the output"}])
+        self.assertListEqual(
+            result, [{"agent": "Agent1", "text": "This is the output"}]
+        )
 
     def test_add_round_works(self):
         self.dialog.add_round(1, ["Prompt 1", "Prompt 2"])
@@ -171,6 +190,7 @@ class TestDialog(unittest.TestCase):
                     "model": "model",
                     "input": "input",
                     "output": "output",
+                    "summary": "summary",
                     "conf_score": 50,
                     "score_summary": "summary",
                 }
@@ -187,6 +207,7 @@ class TestDialog(unittest.TestCase):
                             "model": "model",
                             "input": "input",
                             "output": "output",
+                            "summary": "summary",
                             "conf_score": 50,
                             "score_summary": "summary",
                         }

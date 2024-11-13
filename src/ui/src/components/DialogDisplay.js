@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 
 const DialogDisplay = ({ dialogId, dialog }) => {
   const [expandedRounds, setExpandedRounds] = useState({});
+  const [summarizedOutput, setSummarizedOutput] = useState(true);
   const [expandedInfo, setExpandedInfo] = useState({});
 
   useEffect(() => {
@@ -47,7 +48,9 @@ const DialogDisplay = ({ dialogId, dialog }) => {
                 {dialog.rounds[roundId].map((prompt, index) => (
                   <li key={index}>
                     <strong>Agent:</strong> {prompt.agent} <br />
-                    <strong>Output:</strong> {prompt.output} <br />
+                    {summarizedOutput ? (<>{prompt.summary}</>) : (<>{prompt.output}</>)} <br />
+                    <strong>Confidence score:</strong> {prompt.conf_score / 10} / 10 <br />
+                    <span onClick={() => setSummarizedOutput(!summarizedOutput)}>{summarizedOutput ? 'Show full output' : 'Show summarized output'}</span>
                     <span onClick={() => handleToggleInfo(roundId, index)}>
                       {expandedInfo[roundId]?.[index] ? 'Hide model and input' : 'Show model and input'}
                     </span>

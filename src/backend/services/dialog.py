@@ -74,8 +74,9 @@ class Dialog:
                     "model": "User",
                     "input": "None",
                     "output": comment,
+                    "summary": "",
                     "conf_score": 50,
-                    "score_summary": comment
+                    "score_summary": comment,
                 }
             ],
         )
@@ -92,21 +93,27 @@ class Dialog:
         """
         prompts = []
         for response in responses:
+            summary = re.search(r"<\s*(.*?)\s*>", response["output"])
+            summary = summary.group(1) if summary else None
             # Extract the confidence score from |n/10|
             score = re.search(r"\|(\d+)/10\|", response["output"])
             # score between 0-100%
             score = int(score.group(1)) * 10 if score else None
             # Extract score summary from ||summary text||
             score_summary = re.search(r"\|\|.*?\|\|", response["output"])
-            score_summary = score_summary.group(0)[2:-2].strip() if score_summary else None
-
+            score_summary = (
+                score_summary.group(0)[2:-2].strip() if score_summary else None
+            )
+            output = re.sub(r"<\s*.*?\s*>", "", response["output"]).strip()
+            output = re.sub(r"\|\d+/10\||\|\|.*?\|\|", "", output).strip()
             # Store the response and add to history
             prompts.append(
                 {
                     "agent": response["prompt"]["agent_object"],
                     "model": response["model"],
                     "input": response["prompt"]["text"],
-                    "output": response["output"],
+                    "output": output,
+                    "summary": summary,
                     "conf_score": score,
                     "score_summary": score_summary,
                 }
@@ -141,7 +148,7 @@ class Dialog:
         unseen = [
             {
                 "agent": prompt["agent"],
-                "text": re.sub(r"\|\d+/10\||\|\|.*?\|\|", "", prompt["output"]).strip()
+                "text": re.sub(r"\|\d+/10\||\|\|.*?\|\|", "", prompt["output"]).strip(),
             }
             for prompt in unseen
         ]
@@ -207,6 +214,7 @@ class Dialog:
                         "model": p["model"],
                         "input": p["input"],
                         "output": p["output"],
+                        "summary": p["summary"],
                         "conf_score": p["conf_score"],
                         "score_summary": p["score_summary"],
                     }
