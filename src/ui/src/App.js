@@ -15,6 +15,7 @@ import CommentInput from './components/CommentInput';
 import PasswordInput from './components/PasswordInput';
 import ConfidenceChart from './components/ConfidenceChart';
 import FileInput from './components/FileInput';
+
 import {
   fetchAgents,
   fetchDialogs,
@@ -126,25 +127,53 @@ const App = () => {
   const collectScores = (newDialog) => {
     const scores = {};
     const rounds = newDialog['rounds'];
+    const agents = new Set();
+  
+    // Collect all agent roles
     for (const round in rounds) {
       if (Array.isArray(rounds[round])) {
-        for (const entry of rounds[round]) {
+        rounds[round].forEach(entry => {
+          if (entry.agent) {
+            agents.add(entry.agent);
+          }
+        });
+      }
+    }
+  
+    // Initialize scores for each agent
+    agents.forEach(agent => {
+      scores[agent] = [];
+    });
+  
+    // Populate scores with actual data or null
+    for (const round in rounds) {
+      const roundNumber = parseInt(round, 10);
+      if (Array.isArray(rounds[round])) {
+        const roundScores = {};
+        rounds[round].forEach(entry => {
           const agent_role = entry.agent;
           const conf_score = entry.conf_score;
           const score_summary = entry.score_summary;
           if (agent_role !== undefined && conf_score !== undefined) {
-            if (!scores[agent_role]) {
-              scores[agent_role] = [];
-            }
-            scores[agent_role].push([`"${score_summary}"`, conf_score]);
+            roundScores[agent_role] = [`"${score_summary}"`, conf_score, roundNumber];
           } else {
             console.warn(`Missing agent_role or conf_score in entry:`, entry);
           }
-        }
+        });
+  
+        // Ensure each agent has a response for this round
+        agents.forEach(agent => {
+          if (roundScores[agent]) {
+            scores[agent].push(roundScores[agent]);
+          } else {
+            scores[agent].push([null, null, roundNumber]);
+          }
+        });
       } else {
         console.warn(`Expected an array for round ${round}, but got:`, newDialog[round]);
       }
     }
+  
     return scores;
   };
 

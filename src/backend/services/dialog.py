@@ -74,7 +74,7 @@ class Dialog:
                     "model": "User",
                     "input": "None",
                     "output": comment,
-                    "conf_score": 0,
+                    "conf_score": 50,
                     "score_summary": comment
                 }
             ],

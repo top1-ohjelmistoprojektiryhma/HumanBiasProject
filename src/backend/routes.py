@@ -8,8 +8,7 @@ from flask_limiter.util import get_remote_address
 
 # calling sessions instances until name for custom class session is changed
 def initialize_routes(
-    app, instances, create_service_handler, cd_password, unlock_password
-):
+    app, instances, create_service_handler, cd_password, unlock_password):
     def rate_limit_exceeded():
         app.config["LOCKED"] = True
         return jsonify({"error": "Rate limit exceeded. Application is locked."}), 429
