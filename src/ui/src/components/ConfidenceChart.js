@@ -8,7 +8,6 @@ const ConfidenceChart = ({ data }) => {
   const chartRef = useRef(null);
   const chartInstanceRef = useRef(null); // Ref to store the Chart.js instance
 
-  console.log(data);
   // Extract agent roles and their corresponding scores
   const agents = Object.keys(data);
 
@@ -176,7 +175,6 @@ const ConfidenceChart = ({ data }) => {
             chartData.datasets.forEach((dataset) => {
               dataset.barThickness = minBarWidth;
             });
-            console.log(minBarWidth);
           }
         });
       });
