@@ -43,13 +43,20 @@ class ServiceHandler:
         Returns:
             The session as a dict.
         """
-        print(f"SERVICE HANDLER: Comment: {comment} Session ID: {session_id}")
+        print(f"\nSERVICE HANDLER: User comment: {comment} Session ID: {session_id}")
         if self.api_manager.available_models():
             # Get the prompts from session
             api_input_list = self.session_manager.get_session_prompts(
                 session_id)
             # Send prompts to the API and collect responses
             responses = self.api_manager.send_prompts(api_input_list)
+            print("\nSERVICE_HANDLER.PY: API outputs: ")
+            for response in responses:
+                agent_obj = response["prompt"]["agent_object"]
+                model = response["model"]
+                output = response["output"]
+                print("-----------------")
+                print(f"Agent: {agent_obj.role}, Model: {model}, Output:\n{output}")
             # Update the session with responses
             self.session_manager.update_session_with_responses(
                 session_id, responses)
@@ -81,6 +88,7 @@ class ServiceHandler:
             ]
             # Send prompts to the API and collect responses
             response = self.api_manager.send_prompts(input_list)[0]["output"]
+            print(f"\nSERVICE HANDLER: API response for generating agents:\n{response}")
 
             # Split the response to generate the list of perspectives
             output_no_newline = response.rstrip(" \n")

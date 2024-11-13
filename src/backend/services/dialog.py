@@ -91,6 +91,7 @@ class Dialog:
         Args:
             responses (list): A list of responses
         """
+
         prompts = []
         for response in responses:
             summary = re.search(r"<\s*(.*?)\s*>", response["output"])

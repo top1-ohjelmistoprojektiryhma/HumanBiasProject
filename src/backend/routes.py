@@ -29,7 +29,7 @@ def initialize_routes(
             create_new_instance()
         instance_id = session.get("instance_id")
         if not instance_id or instance_id not in instances:
-            print(f"ROUTES.PY: Invalid instance ID: {instance_id}")
+            print(f"\nROUTES.PY: Invalid instance ID: {instance_id}")
             return None, jsonify({"error": "Permission denied"}), 400
         return instances[instance_id]["service_handler"], None, None
 
@@ -84,7 +84,7 @@ def initialize_routes(
         if error_response:
             return error_response, status_code
         format_options = service_handler.get_all_formats()
-        print(f"ROUTES.PY: Format options: {format_options}")
+        print(f"\nROUTES.PY: Format options: {format_options}")
         return jsonify(format_options)
 
     @app.route("/api/new-session", methods=["POST"])
@@ -98,7 +98,7 @@ def initialize_routes(
         format = data.get("format")
         perspectives = data.get("perspective")
         print(
-            f"ROUTES.PY: Prompt: {prompt}, Perspective: {perspectives}, Format: {format}"
+            f"\nROUTES.PY: Prompt: {prompt}, Perspective: {perspectives}, Format: {format}"
         )
         service_handler.agent_manager.set_selected_agents(perspectives)
         result, successful = service_handler.start_new_session(prompt, format)
@@ -108,7 +108,7 @@ def initialize_routes(
         response, dialog_dict = service_handler.continue_session(new_id, comment="")
         if dialog_dict is None:
             return jsonify({"response": "Missing api keys"})
-        print(f"ROUTES.PY: Response: Placeholder, Dialog ID: {new_id}")
+        print(f"\nROUTES.PY: Response {response}, Dialog ID: {new_id}")
         return jsonify(
             {
                 "response": response,
@@ -129,7 +129,7 @@ def initialize_routes(
         response, dialog_dict = service_handler.continue_session(session_id, comment)
         if dialog_dict is None:
             return jsonify({"response": response})
-        print(f"ROUTES.PY: Response: {response}, Dialog ID: {session_id}")
+        print(f"\nROUTES.PY: Response: {response}, Dialog ID: {session_id}")
         return jsonify(
             {
                 "response": response,
@@ -145,7 +145,7 @@ def initialize_routes(
             return error_response, status_code
         data = request.json
         perspective = data.get("perspective")
-        print(f"ROUTES.PY: Deleting perspective: {perspective}")
+        print(f"\nROUTES.PY: Deleting perspective: {perspective}")
         service_handler.agent_manager.delete_agent(perspective)
         return jsonify({"response": "Perspective deleted"})
 
@@ -156,7 +156,7 @@ def initialize_routes(
             return error_response, status_code
         data = request.json
         perspective = data.get("perspective")
-        print(f"ROUTES.PY: Adding perspective: {perspective}")
+        print(f"\nROUTES.PY: Adding perspective: {perspective}")
         service_handler.agent_manager.add_agent(perspective)
         return jsonify({"response": "Perspective added"})
 
@@ -169,7 +169,7 @@ def initialize_routes(
         data = request.json
         prompt = data.get("prompt")
         num_agents = data.get("num_agents", 3)
-        print(f"ROUTES.PY: Generating {num_agents} agents for prompt: {prompt}")
+        print(f"\nROUTES.PY: Generating {num_agents} agents...")
 
         # Pass the number of agents to the service handler
         response = service_handler.generate_agents(
