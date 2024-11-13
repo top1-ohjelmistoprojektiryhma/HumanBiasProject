@@ -1,8 +1,10 @@
 import React, { useState, useRef } from "react";
+import uploadIcon from '../icons/upload.png';
+
 
 const FileInput = ({ setFile }) => {
   const [isDragging, setIsDragging] = useState(false);
-  const [fileName, setFileName] = useState(''); // Tila tiedoston nimeä varten
+  const [fileName, setFileName] = useState('');
   const inputRef = useRef(null);
 
   const handleDragOver = (e) => {
@@ -20,7 +22,7 @@ const FileInput = ({ setFile }) => {
     if (e.dataTransfer.files && e.dataTransfer.files[0]) {
       const file = e.dataTransfer.files[0];
       setFile(file);
-      setFileName(file.name); // Päivittää tiedoston nimen
+      setFileName(file.name);
     }
   };
 
@@ -32,14 +34,14 @@ const FileInput = ({ setFile }) => {
     const file = e.target.files[0];
     if (file) {
       setFile(file);
-      setFileName(file.name); // Päivittää tiedoston nimen
+      setFileName(file.name);
     }
   };
 
   const handleRemoveFile = (e) => {
-    e.stopPropagation(); // Estää drop-zonen onClick-tapahtuman
-    setFile(null); // Tyhjentää tiedoston
-    setFileName(''); // Tyhjentää tiedoston nimen
+    e.stopPropagation();
+    setFile(null);
+    setFileName('');
   };
 
   return (
@@ -59,7 +61,10 @@ const FileInput = ({ setFile }) => {
             </span>
           </>
         ) : (
-          "Drop file or click to upload"
+          <>
+            <img src={uploadIcon} alt="Upload icon" className="upload-icon" /> {/* Lisää ikoni */}
+            Drop file or click to upload
+          </>
         )}
       </p>
       <input
