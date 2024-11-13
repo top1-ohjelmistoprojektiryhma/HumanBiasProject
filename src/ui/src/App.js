@@ -327,9 +327,11 @@ const App = () => {
             )}
             
   
+            {!dialogStarted && (
             <div className="file-drop-container">
               <FileInput setFile={setFile} />
             </div>
+            )}
   
             {/* centered-column alkaa tästä */}
             <div className="centered-column">
