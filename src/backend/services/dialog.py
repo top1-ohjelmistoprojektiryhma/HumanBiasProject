@@ -94,8 +94,9 @@ class Dialog:
 
         prompts = []
         for response in responses:
-            summary = re.search(r"<\s*(.*?)\s*>", response["output"])
-            summary = summary.group(1) if summary else None
+            # find the summary text from <>
+            summary = re.search(r"<.*?>", response["output"])
+            summary = summary.group(0)[1:-1].strip() if summary else None
             # Extract the confidence score from |n/10|
             score = re.search(r"\|(\d+)/10\|", response["output"])
             # score between 0-100%
