@@ -29,6 +29,13 @@ const DialogDisplay = ({ dialogId, dialog }) => {
     }));
   };
 
+  const truncatePrompt = (text, maxLength = 1000) => {
+    if (text.length <= maxLength) {
+      return text;
+    }
+    return text.substring(0, maxLength) + '...';
+  };
+
   if (!dialog || !dialog.rounds) {
     return <div>No dialog to display.</div>;
   }
@@ -36,7 +43,7 @@ const DialogDisplay = ({ dialogId, dialog }) => {
   return (
     <div className="dialog-container">
       <h3>Dialog ID: {dialogId}</h3>
-      <p>Initial Prompt: {dialog.initial_prompt}</p>
+      <p>Initial Prompt: {truncatePrompt(dialog.initial_prompt)}</p>
       <div>
         {Object.keys(dialog.rounds).map((roundId) => (
           <div key={roundId} className="dialog-round">
