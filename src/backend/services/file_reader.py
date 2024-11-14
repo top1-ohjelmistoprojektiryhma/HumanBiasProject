@@ -24,8 +24,9 @@ def read_file(file):
 
 def read_pdf(file):
     pdf_reader = PdfReader(file)
-    page = pdf_reader.pages[0]
-    text = page.extract_text()
+    text = ""
+    for page in pdf_reader.pages:
+        text += page.extract_text()
     return text
 
 
