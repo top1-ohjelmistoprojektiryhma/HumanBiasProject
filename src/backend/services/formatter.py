@@ -45,12 +45,11 @@ def format_generate_agents_prompt(prompt, desired_number_of_agents, list_of_agen
 
     desired_number_of_agents = max(desired_number_of_agents, 2)
 
-    combined_prompt = f"""Generate {str(desired_number_of_agents)} roles to debate the following statement: {str(prompt)}."""  # pylint: disable=line-too-long
+    combined_prompt = f"Generate {str(desired_number_of_agents)} roles of a maximum of 5 words to debate the following statement: {str(prompt)}."  # pylint: disable=line-too-long
     if list_of_agents:
-        combined_prompt += f"""Avoid perspectives that overlap with the following roles: {str(list_of_agents)}."""  # pylint: disable=line-too-long
+        combined_prompt += f"Avoid perspectives that overlap with the following roles: {str(list_of_agents)}."  # pylint: disable=line-too-long
 
-    combined_prompt += "Return a list only in the given style, with the roles separated by '|':\n"  # pylint: disable=line-too-long
-
+    combined_prompt += "Your response should contain nothing but a list in the given style, with the roles separated by '|':\n"  # pylint: disable=line-too-long
     # Handle dynamic agent generation based on the number
     example_for_generation = "|".join(
         [f"agent{i+1}" for i in range(desired_number_of_agents)]

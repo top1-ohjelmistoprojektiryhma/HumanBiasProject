@@ -72,8 +72,8 @@ class TestFormatter(unittest.TestCase):
     def test_format_generate_agent_prompt_with_no_list(self):
         prompt = "Python is the best language"
         result = formatter.format_generate_agents_prompt(prompt, 1, [])
-        expected = f"Generate 2 roles to debate the following statement: {prompt}."
-        expected += "Return a list only in the given style, with the roles separated by '|':\n"
+        expected = f"Generate 2 roles of a maximum of 5 words to debate the following statement: {prompt}."
+        expected += "Your response should contain nothing but a list in the given style, with the roles separated by '|':\n"
         expected += "agent1|agent2"
         self.assertEqual(result, expected)
 
@@ -81,9 +81,9 @@ class TestFormatter(unittest.TestCase):
         role_list = ["Student", "Professor", "Parent"]
         prompt = "Python is the best language"
         result = formatter.format_generate_agents_prompt(prompt, 3, role_list)
-        expected = f"Generate 3 roles to debate the following statement: {prompt}."
+        expected = f"Generate 3 roles of a maximum of 5 words to debate the following statement: {prompt}."
         expected += f"Avoid perspectives that overlap with the following roles: {str(role_list)}."
-        expected += "Return a list only in the given style, with the roles separated by '|':\n"
+        expected += "Your response should contain nothing but a list in the given style, with the roles separated by '|':\n"
         expected += "agent1|agent2|agent3"
         self.assertEqual(result, expected)
 

@@ -83,7 +83,7 @@ class ServiceHandler:
         output = ""  # Default to empty response
         if self.api_manager.available_models():
             input_list = [
-                {"text": prompt, "model": None, "history": None}
+                {"text": prompt, "model": "openai", "history": None}
                 for prompt in prompt_list
             ]
             # Send prompts to the API and collect responses
