@@ -98,7 +98,7 @@ class Dialog:
             summary = re.search(r"<.*?>", response["output"])
             summary = summary.group(0)[1:-1].strip() if summary else None
             # Extract the confidence score from |n/10|
-            score = re.search(r"\|(\d+)/10\|", response["output"])
+            score = re.search(r"\|\s*(\d+)/10\s*\|", response["output"])
             # score between 0-100%
             score = int(score.group(1)) * 10 if score else None
             # Extract score summary from ||summary text||
