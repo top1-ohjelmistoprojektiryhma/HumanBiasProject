@@ -29,11 +29,44 @@ const DialogDisplay = ({ dialogId, dialog }) => {
     }));
   };
 
-  const truncatePrompt = (text, maxLength = 1000) => {
+  const truncateText = (text, maxLength = 1000) => {
     if (text.length <= maxLength) {
       return text;
     }
     return text.substring(0, maxLength) + '...';
+  };
+
+  const formatText = (text, maxWordsPerLine = 30, maxCharsPerLine = 100) => {
+    const words = text.split(' ');
+    const lines = [];
+    let currentLine = '';
+
+    words.forEach(word => {
+      if ((currentLine + word).split(' ').length <= maxWordsPerLine && (currentLine + word).length <= maxCharsPerLine) {
+        currentLine += `${word} `;
+      } else {
+        lines.push(currentLine.trim());
+        currentLine = `${word} `;
+      }
+    });
+
+    if (currentLine.length > 0) {
+      lines.push(currentLine.trim());
+    }
+
+    // Handle case where there are no spaces
+    const formattedLines = lines.map(line => {
+      if (line.length > maxCharsPerLine) {
+        const splitLines = [];
+        for (let i = 0; i < line.length; i += maxCharsPerLine) {
+          splitLines.push(line.substring(i, i + maxCharsPerLine));
+        }
+        return splitLines.join('\n');
+      }
+      return line;
+    });
+
+    return formattedLines.join('\n');
   };
 
   if (!dialog || !dialog.rounds) {
@@ -43,7 +76,7 @@ const DialogDisplay = ({ dialogId, dialog }) => {
   return (
     <div className="dialog-container">
       <h3>Dialog ID: {dialogId}</h3>
-      <p>Initial Prompt: {truncatePrompt(dialog.initial_prompt)}</p>
+      <p>Initial Prompt: {formatText(truncateText(dialog.initial_prompt))}</p>
       <div>
         {Object.keys(dialog.rounds).map((roundId) => (
           <div key={roundId} className="dialog-round">
@@ -55,7 +88,11 @@ const DialogDisplay = ({ dialogId, dialog }) => {
                 {dialog.rounds[roundId].map((prompt, index) => (
                   <li key={index}>
                     <strong>Agent:</strong> {prompt.agent} <br />
-                    {summarizedOutput ? (<>{prompt.summary}</>) : (<>{prompt.output}</>)} <br />
+                    {summarizedOutput ? (
+                      <pre>{formatText(prompt.summary)}</pre>
+                    ) : (
+                      <pre>{formatText(prompt.output)}</pre>
+                    )} <br />
                     <strong>Confidence score:</strong> {prompt.conf_score / 10} / 10 <br />
                     <span onClick={() => setSummarizedOutput(!summarizedOutput)}>{summarizedOutput ? 'Show full output' : 'Show summarized output'}</span>
                     <span onClick={() => handleToggleInfo(roundId, index)}>
@@ -64,7 +101,7 @@ const DialogDisplay = ({ dialogId, dialog }) => {
                     {expandedInfo[roundId]?.[index] && (
                       <div>
                         <strong>Model:</strong> {prompt.model} <br />
-                        <strong>Input:</strong> {prompt.input} <br />
+                        <strong>Input:</strong> {prompt.input}
                       </div>
                     )}
                   </li>
