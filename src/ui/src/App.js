@@ -52,6 +52,7 @@ const App = () => {
   const [chartData, setChartData] = useState({});
   const [showChart, setShowChart] = useState(false);
   const [file, setFile] = useState(null);
+  const [fileName, setFileName] = useState('');
 
   const handlePasswordSubmit = async () => {
     try {
@@ -287,6 +288,8 @@ const App = () => {
     setSelectedPerspectives([]);
     setSelectedFormat(formatOptions[0]);
     setPrompt('');
+    setFile(null);
+    setFileName('');
   };
 
   const handleSummaryClick = () => {
