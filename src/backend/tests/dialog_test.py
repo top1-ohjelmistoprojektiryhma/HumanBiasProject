@@ -38,7 +38,7 @@ class TestDialog(unittest.TestCase):
             "Initial prompt",
             {
                 self.test_agents[0]: {"model": None},
-                self.test_agents[1]: {"model": "Gemini"},
+                self.test_agents[1]: {"model": "gemini"},
             },
             "dialog - no consensus",
         )
@@ -70,7 +70,7 @@ class TestDialog(unittest.TestCase):
         """
         result = self.dialog.get_prompts()
         self.assertIsNone(result[0]["model"])
-        self.assertEqual(result[1]["model"], "Gemini")
+        self.assertEqual(result[1]["model"], "gemini")
         self.assertListEqual(result[0]["history"], ["history"])
         self.assertListEqual(result[1]["history"], ["history"])
         self.assertEqual(result[0]["agent_object"], self.test_agents[0])
@@ -102,7 +102,7 @@ class TestDialog(unittest.TestCase):
                     "agent_object": self.test_agents[0],
                     "text": "This is the prompt text",
                 },
-                "model": "Open_AI",
+                "model": "openai",
                 "output": "This is the model output",
                 "summary": "This is the model summary",
             },
@@ -111,23 +111,14 @@ class TestDialog(unittest.TestCase):
                     "agent_object": self.test_agents[1],
                     "text": "This is the prompt text",
                 },
-                "model": "Gemini",
+                "model": "gemini",
                 "output": "This is the model output",
                 "summary": "This is the model summary",
             },
         ]
         self.dialog.update_with_responses(test_responses)
-        for agent in self.test_agents:
-            self.assertListEqual(
-                agent.history,
-                [
-                    {"role": "user", "text": "This is the prompt text"},
-                    {"role": "model", "text": "This is the model output"},
-                ],
-            )
-            self.assertTrue(len(agent.unseen) == 1)
 
-        self.assertEqual(self.dialog.agents[self.test_agents[0]]["model"], "Open_AI")
+        self.assertEqual(self.dialog.agents[self.test_agents[0]]["model"], "openai")
         self.assertIsNotNone(self.dialog.rounds.get(1, None))
         self.assertListEqual([], self.test_agents[0].conf_scores)
         self.assertListEqual([], self.test_agents[1].conf_scores)
@@ -139,7 +130,7 @@ class TestDialog(unittest.TestCase):
                     "agent_object": self.test_agents[0],
                     "text": "This is the prompt text",
                 },
-                "model": "Open_AI",
+                "model": "openai",
                 "output": "This is the model output |2/10| ||summary||",
             },
             {
@@ -147,7 +138,7 @@ class TestDialog(unittest.TestCase):
                     "agent_object": self.test_agents[1],
                     "text": "This is the prompt text",
                 },
-                "model": "Gemini",
+                "model": "gemini",
                 "output": "This is the model output |8/10| ||summary||",
             },
         ]

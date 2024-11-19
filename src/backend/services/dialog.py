@@ -14,19 +14,30 @@ class Dialog:
         history (list): A list of dictionaries representing the dialog history
     """
 
-    def __init__(self, initial_prompt="", agents=None, session_format="dialog"):
+    def __init__(
+            self,
+            initial_prompt="",
+            agents=None,
+            session_format="dialog",
+            summarised_prompt=None
+        ):
         self.initial_prompt = initial_prompt
+        if not summarised_prompt:
+            self.summarised_prompt = initial_prompt
+        else:
+            self.summarised_prompt = summarised_prompt
         self.agents = {} if agents is None else agents
         self.rounds = {}
         self.session_format = session_format
         self.history = []
 
-    def initial_prompts(self, text):
+    def initial_prompts(self, text, agent_list=None):
         """Get the initial prompts for the dialog
 
         Args:
             text (str): The initial prompt text"""
-        agent_list = list(self.agents.keys())
+        if not agent_list:
+            agent_list = list(self.agents.keys())
         prompt_list = formatter.format_multiple(
             [agent.role for agent in agent_list], text, self.session_format
         )
@@ -120,9 +131,17 @@ class Dialog:
                     "score_summary": score_summary,
                 }
             )
+            # Change history input to summarised prompt if needed
+            if len(self.rounds) == 0 and self.summarised_prompt:
+                api_input = self.initial_prompts(
+                    self.summarised_prompt,
+                    [response["prompt"]["agent_object"]]
+                )[0]["text"]
+            else:
+                api_input = response["prompt"]["text"]
             response["prompt"]["agent_object"].add_chat_to_history(
                 [
-                    {"role": "user", "text": response["prompt"]["text"]},
+                    {"role": "user", "text": api_input},
                     {"role": "model", "text": response["output"]},
                 ]
             )

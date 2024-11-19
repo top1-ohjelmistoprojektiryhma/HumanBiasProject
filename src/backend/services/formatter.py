@@ -6,7 +6,6 @@ with open("prompts.json", "r", encoding="utf-8") as file:
 
 
 def format_multiple(role_list, prompt, session_format):
-
     response_list = []
     for role in role_list:
         response_list.append(format_single(role, prompt, session_format))
@@ -20,7 +19,6 @@ def format_single(role, prompt, session_format):
     ].format(role=str(role), prompt=str(prompt))
 
     return formatted_prompt
-
 
 def format_dialog_prompt_with_unseen(agent, unseen_prompts, session_format):
     unseen = []

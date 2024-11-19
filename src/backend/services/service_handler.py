@@ -24,12 +24,14 @@ class ServiceHandler:
         is_valid, error_message = self.validate_user_input(text)
         if not is_valid:
             return error_message, False
+        # possibility to summarise initial prompt for chat history
+        summarised_prompt = text
         # Create a new session
         agents = {
             agent: {"model": None} for agent in self.agent_manager.selected_agents
         }
         new_session_id, _ = self.session_manager.new_session(
-            text, agents, session_format
+            text, agents, session_format, summarised_prompt
         )
         return new_session_id, True
 

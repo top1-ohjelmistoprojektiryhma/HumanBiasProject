@@ -17,7 +17,7 @@ class TestSessionManager(unittest.TestCase):
         session_id, session = self._manager.new_session(
             "Initial prompt", agents=None, session_format="dialog - no consensus"
         )
-        expected_call_list = (("Initial prompt", None, "dialog - no consensus"),)
+        expected_call_list = (("Initial prompt", None, "dialog - no consensus", None),)
         self.assertEqual(session_id, 0)
         self.assertEqual(expected_call_list, self.no_consensus_mock.call_args)
 

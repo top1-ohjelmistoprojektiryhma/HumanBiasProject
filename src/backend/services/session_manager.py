@@ -19,7 +19,7 @@ class SessionManager:
     def get_all_formats(self):
         return list(self._all_formats.keys())
 
-    def new_session(self, initial_prompt, agents, session_format):
+    def new_session(self, initial_prompt, agents, session_format, summarised_prompt=None):
         """Create a new session object
         Args:
             initial_prompt (str): The initial prompt for the session
@@ -33,7 +33,7 @@ class SessionManager:
         session_type = self._all_formats.get(session_format)
         if session_type is None:
             raise ValueError("Invalid format")
-        session = session_type(initial_prompt, agents, session_format)
+        session = session_type(initial_prompt, agents, session_format, summarised_prompt)
         self._sessions[new_id] = session
         return new_id, session
 
