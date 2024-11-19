@@ -1,4 +1,4 @@
-from pypdf import PdfReader
+import pdfplumber
 import docx
 from odf.opendocument import load
 from odf.text import P
@@ -23,10 +23,10 @@ def read_file(file):
 
 
 def read_pdf(file):
-    pdf_reader = PdfReader(file)
     text = ""
-    for page in pdf_reader.pages:
-        text += page.extract_text()
+    with pdfplumber.open(file) as pdf:
+        for page in pdf.pages:
+            text += page.extract_text()
     return text
 
 
