@@ -173,7 +173,7 @@ class ServiceHandler:
         """
         prompt_list = [
             {
-                "text": formatter.format_summary(dialog_data, session_format),
+                "text": formatter.format_output_summary(dialog_data, session_format),
                 "model": None,
                 "history": None,
                 "agent_object": None,
