@@ -61,3 +61,6 @@ def format_output_summary(dialog_data, session_format):
 
 def format_bias(dialog_data):
     return PROMPTS["format_get_bias"].format(dialog_data=str(dialog_data))
+
+def format_input_summary():
+    return PROMPTS["format_input_summary"]
