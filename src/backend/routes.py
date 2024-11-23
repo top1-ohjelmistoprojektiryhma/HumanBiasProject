@@ -97,11 +97,12 @@ def initialize_routes(
         prompt = data.get("prompt")
         format = data.get("format")
         perspectives = data.get("perspective")
+        character_limit = 0
         print(
             f"\nROUTES.PY: Prompt: {prompt}, Perspective: {perspectives}, Format: {format}"
         )
         service_handler.agent_manager.set_selected_agents(perspectives)
-        result, successful = service_handler.start_new_session(prompt, format)
+        result, successful = service_handler.start_new_session(prompt, format, character_limit)
         if not successful:
             return jsonify({"response": result})
         new_id = result

@@ -16,5 +16,5 @@
         "bias finder": "Summarize the following dialog in a way that captures only the most critical points and key takeaways. Focus on information that would be valuable to someone who prioritizes financial impact or decision-making. Keep the summary short, clear, and concise—something that can be read in a few seconds. {dialog_data}"
     },
     "format_get_bias": "Analyze the following dialog and provide a summary that highlights any biases, assumptions, or subjective viewpoints expressed by the participants. Focus on identifying potential biases in their reasoning, language, or decision-making. Ensure the summary is concise and captures key instances where bias or subjectivity may have influenced the discussion. {dialog_data}",
-    "format_input_summary": "Placeholder"
+    "format_input_summary": "Summarize the following document to a shorter length of around {words} words. Aim to convey the original tone of the author and the main points of the text. {text}"
 }

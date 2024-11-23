@@ -20,6 +20,7 @@ class Agent:
 
     def get_chat_history(self):
         """Get the chat history for the agent"""
+        print(f"Agent {self.role} history: {self._history}")
         return self._history
 
     def add_unseen_prompts(self, prompts):

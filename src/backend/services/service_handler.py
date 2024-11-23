@@ -9,13 +9,15 @@ class ServiceHandler:
         self.api_manager = api_manager
         self.session_manager = session_manager
 
-    def start_new_session(self, text, session_format):
+    def start_new_session(self, text, session_format, character_limit=0):
         """
         Start a new session with the input text.
 
         Args:
             text (str): The input text to start the session with.
             session_format (str): The format of the session.
+            summarize_to_words (int): The number of words to summarize the prompt to.
+            if 0 or less, no summarization is done.
 
         Returns:
             The generated response, session id, and session as dict.
@@ -25,7 +27,16 @@ class ServiceHandler:
         if not is_valid:
             return error_message, False
         # possibility to summarise initial prompt for chat history
-        summarised_prompt = text
+        text_characters_count = len(text)
+        summarised_prompt = None
+        if character_limit > 0 and text_characters_count > character_limit:
+            # Calculate the word limit for the model
+            word_limit = character_limit // 5
+            summary_api_input = formatter.format_input_summary(word_limit, text)
+            # This requires the openai model to be available
+            if "openai" in self.api_manager.available_models():
+                input_list = [{"text": summary_api_input, "model": "openai", "history": None}]
+                summarised_prompt = self.api_manager.send_prompts(input_list)[0]["output"]
         # Create a new session
         agents = {
             agent: {"model": None} for agent in self.agent_manager.selected_agents
