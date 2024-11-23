@@ -31,7 +31,7 @@ class ServiceHandler:
                 return self.api_manager.send_prompts(input_list)[0]["output"]
         return None
 
-    def start_new_session(self, text, session_format, character_limit=0):
+    def start_new_session(self, text, session_format, character_limit):
         """
         Start a new session with the input text.
 

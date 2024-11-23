@@ -15,6 +15,8 @@ import CommentInput from './components/CommentInput';
 import PasswordInput from './components/PasswordInput';
 import ConfidenceChart from './components/ConfidenceChart';
 import FileInput from './components/FileInput';
+import SummaryToggle from './components/SummaryToggle';
+
 
 import {
   fetchAgents,
@@ -53,6 +55,8 @@ const App = () => {
   const [showChart, setShowChart] = useState(false);
   const [file, setFile] = useState(null);
   const [fileName, setFileName] = useState('');
+  const [summaryEnabled, setSummaryEnabled] = useState(false);
+
 
   const handlePasswordSubmit = async () => {
     try {
@@ -196,6 +200,7 @@ const App = () => {
       prompt: promptContent,
       perspective: selectedPerspectives,
       format: selectedFormat,
+      summaryEnabled,
     };
 
     try {
@@ -381,6 +386,10 @@ const App = () => {
                     selectedPerspectives={selectedPerspectives}
                     setSelectedPerspectives={setSelectedPerspectives}
                     setPerspectives={setPerspectives}
+                  />
+                  <SummaryToggle
+                    summaryEnabled={summaryEnabled}
+                    setSummaryEnabled={setSummaryEnabled}
                   />
                   <FormatSelector formatOptions={formatOptions} setSelectedFormat={setSelectedFormat} />
                   <SubmitButton onSubmit={handleSubmit} />

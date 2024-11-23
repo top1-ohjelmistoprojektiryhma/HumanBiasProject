@@ -97,9 +97,10 @@ def initialize_routes(
         prompt = data.get("prompt")
         format = data.get("format")
         perspectives = data.get("perspective")
-        character_limit = 0
+        summary_enabled = data.get("summaryEnabled", False)  # Retrieve the toggle value
+        character_limit = 0 if not summary_enabled else 500  # Example character limit
         print(
-            f"\nROUTES.PY: Prompt: {prompt}, Perspective: {perspectives}, Format: {format}"
+            f"\nROUTES.PY: Prompt: {prompt}, Perspective: {perspectives}, Format: {format}, Summary Enabled: {summary_enabled}"
         )
         service_handler.agent_manager.set_selected_agents(perspectives)
         result, successful = service_handler.start_new_session(prompt, format, character_limit)
@@ -117,6 +118,7 @@ def initialize_routes(
                 "dialog": dialog_dict,
             }
         )
+
 
     @app.route("/api/continue-session", methods=["POST"])
     @limiter.limit("200 per day", error_message=rate_limit_exceeded)

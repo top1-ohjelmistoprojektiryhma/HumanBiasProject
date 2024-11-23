@@ -628,6 +628,41 @@ input[type="text"] {
   color: #c9302c;
 }
 
+.summary-toggle {
+  display: flex;
+  align-items: center;
+  margin: 10px 0;
+  font-family: 'Roboto', sans-serif;
+  font-size: 14px;
+  color: #ffffff; /* Bright text for dark background */
+}
+
+.summary-toggle label {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.summary-toggle input[type="checkbox"] {
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  accent-color: #007bff; /* Light blue toggle to match dark theme */
+  background-color: #121212; /* Dark background for checkbox */
+  border: 2px solid #ffffff; /* Visible border in dark mode */
+  border-radius: 4px;
+}
+
+.summary-toggle input[type="checkbox"]:checked {
+  accent-color: #28a745; /* Bright green for the checked state */
+  border-color: #28a745;
+}
+
+.summary-toggle input[type="checkbox"]:focus {
+  outline: none;
+  box-shadow: 0 0 5px #007bff; /* Highlight for focus state */
+}
 
 
 
