@@ -9,6 +9,28 @@ class ServiceHandler:
         self.api_manager = api_manager
         self.session_manager = session_manager
 
+    def get_summarised_text(self, text, character_limit):
+        """
+        Summarize the input text if it exceeds the character limit.
+
+        Args:
+            text (str): The input text to be summarized.
+            character_limit (int): The maximum character limit for the summary.
+
+        Returns:
+            str or None: The summarized text if summarization is performed, otherwise None.
+        """
+        if character_limit > 0 and len(text) > character_limit:
+            # Calculate the word limit for the model
+            word_limit = character_limit // 5
+            summary_api_input = formatter.format_input_summary(word_limit, text)
+
+            # Check if OpenAI model is available for summarization
+            if "openai" in self.api_manager.available_models():
+                input_list = [{"text": summary_api_input, "model": "openai", "history": None}]
+                return self.api_manager.send_prompts(input_list)[0]["output"]
+        return None
+
     def start_new_session(self, text, session_format, character_limit=0):
         """
         Start a new session with the input text.
@@ -16,34 +38,26 @@ class ServiceHandler:
         Args:
             text (str): The input text to start the session with.
             session_format (str): The format of the session.
-            summarize_to_words (int): The number of words to summarize the prompt to.
-            if 0 or less, no summarization is done.
+            character_limit (int): The character limit for summarizing the prompt. 
+                If 0 or less, no summarization is done.
 
         Returns:
-            The generated response, session id, and session as dict.
+            tuple: The generated session ID and a success status (True/False).
         """
         # Validate user input
         is_valid, error_message = self.validate_user_input(text)
         if not is_valid:
             return error_message, False
-        # possibility to summarise initial prompt for chat history
-        text_characters_count = len(text)
-        summarised_prompt = None
-        if character_limit > 0 and text_characters_count > character_limit:
-            # Calculate the word limit for the model
-            word_limit = character_limit // 5
-            summary_api_input = formatter.format_input_summary(word_limit, text)
-            # This requires the openai model to be available
-            if "openai" in self.api_manager.available_models():
-                input_list = [{"text": summary_api_input, "model": "openai", "history": None}]
-                summarised_prompt = self.api_manager.send_prompts(input_list)[0]["output"]
+
+        # Get summarized text if needed
+        summarised_prompt = self.get_summarised_text(text, character_limit)
+
         # Create a new session
-        agents = {
-            agent: {"model": None} for agent in self.agent_manager.selected_agents
-        }
+        agents = {agent: {"model": None} for agent in self.agent_manager.selected_agents}
         new_session_id, _ = self.session_manager.new_session(
             text, agents, session_format, summarised_prompt
         )
+
         return new_session_id, True
 
     def continue_session(self, session_id, comment):
