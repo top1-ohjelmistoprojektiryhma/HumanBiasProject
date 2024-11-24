@@ -1,5 +1,5 @@
 import json
-
+from pydantic import BaseModel
 
 with open("prompts.json", "r", encoding="utf-8") as file:
     PROMPTS = json.load(file)
@@ -64,3 +64,48 @@ def format_bias(dialog_data):
 
 def format_input_summary(words, text):
     return PROMPTS["format_input_summary"].format(words=words, text=text)
+
+def format_bias_class(user_input):
+
+    class Bias(BaseModel):
+        bias_name: str
+        bias_severity: int
+        reasoning: str
+
+    class KnownBiases(BaseModel):
+        steps: list[Bias]
+
+    system_prompt = PROMPTS["format_bias_class"]
+
+    prompt = format_structured_prompt(system_prompt, user_input, KnownBiases)
+
+    return prompt
+
+
+def format_structured_prompt(system_prompt, user_input, response_format):
+    """
+    Formats a prompt for the OpenAI API with structured response
+
+    Args:
+        user_input (str): The user's input
+        response_format (class): The response format
+
+    Returns:
+        dict: The formatted prompt:
+        {
+            "model": "gpt-4o-2024-08-06",
+            "system_prompt": str,
+            "user_input": str,
+            "response_format": class
+            "history": None (for initial implementation)
+    """
+
+    prompt = {
+            "model": "gpt-4o-2024-08-06",
+            "system_prompt": system_prompt,
+            "user_input":user_input,
+            "response_format":response_format,
+            "history": None
+    }
+
+    return prompt

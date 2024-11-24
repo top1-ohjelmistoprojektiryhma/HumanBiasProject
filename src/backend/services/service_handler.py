@@ -20,7 +20,7 @@ class ServiceHandler:
         Returns:
             str or None: The summarized text if summarization is performed, otherwise None.
         """
-        if character_limit > 0 and len(text) > character_limit:
+        if len(text) > character_limit > 0:
             # Calculate the word limit for the model
             word_limit = character_limit // 5
             summary_api_input = formatter.format_input_summary(word_limit, text)
@@ -38,7 +38,7 @@ class ServiceHandler:
         Args:
             text (str): The input text to start the session with.
             session_format (str): The format of the session.
-            character_limit (int): The character limit for summarizing the prompt. 
+            character_limit (int): The character limit for summarizing the prompt.
                 If 0 or less, no summarization is done.
 
         Returns:
@@ -173,10 +173,10 @@ class ServiceHandler:
         Process the latest dialog sent from the frontend.
 
         Args:
-         dialog_data (str): The latest dialog data received.
+            dialog_data (str): The latest dialog data received.
 
         Returns:
-            None
+            tuple: summary, biases
         """
         session_id = self.session_manager.get_latest_session_id()
         dialog = self.session_manager.get_session(session_id)
@@ -184,6 +184,11 @@ class ServiceHandler:
         session_format = dialog.session_format
         summary = self.get_summary_from_ai(history, session_format)
         biases = self.get_bias_from_ai(history)
+
+        # Get bias class for visualisation, disabled for now
+        #bias_class = self.get_bias_class_from_ai(biases)
+        #print(bias_class)
+
         return summary, biases
 
     def get_summary_from_ai(self, dialog_data, session_format):
@@ -196,6 +201,7 @@ class ServiceHandler:
         Returns:
             str: The generated summary from the AI.
         """
+
         prompt_list = [
             {
                 "text": formatter.format_output_summary(dialog_data, session_format),
@@ -234,6 +240,22 @@ class ServiceHandler:
             return responses[0]["output"]
 
         return None
+
+    def get_bias_class_from_ai(self, text):
+        """
+        Send dialog data to the AI model to generate a class for bias visualisation.
+
+        Args:
+            text (str):
+                Text containing analysis of biases.
+        
+        Returns:
+            class: KnownBiases: {Bias: {bias_name: str, bias_severity: int, reasoning: str}}
+        """
+        prompt = formatter.format_bias_class(text)
+
+        response = self.api_manager.send_structured_prompt(prompt)
+        return response
 
     def validate_user_input(self, text):
         if text == "":

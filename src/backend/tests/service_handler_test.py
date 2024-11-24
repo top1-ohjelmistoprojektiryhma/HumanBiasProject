@@ -46,18 +46,18 @@ class TestServiceHandler(unittest.TestCase):
         text = "This is a test prompt"
         self._mock_agent_manager.selected_agents = [ExampleAgent()]
         self._mock_session_manager.new_session.return_value = ("1", "dialog")
-        id, result = self._handler.start_new_session(text, "dialog")
+        id, result = self._handler.start_new_session(text, "dialog", 0)
         self.assertEqual(result, True)
 
     def test_start_new_session_works_with_empty_prompt(self):
         text = ""
-        id, result = self._handler.start_new_session(text, "dialog")
+        id, result = self._handler.start_new_session(text, "dialog", 0)
         self.assertEqual(result, False)
 
     def test_start_new_session_works_with_no_selected_agents(self):
         text = "This is a test prompt"
         self._mock_agent_manager.selected_agents = []
-        id, result = self._handler.start_new_session(text, "dialog")
+        id, result = self._handler.start_new_session(text, "dialog", 0)
         self.assertEqual(result, False)
 
     def test_continue_session_no_api_keys(self):
@@ -85,7 +85,7 @@ class TestServiceHandler(unittest.TestCase):
             }
         ]
         text = "prompt"
-        id, result = self._handler.start_new_session(text, "dialog")
+        id, result = self._handler.start_new_session(text, "dialog", 0)
         response, session_dict = self._handler.continue_session(id, comment="comment")
         self.assertEqual(response, "Success")
 

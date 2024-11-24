@@ -54,3 +54,35 @@ class OpenAiApi:
             )
         return formatted_history
         #pylint: enable=duplicate-code
+
+    def get_structured_response(self, prompt):
+        """Sends a structured prompt to the OpenAI API and returns the response
+
+        Args:
+            prompt (dict): The structured prompt to send to the API:
+            {
+            "model": "gpt-4o-2024-08-06",
+            "system_prompt": str,
+            "user_input": str,
+            "response_format": class
+            "history": None (for initial implementation)
+            }
+    }
+        Returns:
+            class: KnownBiases{Baias: {bias_name: str, bias_severity: int, reasoning: str}}
+        """
+
+        client = openai.OpenAI()
+
+        completion = client.beta.chat.completions.parse(
+        model=prompt["model"],
+        messages=[
+            {"role": "system", "content": prompt["system_prompt"]},
+            {"role": "user", "content": prompt["user_input"]}
+        ],
+        response_format=prompt["response_format"],
+        )
+
+        biases = completion.choices[0].message.parsed
+
+        return biases
