@@ -153,9 +153,9 @@ class TestServiceHandler(unittest.TestCase):
         response = self._handler.get_all_sessions()
         self.assertEqual(response, {"1": "dialog1", "2": "dialog2"})
 
-    def test_get_desired_output_works_with_outputlist_equal_to_desired_num(self):
+    def test_add_generated_agents_works_with_outputlist_equal_to_desired_num(self):
         self._mock_agent_manager.list_of_agents = [ExampleAgent(), ExampleAgent()]
-        result = self._handler.get_desired_output(["1"], 1)
+        result = self._handler.add_generated_agents(["1"], 1)
         expected = (["Student", "Student"], ["Student", "Student"])
         self.assertEqual(result, expected)
 

@@ -108,6 +108,7 @@ class ServiceHandler:
         prompt_list = [generate_agents_prompt]
         perspectives = []  # Initialize perspectives to avoid UnboundLocalError
         output = ""  # Default to empty response
+
         if self.api_manager.available_models():
             input_list = [
                 {"text": prompt, "model": "openai", "history": None}
@@ -121,8 +122,8 @@ class ServiceHandler:
             output_no_newline = response.rstrip(" \n")
             output_list = output_no_newline.split("|")
 
-            # Use the correct number of agents
-            perspectives, output = self.get_desired_output(
+            # Use the correct number of agents, since the API always returns at least 2 agents
+            perspectives, output = self.add_generated_agents(
                 output_list, desired_number_of_agents
             )
 
@@ -138,7 +139,7 @@ class ServiceHandler:
         sessions = self.session_manager.all_sessions()
         return sessions
 
-    def get_desired_output(self, output_list, desired_number_of_agents):
+    def add_generated_agents(self, output_list, desired_number_of_agents):
         perspectives = []
         output = ""
 
