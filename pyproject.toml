@@ -18,6 +18,7 @@ bcrypt = "^4.2.0"
 python-docx = "^1.1.2"
 odfpy = "^1.4.1"
 pdfplumber = "^0.11.4"
+pydantic = "^2.10.1"
 
 [tool.poetry.group.dev.dependencies]
 pylint = "^3.2.7"

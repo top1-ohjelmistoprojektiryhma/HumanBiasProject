@@ -136,9 +136,8 @@ class ServiceHandler:
         self.agent_manager.set_selected_agents(agent_list)
 
     def get_all_sessions(self):
-        sessions = self.session_manager.all_sessions()
-        return sessions
-
+        return self.session_manager.all_sessions()
+    
     def add_generated_agents(self, output_list, desired_number_of_agents):
         perspectives = []
         output = ""
@@ -212,6 +211,7 @@ class ServiceHandler:
             }
         ]
         responses = self.api_manager.send_prompts(prompt_list)
+
         if responses and "output" in responses[0]:
             return responses[0]["output"]
 
@@ -237,6 +237,7 @@ class ServiceHandler:
         ]
 
         responses = self.api_manager.send_prompts(prompt_list)
+        
         if responses and "output" in responses[0]:
             return responses[0]["output"]
 
