@@ -30,9 +30,9 @@ class TestServiceHandler(unittest.TestCase):
             session_manager=self._mock_session_manager,
         )
 
-    def test_create_agents_works(self):
+    def test_add_multiple_agents_works(self):
         added_roles = ["22-year-old CS student", "CS Professor"]
-        self._handler.create_agents(added_roles)
+        self._handler.add_multiple_agents(added_roles)
         self._mock_agent_manager.add_agent_assert_called_with(
             "22-year-old CS student", "CS Professor"
         )

@@ -9,27 +9,6 @@ class ServiceHandler:
         self.api_manager = api_manager
         self.session_manager = session_manager
 
-    def get_summarised_text(self, text, character_limit):
-        """
-        Summarize the input text if it exceeds the character limit.
-
-        Args:
-            text (str): The input text to be summarized.
-            character_limit (int): The maximum character limit for the summary.
-
-        Returns:
-            str or None: The summarized text if summarization is performed, otherwise None.
-        """
-        if len(text) > character_limit > 0:
-            # Calculate the word limit for the model
-            word_limit = character_limit // 5
-            summary_api_input = formatter.format_input_summary(word_limit, text)
-
-            # Check if OpenAI model is available for summarization
-            if "openai" in self.api_manager.available_models():
-                input_list = [{"text": summary_api_input, "model": "openai", "history": None}]
-                return self.api_manager.send_prompts(input_list)[0]["output"]
-        return None
 
     def start_new_session(self, text, session_format, character_limit):
         """
@@ -94,11 +73,17 @@ class ServiceHandler:
 
         return "No API keys available", None
 
-    def create_agents(self, list_of_roles):
-        for role in list_of_roles:
-            self.add_agent(role)
-
     def generate_agents(self, text, desired_number_of_agents=3):
+        """Generate new agents that are relevant to the input text.
+
+        Args:
+            text (str): The input text to generate agents from.
+            desired_number_of_agents (int): The number of agents to generate.
+
+        Returns:
+            dict: The response and perspectives generated from the input text:
+                {"response": str, "perspectives": list}
+        """
         generate_agents_prompt = formatter.format_generate_agents_prompt(
             text,
             desired_number_of_agents,
@@ -129,23 +114,24 @@ class ServiceHandler:
 
         return {"response": str(output), "perspectives": perspectives}
 
-    def add_agent(self, user_input):
-        self.agent_manager.add_agent(user_input)
-
-    def set_selected_agents(self, agent_list):
-        self.agent_manager.set_selected_agents(agent_list)
-
-    def get_all_sessions(self):
-        return self.session_manager.all_sessions()
-    
     def add_generated_agents(self, output_list, desired_number_of_agents):
+        """
+        Add generated agents to the agent manager.
+
+        Args:
+            output_list (list): The list of generated agents.
+            desired_number_of_agents (int): The desired number of agents to generate.
+
+        Returns:
+            tuple: The list of perspectives and the output string.
+                (output is eiher the perspectives as a string or an error message)
+        """
         perspectives = []
         output = ""
 
         if len(output_list) == desired_number_of_agents:
             # If the number of agents matches the desired number
-            for role in output_list:
-                self.add_agent(str(role))
+            self.add_multiple_agents(output_list)
 
             # Extract perspectives or agents from agent manager
             perspectives = [
@@ -154,8 +140,7 @@ class ServiceHandler:
 
         elif len(output_list) > desired_number_of_agents:
             # If there are more generated agents than requested, truncate to the requested number
-            for role in output_list[:desired_number_of_agents]:
-                self.add_agent(str(role))
+            self.add_multiple_agents(output_list[:desired_number_of_agents])
 
             # Extract perspectives or agents from agent manager
             perspectives = [
@@ -167,6 +152,28 @@ class ServiceHandler:
             output = "error in generating agents"
 
         return perspectives, output
+
+    def get_summarised_text(self, text, character_limit):
+        """
+        Summarize the input text if it exceeds the character limit.
+
+        Args:
+            text (str): The input text to be summarized.
+            character_limit (int): The maximum character limit for the summary.
+
+        Returns:
+            str or None: The summarized text if summarization is performed, otherwise None.
+        """
+        if len(text) > character_limit > 0:
+            # Calculate the word limit for the model
+            word_limit = character_limit // 5
+            summary_api_input = formatter.format_input_summary(word_limit, text)
+
+            # Check if OpenAI model is available for summarization
+            if "openai" in self.api_manager.available_models():
+                input_list = [{"text": summary_api_input, "model": "openai", "history": None}]
+                return self.api_manager.send_prompts(input_list)[0]["output"]
+        return None
 
     def get_latest_dialog_summary(self):
         """
@@ -237,7 +244,7 @@ class ServiceHandler:
         ]
 
         responses = self.api_manager.send_prompts(prompt_list)
-        
+
         if responses and "output" in responses[0]:
             return responses[0]["output"]
 
@@ -250,7 +257,7 @@ class ServiceHandler:
         Args:
             text (str):
                 Text containing analysis of biases.
-        
+
         Returns:
             class: KnownBiases: {Bias: {bias_name: str, bias_severity: int, reasoning: str}}
         """
@@ -259,12 +266,18 @@ class ServiceHandler:
         response = self.api_manager.send_structured_prompt(prompt)
         return response
 
-    def validate_user_input(self, text):
-        if text == "":
-            return False, "Please enter a prompt"
-        if self.agent_manager.selected_agents == []:
-            return False, "Please select perspectives"
-        return True, ""
+    def add_multiple_agents(self, list_of_roles):
+        for role in list_of_roles:
+            self.add_agent(str(role))
+
+    def add_agent(self, agent_role):
+        self.agent_manager.add_agent(agent_role)
+
+    def set_selected_agents(self, agent_list):
+        self.agent_manager.set_selected_agents(agent_list)
+
+    def get_all_sessions(self):
+        return self.session_manager.all_sessions()
 
     def get_all_formats(self):
         return self.session_manager.get_all_formats()
@@ -272,3 +285,10 @@ class ServiceHandler:
     def read_file(self, file):
         print("reading file in backend")
         return file_reader.read_file(file)
+
+    def validate_user_input(self, text):
+        if text == "":
+            return False, "Please enter a prompt"
+        if self.agent_manager.selected_agents == []:
+            return False, "Please select perspectives"
+        return True, ""
