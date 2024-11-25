@@ -93,7 +93,11 @@ def format_bias_class(user_input):
     return prompt
 
 
-def format_structured_prompt(system_prompt, user_input, response_format, history=None):
+def format_structured_prompt(system_prompt,
+                             user_input,
+                             response_format,
+                             model="gpt-4o-2024-08-06",
+                             history=None):
     """
     Formats a prompt for the OpenAI API with structured response
 
@@ -113,7 +117,7 @@ def format_structured_prompt(system_prompt, user_input, response_format, history
     """
 
     prompt = {
-        "model": "gpt-4o-2024-08-06",
+        "model": model,
         "system_prompt": system_prompt,
         "user_input": user_input,
         "response_format": response_format,
