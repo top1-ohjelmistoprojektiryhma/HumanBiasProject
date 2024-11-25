@@ -1,6 +1,6 @@
 import unittest
 import backend.services.formatter as formatter
-
+from pydantic import BaseModel
 
 class ExampleAgent:
     def __init__(self):
@@ -100,3 +100,21 @@ class TestFormatter(unittest.TestCase):
         result = formatter.format_dialog_prompt_with_unseen(agent, unseen_prompts, "dialog - no consensus")
         expected = f"""['student has given the following response: output']"""
         self.assertIn(expected, result)
+    
+    def test_structured_output_bias_class(self):
+        
+        user_input = "bias summary"
+
+        dict_output = formatter.format_bias_class(user_input)
+        
+        system_prompt = "Your job is from a neutral perspective to categorize the biases found in the following summary. Aim to find multiple distinct biases and provide differing severity ratings on a scale of 1 to 10 based on how severe the social impact of the given bias would be. Avoid giving the same rating for multiple biases."
+        
+        expected_output = {
+            "model": "gpt-4o-2024-08-06",
+            "system_prompt": system_prompt,
+            "user_input": user_input,
+            "response_format": dict_output["response_format"],
+            "history": None,
+        }
+
+        self.assertEqual(dict_output, expected_output)
