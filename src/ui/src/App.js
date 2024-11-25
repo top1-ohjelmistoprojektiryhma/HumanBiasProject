@@ -16,6 +16,7 @@ import PasswordInput from './components/PasswordInput';
 import ConfidenceChart from './components/ConfidenceChart';
 import FileInput from './components/FileInput';
 import SummaryToggle from './components/SummaryToggle';
+import BiasChart from './components/BiasChart';
 
 
 import {
@@ -56,6 +57,7 @@ const App = () => {
   const [file, setFile] = useState(null);
   const [fileName, setFileName] = useState('');
   const [summaryEnabled, setSummaryEnabled] = useState(false);
+  const [biasData, setBiasData] = useState({})
 
 
   const handlePasswordSubmit = async () => {
@@ -133,7 +135,7 @@ const App = () => {
     const scores = {};
     const rounds = newDialog['rounds'];
     const agents = new Set();
-  
+
     // Collect all agent roles
     for (const round in rounds) {
       if (Array.isArray(rounds[round])) {
@@ -144,12 +146,12 @@ const App = () => {
         });
       }
     }
-  
+
     // Initialize scores for each agent
     agents.forEach(agent => {
       scores[agent] = [];
     });
-  
+
     // Populate scores with actual data or null
     for (const round in rounds) {
       const roundNumber = parseInt(round, 10);
@@ -165,7 +167,7 @@ const App = () => {
             console.warn(`Missing agent_role or conf_score in entry:`, entry);
           }
         });
-  
+
         // Ensure each agent has a response for this round
         agents.forEach(agent => {
           if (roundScores[agent]) {
@@ -178,7 +180,7 @@ const App = () => {
         console.warn(`Expected an array for round ${round}, but got:`, newDialog[round]);
       }
     }
-  
+
     return scores;
   };
 
@@ -308,6 +310,7 @@ const App = () => {
       .then((data) => {
         setSummary(data.response[0]); // summary index in array
         setBiases(data.response[1]); // biases index in array
+        setBiasData(data.response[2]); // data for bias chart
       })
       .catch((error) => {
         console.error('Error sending dialog data:', error);
@@ -344,7 +347,7 @@ const App = () => {
           <div className="menu-symbol" onClick={handleToggleDialogsBar}>
             &#9776; {/* Unicode character for the menu symbol */}
           </div>
-  
+
           <div className={`dialogs-bar ${isDialogsBarVisible ? '' : 'dialogs-bar-hidden'}`}>
             <DialogsBar
               dialogs={dialogs}
@@ -352,23 +355,23 @@ const App = () => {
               toggleDialog={setExpandedDialogs}
             />
           </div>
-  
+
           <div className={`main-content ${isDialogsBarVisible ? 'main-content-shift' : ''}`}>
-            
+
             {!dialogStarted && (
               <>
                 <ExamplePrompts setPrompt={setPrompt} />
                 <InputForm prompt={prompt} setPrompt={setPrompt} />
               </>
             )}
-            
-  
+
+
             {!dialogStarted && (
-            <div className="file-drop-container">
-              <FileInput setFile={setFile} />
-            </div>
+              <div className="file-drop-container">
+                <FileInput setFile={setFile} />
+              </div>
             )}
-  
+
             {/* centered-column alkaa tästä */}
             <div className="centered-column">
               {!dialogStarted && (
@@ -380,7 +383,7 @@ const App = () => {
                       onSubmit={handleGenerateAgents}
                     />
                   </div>
-  
+
                   <PerspectiveSelector
                     perspectives={perspectives}
                     selectedPerspectives={selectedPerspectives}
@@ -401,7 +404,7 @@ const App = () => {
                   {error && <div className="error-message">{error}</div>}
                 </>
               )}
-  
+
               {response && <ResponseDisplay response={response} />}
               {displayedSession !== null && dialogs[displayedSession] && (
                 <>
@@ -424,6 +427,7 @@ const App = () => {
                         <SummaryButton onClick={handleSummaryClick} />
                         {summary && (
                           <div className="summary-section">
+                            <BiasChart />
                             <h2>Summary</h2>
                             <p>{summary}</p>
                             <h2>Biases</h2>
@@ -441,7 +445,7 @@ const App = () => {
       )}
     </div>
   );
-  
+
 
 
 
