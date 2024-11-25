@@ -17,5 +17,5 @@
     },
     "format_get_bias": "Analyze the following dialog and provide a summary that highlights any biases, assumptions, or subjective viewpoints expressed by the participants. Focus on identifying potential biases in their reasoning, language, or decision-making. Ensure the summary is concise and captures key instances where bias or subjectivity may have influenced the discussion. {dialog_data}",
     "format_input_summary": "Summarize the following document to a shorter length of around {words} words. Aim to convey the original tone of the author and the main points of the text. {text}",
-    "format_bias_class": "Your job is to categorize the biases found in the following chat history from a neutral perspective."
+    "format_bias_class": "Your job is from a neutral perspective to categorize the biases found in the following summary. Aim to find multiple distinct biases and provide differing severity ratings on a scale of 1 to 10 based on how severe the social impact of the given bias would be. Avoid giving the same rating for multiple biases."
 }
