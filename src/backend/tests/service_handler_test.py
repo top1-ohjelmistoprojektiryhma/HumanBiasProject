@@ -17,6 +17,16 @@ class ExampleAgent:
         pass
 
 
+class InnerObject:
+    def __init__(self):
+        self.__dict__ = {}
+
+
+class ExampleObject:
+    def __init__(self):
+        self.nested_object = InnerObject()
+
+
 class TestServiceHandler(unittest.TestCase):
     def setUp(self):
         self._mock_agent_manager = Mock()
@@ -167,10 +177,13 @@ class TestServiceHandler(unittest.TestCase):
         self._mock_session_manager.get_session.return_value = dialog_mock
         self._handler.get_summary_from_ai = Mock(return_value="summary")
         self._handler.get_bias_from_ai = Mock(return_value="biases")
-        summary, biases = self._handler.get_latest_dialog_summary()
+        self._handler.get_bias_class_from_ai = Mock(return_value=ExampleObject())
+        summary, biases, bias_json = self._handler.get_latest_dialog_summary()
         self._mock_session_manager.get_latest_session_id.assert_called_once()
         self._mock_session_manager.get_session.assert_called_once_with("session123")
-        self._handler.get_summary_from_ai.assert_called_once_with("dialog history", "dialog - consensus")
+        self._handler.get_summary_from_ai.assert_called_once_with(
+            "dialog history", "dialog - consensus"
+        )
         self._handler.get_bias_from_ai.assert_called_once_with("dialog history")
         self.assertEqual(summary, "summary")
         self.assertEqual(biases, "biases")

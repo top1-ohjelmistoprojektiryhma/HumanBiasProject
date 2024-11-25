@@ -427,7 +427,7 @@ const App = () => {
                         <SummaryButton onClick={handleSummaryClick} />
                         {summary && (
                           <div className="summary-section">
-                            <BiasChart />
+                            <BiasChart data={biasData} />
                             <h2>Summary</h2>
                             <p>{summary}</p>
                             <h2>Biases</h2>

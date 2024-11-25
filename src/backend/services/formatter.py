@@ -20,6 +20,7 @@ def format_single(role, prompt, session_format):
 
     return formatted_prompt
 
+
 def format_dialog_prompt_with_unseen(agent, unseen_prompts, session_format):
     unseen = []
     for prompt in unseen_prompts:
@@ -56,14 +57,24 @@ def format_generate_agents_prompt(prompt, desired_number_of_agents, list_of_agen
 
     return combined_prompt
 
+
 def format_output_summary(dialog_data, session_format):
-    return PROMPTS["format_output_summary"][session_format].format(dialog_data=str(dialog_data))
+    return PROMPTS["format_output_summary"][session_format].format(
+        dialog_data=str(dialog_data)
+    )
+
 
 def format_bias(dialog_data):
     return PROMPTS["format_get_bias"].format(dialog_data=str(dialog_data))
 
+
 def format_input_summary(words, text):
     return PROMPTS["format_input_summary"].format(words=words, text=text)
+
+
+def class_to_json(python_class):
+    return json.dumps(python_class, default=lambda o: o.__dict__)
+
 
 def format_bias_class(user_input):
 
@@ -73,7 +84,7 @@ def format_bias_class(user_input):
         reasoning: str
 
     class KnownBiases(BaseModel):
-        steps: list[Bias]
+        biases: list[Bias]
 
     system_prompt = PROMPTS["format_bias_class"]
 
@@ -81,7 +92,8 @@ def format_bias_class(user_input):
 
     return prompt
 
-def format_structured_prompt(system_prompt, user_input, response_format):
+
+def format_structured_prompt(system_prompt, user_input, response_format, history=None):
     """
     Formats a prompt for the OpenAI API with structured response
 
@@ -101,11 +113,11 @@ def format_structured_prompt(system_prompt, user_input, response_format):
     """
 
     prompt = {
-            "model": "gpt-4o-2024-08-06",
-            "system_prompt": system_prompt,
-            "user_input":user_input,
-            "response_format":response_format,
-            "history": None
+        "model": "gpt-4o-2024-08-06",
+        "system_prompt": system_prompt,
+        "user_input": user_input,
+        "response_format": response_format,
+        "history": history,
     }
 
     return prompt

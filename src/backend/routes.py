@@ -8,7 +8,8 @@ from flask_limiter.util import get_remote_address
 
 # calling sessions instances until name for custom class session is changed
 def initialize_routes(
-    app, instances, create_service_handler, cd_password, unlock_password):
+    app, instances, create_service_handler, cd_password, unlock_password
+):
     def rate_limit_exceeded():
         app.config["LOCKED"] = True
         return jsonify({"error": "Rate limit exceeded. Application is locked."}), 429
@@ -103,7 +104,9 @@ def initialize_routes(
             f"\nROUTES.PY: Prompt: {prompt}, Perspective: {perspectives}, Format: {format}, Summary Enabled: {summary_enabled}"
         )
         service_handler.agent_manager.set_selected_agents(perspectives)
-        result, successful = service_handler.start_new_session(prompt, format, character_limit)
+        result, successful = service_handler.start_new_session(
+            prompt, format, character_limit
+        )
         if not successful:
             return jsonify({"response": result})
         new_id = result
@@ -118,7 +121,6 @@ def initialize_routes(
                 "dialog": dialog_dict,
             }
         )
-
 
     @app.route("/api/continue-session", methods=["POST"])
     @limiter.limit("200 per day", error_message=rate_limit_exceeded)
@@ -197,8 +199,8 @@ def initialize_routes(
         service_handler, error_response, status_code = get_service_handler()
         if error_response:
             return error_response, status_code
-        summary, biases = service_handler.get_latest_dialog_summary()
-        return jsonify({"response": [summary, biases]}), 200
+        summary, biases, bias_json = service_handler.get_latest_dialog_summary()
+        return jsonify({"response": [summary, biases, bias_json]}), 200
 
     @app.route("/api/unlock", methods=["POST"])
     @limiter.limit("3 per minute")

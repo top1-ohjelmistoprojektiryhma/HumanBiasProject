@@ -9,7 +9,6 @@ class ServiceHandler:
         self.api_manager = api_manager
         self.session_manager = session_manager
 
-
     def start_new_session(self, text, session_format, character_limit):
         """
         Start a new session with the input text.
@@ -32,7 +31,9 @@ class ServiceHandler:
         summarised_prompt = self.get_summarised_text(text, character_limit)
 
         # Create a new session
-        agents = {agent: {"model": None} for agent in self.agent_manager.selected_agents}
+        agents = {
+            agent: {"model": None} for agent in self.agent_manager.selected_agents
+        }
         new_session_id, _ = self.session_manager.new_session(
             text, agents, session_format, summarised_prompt
         )
@@ -52,8 +53,7 @@ class ServiceHandler:
         print(f"\nSERVICE HANDLER: User comment: {comment} Session ID: {session_id}")
         if self.api_manager.available_models():
             # Get the prompts from session
-            api_input_list = self.session_manager.get_session_prompts(
-                session_id)
+            api_input_list = self.session_manager.get_session_prompts(session_id)
             # Send prompts to the API and collect responses
             responses = self.api_manager.send_prompts(api_input_list)
             print("\nSERVICE_HANDLER.PY: API outputs: ")
@@ -64,11 +64,9 @@ class ServiceHandler:
                 print("-----------------")
                 print(f"Agent: {agent_obj.role}, Model: {model}, Output:\n{output}")
             # Update the session with responses
-            self.session_manager.update_session_with_responses(
-                session_id, responses)
+            self.session_manager.update_session_with_responses(session_id, responses)
             if comment:
-                self.session_manager.update_session_with_comment(
-                    session_id, comment)
+                self.session_manager.update_session_with_comment(session_id, comment)
             return "Success", self.session_manager.get_session(session_id).to_dict()
 
         return "No API keys available", None
@@ -134,8 +132,7 @@ class ServiceHandler:
             self.add_multiple_agents(output_list)
 
             # Extract perspectives or agents from agent manager
-            perspectives = [
-                agent.role for agent in self.agent_manager.list_of_agents]
+            perspectives = [agent.role for agent in self.agent_manager.list_of_agents]
             output = perspectives
 
         elif len(output_list) > desired_number_of_agents:
@@ -143,8 +140,7 @@ class ServiceHandler:
             self.add_multiple_agents(output_list[:desired_number_of_agents])
 
             # Extract perspectives or agents from agent manager
-            perspectives = [
-                agent.role for agent in self.agent_manager.list_of_agents]
+            perspectives = [agent.role for agent in self.agent_manager.list_of_agents]
             output = perspectives
 
         else:
@@ -171,7 +167,9 @@ class ServiceHandler:
 
             # Check if OpenAI model is available for summarization
             if "openai" in self.api_manager.available_models():
-                input_list = [{"text": summary_api_input, "model": "openai", "history": None}]
+                input_list = [
+                    {"text": summary_api_input, "model": "openai", "history": None}
+                ]
                 return self.api_manager.send_prompts(input_list)[0]["output"]
         return None
 
@@ -193,10 +191,10 @@ class ServiceHandler:
         biases = self.get_bias_from_ai(history)
 
         # Get bias class for visualisation, disabled for now
-        #bias_class = self.get_bias_class_from_ai(biases)
-        #print(bias_class)
+        bias_class = self.get_bias_class_from_ai(biases)
+        bias_json = formatter.class_to_json(bias_class)
 
-        return summary, biases
+        return summary, biases, bias_json
 
     def get_summary_from_ai(self, dialog_data, session_format):
         """
