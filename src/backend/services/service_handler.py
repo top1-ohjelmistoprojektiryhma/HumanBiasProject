@@ -82,72 +82,39 @@ class ServiceHandler:
             dict: The response and perspectives generated from the input text:
                 {"response": str, "perspectives": list}
         """
-        generate_agents_prompt = formatter.format_generate_agents_prompt(
-            text,
-            desired_number_of_agents,
-            self.agent_manager.get_agents_as_list_of_strings(),
-        )
+        text = str(text)
+        agent_class_prompt = formatter.format_generate_agents_class_prompt(text, self.get_all_agent_roles_as_list(), desired_number_of_agents)
 
-        prompt_list = [generate_agents_prompt]
-        perspectives = []  # Initialize perspectives to avoid UnboundLocalError
-        output = ""  # Default to empty response
+        api_response = self.api_manager.send_structured_prompt(agent_class_prompt)
+        print(api_response)
+        role_list = formatter.new_roles_to_list_of_roles(api_response, desired_number_of_agents)
+        print(role_list)
+        response = self.add_generated_agents(role_list, desired_number_of_agents)
 
-        if self.api_manager.available_models():
-            input_list = [
-                {"text": prompt, "model": "openai", "history": None}
-                for prompt in prompt_list
-            ]
-            # Send prompts to the API and collect responses
-            response = self.api_manager.send_prompts(input_list)[0]["output"]
-            print(f"\nSERVICE HANDLER: API response for generating agents:\n{response}")
+        return {"response": response, "perspectives": self.get_all_agent_roles_as_list()}
 
-            # Split the response to generate the list of perspectives
-            output_no_newline = response.rstrip(" \n")
-            output_list = output_no_newline.split("|")
-
-            # Use the correct number of agents, since the API always returns at least 2 agents
-            perspectives, output = self.add_generated_agents(
-                output_list, desired_number_of_agents
-            )
-
-        return {"response": str(output), "perspectives": perspectives}
-
-    def add_generated_agents(self, output_list, desired_number_of_agents):
+    def add_generated_agents(self, role_list, desired_number_of_agents):
         """
         Add generated agents to the agent manager.
 
         Args:
-            output_list (list): The list of generated agents.
+            role_list (list): The list of generated agents.
             desired_number_of_agents (int): The desired number of agents to generate.
 
         Returns:
-            tuple: The list of perspectives and the output string.
+            string: The list of perspectives as a string.
                 (output is eiher the perspectives as a string or an error message)
         """
-        perspectives = []
-        output = ""
-
-        if len(output_list) == desired_number_of_agents:
-            # If the number of agents matches the desired number
-            self.add_multiple_agents(output_list)
-
-            # Extract perspectives or agents from agent manager
-            perspectives = [agent.role for agent in self.agent_manager.list_of_agents]
-            output = perspectives
-
-        elif len(output_list) > desired_number_of_agents:
-            # If there are more generated agents than requested, truncate to the requested number
-            self.add_multiple_agents(output_list[:desired_number_of_agents])
-
-            # Extract perspectives or agents from agent manager
-            perspectives = [agent.role for agent in self.agent_manager.list_of_agents]
-            output = perspectives
-
-        else:
-            # If fewer agents are generated than requested
-            output = "error in generating agents"
-
-        return perspectives, output
+        if role_list:
+            if len(role_list) >= desired_number_of_agents:
+                # If there are more generated agents than requested, truncate to the requested number
+                self.add_multiple_agents(role_list[:desired_number_of_agents])
+                # Extract agents from agent manager
+                return str(self.get_all_agent_roles_as_list())
+                #return "new agents added"
+            #handle error with incorrect formatting here
+            return "API returned less agents than desired"
+        return "trying to add 0 agents"
 
     def get_summarised_text(self, text, character_limit):
         """
@@ -259,7 +226,7 @@ class ServiceHandler:
         Returns:
             class: KnownBiases: {Bias: {bias_name: str, bias_severity: int, reasoning: str}}
         """
-        prompt = formatter.format_bias_class(text)
+        prompt = formatter.format_bias_class_prompt(text)
 
         response = self.api_manager.send_structured_prompt(prompt)
         return response
@@ -279,6 +246,9 @@ class ServiceHandler:
 
     def get_all_formats(self):
         return self.session_manager.get_all_formats()
+
+    def get_all_agent_roles_as_list(self):
+        return [agent.role for agent in self.agent_manager.list_of_agents]
 
     def read_file(self, file):
         print("reading file in backend")

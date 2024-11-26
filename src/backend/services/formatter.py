@@ -35,29 +35,6 @@ def format_dialog_prompt_with_unseen(agent, unseen_prompts, session_format):
     ].format(role=str(agent.role), unseen=str(unseen))
     return formatted_prompt
 
-
-def format_generate_agents_prompt(prompt, desired_number_of_agents, list_of_agents):
-    """
-    Format the prompt to generate the correct number of agents. For formatting reasons,
-    desired number of agents must be at least 2. Resulting issues are resolved elsewhere.
-    """
-
-    desired_number_of_agents = max(desired_number_of_agents, 2)
-
-    combined_prompt = f"Generate {str(desired_number_of_agents)} roles of a maximum of 5 words to debate the following statement: {str(prompt)}."  # pylint: disable=line-too-long
-    if list_of_agents:
-        combined_prompt += f"Avoid perspectives that overlap with the following roles: {str(list_of_agents)}."  # pylint: disable=line-too-long
-
-    combined_prompt += "Your response should contain nothing but a list in the given style, with the roles separated by '|':\n"  # pylint: disable=line-too-long
-    # Handle dynamic agent generation based on the number
-    example_for_generation = "|".join(
-        [f"agent{i+1}" for i in range(desired_number_of_agents)]
-    )
-    combined_prompt += example_for_generation
-
-    return combined_prompt
-
-
 def format_output_summary(dialog_data, session_format):
     return PROMPTS["format_output_summary"][session_format].format(
         dialog_data=str(dialog_data)
@@ -71,12 +48,45 @@ def format_bias(dialog_data):
 def format_input_summary(words, text):
     return PROMPTS["format_input_summary"].format(words=words, text=text)
 
+def new_roles_to_list_of_roles(new_roles, desired_lenght):
 
-def class_to_json(python_class):
-    return json.dumps(python_class, default=lambda o: o.__dict__)
+    output_list = []
 
+    if isinstance(new_roles, object) and hasattr(new_roles, 'roles') and isinstance(new_roles.roles, list):
+        for role in new_roles.roles:
+            name = agent_class_to_str(role)
+            if name:
+                output_list.append(name)
 
-def format_bias_class(user_input):
+        if len(output_list) >= desired_lenght:
+            return output_list[:desired_lenght]
+
+    return output_list
+
+def agent_class_to_str(role):
+
+    name = None
+    if hasattr(role, 'role_description'):
+        name = str(role.role_description)
+        if name == '':
+            name = None
+    return name
+
+def format_generate_agents_class_prompt(user_input, current_agents=[], desired_number_of_agents=3, session_format="bias finder"):
+
+    class Role(BaseModel):
+        role_description: str
+
+    class NewRoles(BaseModel):
+        roles: list[Role]
+
+    system_prompt = PROMPTS["format_generate_agents"][session_format].format(desired_number_of_agents = str(desired_number_of_agents), current_agents = str(current_agents))
+
+    prompt = format_structured_prompt(system_prompt, user_input, NewRoles)
+
+    return prompt
+
+def format_bias_class_prompt(user_input):
 
     class Bias(BaseModel):
         bias_name: str
@@ -91,7 +101,6 @@ def format_bias_class(user_input):
     prompt = format_structured_prompt(system_prompt, user_input, KnownBiases)
 
     return prompt
-
 
 def format_structured_prompt(system_prompt,
                              user_input,
@@ -125,3 +134,6 @@ def format_structured_prompt(system_prompt,
     }
 
     return prompt
+
+def class_to_json(python_class):
+    return json.dumps(python_class, default=lambda o: o.__dict__)

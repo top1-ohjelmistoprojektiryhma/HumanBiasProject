@@ -1,6 +1,7 @@
 import unittest
 from unittest.mock import Mock
 from backend.services.service_handler import ServiceHandler
+from pydantic import BaseModel
 
 
 class ExampleAgent:
@@ -20,12 +21,19 @@ class ExampleAgent:
 class InnerObject:
     def __init__(self):
         self.__dict__ = {}
+        self.role_description = ""
 
 
 class ExampleObject:
     def __init__(self):
         self.nested_object = InnerObject()
+        self.roles = []
 
+class Role(BaseModel):
+    role_description: str
+
+class NewRoles(BaseModel):
+    roles: list[Role]
 
 class TestServiceHandler(unittest.TestCase):
     def setUp(self):
@@ -107,21 +115,22 @@ class TestServiceHandler(unittest.TestCase):
     def test_generate_agents_with_no_api_key(self):
         test_text = "Generate new agents based on this input."
         self._mock_api_manager.available_models.return_value = []
+        self._mock_agent_manager.list_of_agents = [] 
+        self._mock_api_manager.send_structured_prompt.return_value = ExampleObject()
         response = self._handler.generate_agents(test_text)
-        self.assertEqual(response, {"response": "", "perspectives": []})
+        self.assertEqual(response, {'perspectives': [], 'response': "trying to add 0 agents"})
 
     def test_generate_agents_and_get_correct_num(self):
         test_text = "Generate new agents based on this input."
         self._mock_api_manager.gemini_key = "valid_key"
         self._mock_formatter.format_generate_agents_prompt.return_value = test_text
-        self._mock_api_manager.send_prompts.return_value = [
-            {"output": "Agent1|Agent2|Agent3|Agent4"}
-        ]
-        self._mock_agent_manager.list_of_agents = [
-            ExampleAgent(),
-            ExampleAgent(),
-            ExampleAgent(),
-        ]
+        self._mock_agent_manager.list_of_agents = [ExampleAgent(), ExampleAgent(), ExampleAgent()] 
+        biases = ExampleObject()
+        agent = InnerObject()
+        agent.role_description = "Student"
+
+        biases.roles = [agent, agent, agent]
+        self._mock_api_manager.send_structured_prompt.return_value = biases
 
         response = self._handler.generate_agents(test_text)
         self.assertEqual(response["response"], "['Student', 'Student', 'Student']")
@@ -131,14 +140,13 @@ class TestServiceHandler(unittest.TestCase):
         test_text = "Generate new agents based on this input."
         self._mock_api_manager.gemini_key = "valid_key"
         self._mock_formatter.format_generate_agents_prompt.return_value = test_text
-        self._mock_api_manager.send_prompts.return_value = [
-            {"output": "Student|Student|Student|Student"}
-        ]
-        self._mock_agent_manager.list_of_agents = [
-            ExampleAgent(),
-            ExampleAgent(),
-            ExampleAgent(),
-        ]
+        self._mock_agent_manager.list_of_agents = [ExampleAgent(), ExampleAgent(), ExampleAgent()] 
+        biases = ExampleObject()
+        agent = InnerObject()
+        agent.role_description = "Student"
+
+        biases.roles = [agent, agent, agent]
+        self._mock_api_manager.send_structured_prompt.return_value = biases
 
         response = self._handler.generate_agents(test_text, 1)
         self._mock_agent_manager.add_agent.assert_called_with("Student")
@@ -148,11 +156,12 @@ class TestServiceHandler(unittest.TestCase):
     def test_generate_agents_and_get_bad_output(self):
         test_text = "Generate new agents based on this input."
         self._mock_api_manager.gemini_key = "valid_key"
+        self._mock_agent_manager.list_of_agents = [] 
         self._mock_formatter.format_generate_agents_prompt.return_value = test_text
         self._mock_api_manager.send_prompts.return_value = [{"output": ""}]
 
         response = self._handler.generate_agents(test_text)
-        self.assertEqual(response["response"], "error in generating agents")
+        self.assertEqual(response["response"], "trying to add 0 agents")
         self.assertEqual(response["perspectives"], [])
 
     def test_get_all_sessions_works(self):
@@ -165,8 +174,9 @@ class TestServiceHandler(unittest.TestCase):
 
     def test_add_generated_agents_works_with_outputlist_equal_to_desired_num(self):
         self._mock_agent_manager.list_of_agents = [ExampleAgent(), ExampleAgent()]
+
         result = self._handler.add_generated_agents(["1"], 1)
-        expected = (["Student", "Student"], ["Student", "Student"])
+        expected = "['Student', 'Student']"
         self.assertEqual(result, expected)
 
     def test_get_latest_dialog_summary(self):
@@ -215,6 +225,12 @@ class TestServiceHandler(unittest.TestCase):
         bias = self._handler.get_bias_from_ai("dialog data")
         self._mock_api_manager.send_prompts.assert_called_once()
         self.assertIsNone(bias)
+
+    def test_get_bias_class_from_ai(self):
+        text = "Test text"
+        self._mock_api_manager.send_structured_prompt.return_value = "Response text"
+        result = self._handler.get_bias_class_from_ai(text)
+        self.assertEqual("Response text", result)
 
     def test_get_all_formats(self):
         self._mock_session_manager.get_all_formats.return_value = "formats"
