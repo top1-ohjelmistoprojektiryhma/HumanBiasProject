@@ -185,15 +185,16 @@ const App = () => {
   };
 
   const handleSubmit = async () => {
+    setLoading(true)
     let promptContent = prompt;
     if (file) {
       const data = await readFile(file);
       promptContent = data.response;
     }
     if (!validateUserInput()) {
+      setLoading(false)
       return;
     }
-    setLoading(true)
     setDisplayedSession(null);
     setSummary('');
     const requestData = {
@@ -232,8 +233,10 @@ const App = () => {
   };
 
   const handleGenerateAgents = async (numAgents) => {
+    setLoading(true);
     if (prompt === '' && !file) {
       setError('Please enter a statement.');
+      setLoading(false);
       return false;
     }
     let promptContent = prompt;
@@ -248,7 +251,6 @@ const App = () => {
       }
       promptContent = await readFile(file);
     }
-    setLoading(true);
     const requestData = {
       prompt: promptContent,
       num_agents: numAgents,
