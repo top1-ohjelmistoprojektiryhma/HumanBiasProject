@@ -185,7 +185,6 @@ const App = () => {
   };
 
   const handleSubmit = async () => {
-    setLoading(true)
     let promptContent = prompt;
     if (file) {
       const data = await readFile(file);
@@ -194,6 +193,7 @@ const App = () => {
     if (!validateUserInput()) {
       return;
     }
+    setLoading(true)
     setDisplayedSession(null);
     setSummary('');
     const requestData = {
@@ -232,7 +232,10 @@ const App = () => {
   };
 
   const handleGenerateAgents = async (numAgents) => {
-    setLoading(true);
+    if (prompt === '' && !file) {
+      setError('Please enter a statement.');
+      return false;
+    }
     let promptContent = prompt;
     if (file) {
       const allowedExtensions = [".txt", ".pdf", ".docx", ".odt"];
@@ -245,6 +248,7 @@ const App = () => {
       }
       promptContent = await readFile(file);
     }
+    setLoading(true);
     const requestData = {
       prompt: promptContent,
       num_agents: numAgents,
@@ -440,11 +444,6 @@ const App = () => {
       )}
     </div>
   );
-
-
-
-
-
 };
 
 export default App;
