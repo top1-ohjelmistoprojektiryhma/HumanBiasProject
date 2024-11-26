@@ -29,8 +29,8 @@ import {
   submitPassword,
   checkIfAuthenticated,
   readFile,
+  fetchSummary,
 } from './api';
-
 
 const App = () => {
   const [prompt, setPrompt] = useState('');
@@ -185,19 +185,17 @@ const App = () => {
   };
 
   const handleSubmit = async () => {
+    setLoading(true)
     let promptContent = prompt;
     if (file) {
       const data = await readFile(file);
       promptContent = data.response;
-      console.log('promptContent:', promptContent);
     }
     if (!validateUserInput()) {
       return;
     }
     setDisplayedSession(null);
     setSummary('');
-    setLoading(true);
-
     const requestData = {
       prompt: promptContent,
       perspective: selectedPerspectives,
@@ -234,6 +232,7 @@ const App = () => {
   };
 
   const handleGenerateAgents = async (numAgents) => {
+    setLoading(true);
     let promptContent = prompt;
     if (file) {
       const allowedExtensions = [".txt", ".pdf", ".docx", ".odt"];
@@ -259,6 +258,7 @@ const App = () => {
     } catch (error) {
       console.error('Error generating agents:', error);
     }
+    setLoading(false);
   };
   const handleContinue = async () => {
     setLoading(true);
@@ -299,22 +299,17 @@ const App = () => {
     setFileName('');
   };
 
-  const handleSummaryClick = () => {
-    fetch('/api/summary', {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      }
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        setSummary(data.response[0]); // summary index in array
-        setBiases(data.response[1]); // biases index in array
-        setBiasData(data.response[2]); // data for bias chart
-      })
-      .catch((error) => {
-        console.error('Error sending dialog data:', error);
-      });
+  const handleSummaryClick = async () => {
+    setLoading(true);
+    try {
+      const data = await fetchSummary();
+      setSummary(data.response[0]);
+      setBiases(data.response[1]);
+      setBiasData(data.response[2]);
+    } catch (error) {
+      console.error('Error sending dialog data:', error);
+    }
+    setLoading(false);
   };
 
   const handleToggleDialogsBar = () => {
