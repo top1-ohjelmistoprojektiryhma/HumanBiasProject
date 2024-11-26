@@ -100,3 +100,16 @@ export const readFile = async (file) => {
     }
     return response.json();
 }
+
+export const fetchSummary = async () => {
+    const response = await fetch(`${BASE_URL}/api/summary`, {
+        method: 'GET',
+        headers: {
+            'Content-type': 'application/json',
+        },
+    });
+    if (!response.ok) {
+        throw new Error('Network response was not ok');
+    }
+    return response.json();
+};
