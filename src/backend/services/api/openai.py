@@ -72,7 +72,7 @@ class OpenAiApi:
             class: KnownBiases{Baias: {bias_name: str, bias_severity: int, reasoning: str}}
         """
 
-        client = openai.OpenAI()
+        client = self.client.OpenAI()
 
         completion = client.beta.chat.completions.parse(
         model=prompt["model"],

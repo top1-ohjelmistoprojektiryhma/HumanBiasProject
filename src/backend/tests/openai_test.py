@@ -6,6 +6,7 @@ from backend.services.api.openai import OpenAiApi
 class Message():
     def __init__(self, content):
         self.content = content
+        self.parsed = content + "4"
 
 class TextBlock():
     def __init__(self, text):
@@ -31,3 +32,16 @@ class TestOpenAiApi(unittest.TestCase):
         self._openai_api.client.chat.completions.create = Mock(return_value=Completion("123"))
         response = self._openai_api.get_chat_response(prompt, history)
         self.assertEqual(response, "123")
+
+    def test_get_structured_response_works(self):
+        test_client = Mock()
+        test_client.beta.chat.completions.parse = Mock(return_value=Completion("123"))
+        self._openai_api.client.OpenAI.return_value = test_client
+        prompt = {
+            "model": "openai",
+            "user_input": "123",
+            "system_prompt": "ABC",
+            "response_format": "This format"
+            }
+        response = self._openai_api.get_structured_response(prompt)
+        self.assertEqual(response, "1234")

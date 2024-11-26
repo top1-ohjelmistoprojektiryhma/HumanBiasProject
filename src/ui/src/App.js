@@ -192,6 +192,7 @@ const App = () => {
       promptContent = data.response;
     }
     if (!validateUserInput()) {
+      setLoading(false)
       return;
     }
     setDisplayedSession(null);
@@ -233,6 +234,11 @@ const App = () => {
 
   const handleGenerateAgents = async (numAgents) => {
     setLoading(true);
+    if (prompt === '' && !file) {
+      setError('Please enter a statement.');
+      setLoading(false);
+      return false;
+    }
     let promptContent = prompt;
     if (file) {
       const allowedExtensions = [".txt", ".pdf", ".docx", ".odt"];
@@ -440,11 +446,6 @@ const App = () => {
       )}
     </div>
   );
-
-
-
-
-
 };
 
 export default App;
