@@ -100,7 +100,14 @@ class TestFormatter(unittest.TestCase):
         result = formatter.format_dialog_prompt_with_unseen(agent, unseen_prompts, "dialog - no consensus")
         expected = f"""['student has given the following response: output']"""
         self.assertIn(expected, result)
-    
+
+    def test_format_input_summary(self):
+        word = "Hello"
+        text = "World"
+        result = formatter.format_input_summary(words=word, text=text)
+        self.assertTrue("Hello" in result)
+        self.assertTrue("World" in result)
+
     def test_structured_output_bias_class(self):
         
         user_input = "bias summary"
