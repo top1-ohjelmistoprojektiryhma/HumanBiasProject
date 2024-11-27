@@ -8,7 +8,7 @@ import React, { useEffect, useRef } from 'react';
  * @param {string} prompt - The current value of the input field.
  * @param {Function} setPrompt - Function to update the value of the input field.
  */
-const InputForm = ({ prompt, setPrompt }) => {
+const InputForm = ({ formData, setFormData }) => {
   const textareaRef = useRef(null);
 
   useEffect(() => {
@@ -22,14 +22,17 @@ const InputForm = ({ prompt, setPrompt }) => {
   const handleInput = (e) => {
     e.target.style.height = "auto";
     e.target.style.height = `${e.target.scrollHeight}px`;
-    setPrompt(e.target.value);
+    setFormData((prevState) => ({
+      ...prevState,
+      text: e.target.value
+    }));
   };
 
   return (
     <div className="input-form-container">
       <textarea
         ref={textareaRef}
-        value={prompt}
+        value={formData.text}
         onInput={handleInput}
         placeholder="Enter your statement"
         className="input-form"

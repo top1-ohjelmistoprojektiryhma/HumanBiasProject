@@ -2,9 +2,8 @@ import React, { useState, useRef } from "react";
 import uploadIcon from '../icons/upload.png';
 
 
-const FileInput = ({ setFile }) => {
+const FileInput = ({ formData, setFormData }) => {
   const [isDragging, setIsDragging] = useState(false);
-  const [fileName, setFileName] = useState('');
   const inputRef = useRef(null);
 
   const handleDragOver = (e) => {
@@ -21,8 +20,11 @@ const FileInput = ({ setFile }) => {
     setIsDragging(false);
     if (e.dataTransfer.files && e.dataTransfer.files[0]) {
       const file = e.dataTransfer.files[0];
-      setFile(file);
-      setFileName(file.name);
+      setFormData((prevState) => ({
+        ...prevState,
+        file: file,
+        fileName: file.name,
+      }));
     }
   };
 
@@ -32,16 +34,20 @@ const FileInput = ({ setFile }) => {
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
-    if (file) {
-      setFile(file);
-      setFileName(file.name);
-    }
+    setFormData((prevState) => ({
+      ...prevState,
+      file: file,
+      fileName: file.name,
+    }));
   };
 
   const handleRemoveFile = (e) => {
     e.stopPropagation();
-    setFile(null);
-    setFileName('');
+    setFormData((prevState) => ({
+      ...prevState,
+      file: null,
+      fileName: '',
+    }));
   };
 
   return (
@@ -53,9 +59,9 @@ const FileInput = ({ setFile }) => {
       onClick={handleClick}
     >
       <p>
-        {fileName ? (
+        {formData.fileName ? (
           <>
-            <span className="file-name">{fileName}</span>
+            <span className="file-name">{formData.fileName}</span>
             <span className="remove-file" onClick={handleRemoveFile}>
               ✖ {/* Peruuta-symboli */}
             </span>

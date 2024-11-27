@@ -1,20 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import InputForm from './components/InputForm.jsx';
-import PerspectiveSelector from './components/PerspectiveSelector.jsx';
 import ResponseDisplay from './components/ResponseDisplay.jsx';
-import GenerateAgents from './components/GenerateAgents.jsx';
 import DialogsBar from './components/DialogsBar.jsx';
 import DialogDisplay from './components/DialogDisplay.jsx';
-import FormatSelector from './components/FormatSelector.jsx';
-import ExamplePrompts from './components/ExamplePrompts.jsx';
 import CommentInput from './components/CommentInput.jsx';
 import PasswordInput from './components/PasswordInput.jsx';
-import FileInput from './components/FileInput.jsx';
 import SummaryToggle from './components/SummaryToggle.jsx';
 import ConfidenceChart from './components/ConfidenceChart.jsx';
 import BiasChart from './components/BiasChart.jsx';
 import Button from './components/common/Button.jsx';
 import ToggleButton from './components/common/ToggleButton.jsx';
+import MultiStepForm from './components/MultiStepForm.jsx';
 
 import {
   fetchAgents,
@@ -28,21 +23,19 @@ import {
   readFile,
   fetchSummary,
 } from './api.js';
+import FormatStep from './components/FormatStep.jsx';
+import InputStep from './components/InputStep.jsx';
+import AgentStep from './components/AgentStep.jsx';
 
 const App = () => {
-  const [prompt, setPrompt] = useState('');
-  const [selectedPerspectives, setSelectedPerspectives] = useState([]);
-  const [perspectives, setPerspectives] = useState([]);
   const [response, setResponse] = useState('');
   const [dialogs, setDialogs] = useState({});
   const [expandedDialogs, setExpandedDialogs] = useState({});
   const [displayedSession, setDisplayedSession] = useState(0);
-  const [selectedFormat, setSelectedFormat] = useState('');
   const [dialogStarted, setDialogStarted] = useState(false)
   const [summary, setSummary] = useState('');
   const [biases, setBiases] = useState('');
   const [error, setError] = useState("");
-  const [formatOptions, setFormatOptions] = useState([]);
   const [isDialogsBarVisible, setIsDialogsBarVisible] = useState(false);
   const [loading, setLoading] = useState(false);
   const [comment, setComment] = useState('');
@@ -51,10 +44,17 @@ const App = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [chartData, setChartData] = useState({});
   const [showChart, setShowChart] = useState(false);
-  const [file, setFile] = useState(null);
-  const [fileName, setFileName] = useState('');
   const [summaryEnabled, setSummaryEnabled] = useState(false);
-  const [biasData, setBiasData] = useState({})
+  const [biasData, setBiasData] = useState({});
+  const [formData, setFormData] = useState({
+    text: '',
+    file: null,
+    fileName: '',
+    formatOptions: [],
+    selectedFormat: '',
+    agentOptions: [],
+    selectedAgents: []
+  });
 
 
   const handlePasswordSubmit = async () => {
@@ -97,14 +97,15 @@ const App = () => {
     const fetchData = async () => {
       try {
         const agentsData = await fetchAgents();
-        setPerspectives(agentsData);
-
         const dialogsData = await fetchDialogs();
         setDialogs(dialogsData);
-
         const formatsData = await fetchFormats();
-        setFormatOptions(formatsData);
-        setSelectedFormat(formatsData[0]);
+        setFormData((prevState) => ({
+          ...prevState,
+          formatOptions: formatsData,
+          selectedFormat: formatsData[0] || '',
+          agentOptions: agentsData,
+        }));
       } catch (error) {
         console.error('Error fetching data:', error);
       }
@@ -116,11 +117,11 @@ const App = () => {
   }, [isAuthenticated]);
 
   const validateUserInput = () => {
-    if (selectedPerspectives.length === 0) {
+    if (formData.selectedAgents.length === 0) {
       setError('Please select at least one perspective.');
       return false;
     }
-    if (prompt === '' && !file) {
+    if (formData.text === '' && !formData.file) {
       setError('Please enter a statement.');
       return false;
     }
@@ -183,9 +184,9 @@ const App = () => {
 
   const handleSubmit = async () => {
     setLoading(true)
-    let promptContent = prompt;
-    if (file) {
-      const data = await readFile(file);
+    let promptContent = formData.text;
+    if (formData.file) {
+      const data = await readFile(formData.file);
       promptContent = data.response;
     }
     if (!validateUserInput()) {
@@ -196,8 +197,8 @@ const App = () => {
     setSummary('');
     const requestData = {
       prompt: promptContent,
-      perspective: selectedPerspectives,
-      format: selectedFormat,
+      perspective: formData.selectedAgents,
+      format: formData.selectedFormat,
       summaryEnabled,
     };
 
@@ -226,27 +227,30 @@ const App = () => {
       console.error('Error processing the statement:', error);
     }
     setLoading(false);
-    setPrompt('');
+    setFormData((prevState) => ({
+      ...prevState,
+      text: '',
+    }))
   };
 
   const handleGenerateAgents = async (numAgents) => {
     setLoading(true);
-    if (prompt === '' && !file) {
+    if (formData.text === '' && !formData.file) {
       setError('Please enter a statement.');
       setLoading(false);
       return false;
     }
-    let promptContent = prompt;
-    if (file) {
+    let promptContent = formData.text;
+    if (formData.file) {
       const allowedExtensions = [".txt", ".pdf", ".docx", ".odt"];
-      const fileExtension = file.name.slice(file.name.lastIndexOf(".")).toLowerCase();
+      const fileExtension = formData.fileName.slice(formData.fileName.lastIndexOf(".")).toLowerCase();
 
       if (!allowedExtensions.includes(fileExtension)) {
         setError("Invalid file type");
         console.error("Invalid file type");
         return;
       }
-      promptContent = await readFile(file);
+      promptContent = await readFile(formData.file);
     }
     const requestData = {
       prompt: promptContent,
@@ -256,7 +260,10 @@ const App = () => {
     try {
       const data = await generateAgents(requestData);
       if (data.perspectives) {
-        setPerspectives(data.perspectives);
+        setFormData((prevState) => ({
+          ...prevState,
+          agentOptions: data.perspectives
+        }))
       }
     } catch (error) {
       console.error('Error generating agents:', error);
@@ -295,11 +302,14 @@ const App = () => {
     setDialogStarted(false);
     setDisplayedSession(0);
     setResponse("");
-    setSelectedPerspectives([]);
-    setSelectedFormat(formatOptions[0]);
-    setPrompt('');
-    setFile(null);
-    setFileName('');
+    setFormData({
+      ...formData,
+      text: '',
+      file: null,
+      fileName: '',
+      selectedFormat: formData.formatOptions[0],
+      selectedAgents: []
+    });
   };
 
   const handleSummaryClick = async () => {
@@ -355,45 +365,15 @@ const App = () => {
           </div>
 
           <div className={`main-content ${isDialogsBarVisible ? 'main-content-shift' : ''}`}>
-
-            {!dialogStarted && (
-              <>
-                <ExamplePrompts setPrompt={setPrompt} />
-                <InputForm prompt={prompt} setPrompt={setPrompt} />
-              </>
-            )}
-
-
-            {!dialogStarted && (
-              <div className="file-drop-container">
-                <FileInput setFile={setFile} />
-              </div>
-            )}
-
+            {!dialogStarted && <MultiStepForm onGenerate={handleGenerateAgents} onSubmit={handleSubmit} formData={formData} setFormData={setFormData} />}
             {/* centered-column alkaa tästä */}
             <div className="centered-column">
               {!dialogStarted && (
                 <>
-                  <div className="generate-agents-container">
-                    <GenerateAgents
-                      perspectives={perspectives}
-                      setPerspectives={setPerspectives}
-                      onSubmit={handleGenerateAgents}
-                    />
-                  </div>
-
-                  <PerspectiveSelector
-                    perspectives={perspectives}
-                    selectedPerspectives={selectedPerspectives}
-                    setSelectedPerspectives={setSelectedPerspectives}
-                    setPerspectives={setPerspectives}
-                  />
                   <SummaryToggle
                     summaryEnabled={summaryEnabled}
                     setSummaryEnabled={setSummaryEnabled}
                   />
-                  <FormatSelector formatOptions={formatOptions} setSelectedFormat={setSelectedFormat} />
-                  <Button text="Submit" onClick={handleSubmit} />
                   {loading ? (
                     <div className="spinner-container">
                       <div className="spinner"></div>
@@ -414,7 +394,7 @@ const App = () => {
                   ) : null}
                   {dialogStarted && (
                     <>
-                      {showChart && <ConfidenceChart data={chartData} agents={selectedPerspectives} />}
+                      {showChart && <ConfidenceChart data={chartData} agents={formData.selectedAgents} />}
                       <ToggleButton text1="Hide Chart" text2="Show Chart" condition={showChart} onClick={toggleChart} />
                       <CommentInput comment={comment} setComment={setComment} showInput={showInput} setShowInput={setShowInput} />
                       <div className='button-group'>

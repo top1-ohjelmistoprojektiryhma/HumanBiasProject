@@ -1,18 +1,21 @@
 import React, { useState } from 'react';
 import Button from './common/Button'
 
-const GenerateAgents = ({ onSubmit, perspectives, setPerspectives }) => {
+const GenerateAgents = ({ onGenerate, formData, setFormData }) => {
   const [numAgents, setNumAgents] = useState(3);
   const [perspective, setPerspective] = useState('');
 
   const handleSubmit = () => {
-    onSubmit(numAgents); // Pass the number of agents to the parent component
+    onGenerate(numAgents); // Pass the number of agents to the parent component
   };
 
   const handleAddPerspective = async () => {
     if (perspective.trim() === '') return;
-    setPerspectives([...perspectives, perspective]);
-
+    let newAgents = [...formData.agentOptions, perspective]
+    setFormData((prevState) => ({
+      ...prevState,
+      agentOptions: newAgents,
+    }))
     try {
       const response = await fetch('/api/add-perspective', {
         method: 'POST',
@@ -22,8 +25,6 @@ const GenerateAgents = ({ onSubmit, perspectives, setPerspectives }) => {
         body: JSON.stringify({ perspective: perspective })
       });
       const result = await response.json();
-      console.log('Added perspective:', result);
-
       setPerspective('');
     } catch (error) {
       console.error('Error adding perspective:', error);
