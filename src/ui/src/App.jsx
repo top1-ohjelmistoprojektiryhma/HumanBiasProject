@@ -1,20 +1,20 @@
 import React, { useState, useEffect } from 'react';
-import InputForm from './components/InputForm';
-import PerspectiveSelector from './components/PerspectiveSelector';
-import ResponseDisplay from './components/ResponseDisplay';
-import GenerateAgents from './components/GenerateAgents';
-import DialogsBar from './components/DialogsBar';
-import DialogDisplay from './components/DialogDisplay';
-import FormatSelector from './components/FormatSelector';
-import ExamplePrompts from './components/ExamplePrompts';
-import CommentInput from './components/CommentInput';
-import PasswordInput from './components/PasswordInput';
-import ConfidenceChart from './components/ConfidenceChart';
-import FileInput from './components/FileInput';
-import SummaryToggle from './components/SummaryToggle';
-import BiasChart from './components/BiasChart';
-import Button from './components/common/Button';
-import ToggleButton from './components/common/ToggleButton';
+import InputForm from './components/InputForm.jsx';
+import PerspectiveSelector from './components/PerspectiveSelector.jsx';
+import ResponseDisplay from './components/ResponseDisplay.jsx';
+import GenerateAgents from './components/GenerateAgents.jsx';
+import DialogsBar from './components/DialogsBar.jsx';
+import DialogDisplay from './components/DialogDisplay.jsx';
+import FormatSelector from './components/FormatSelector.jsx';
+import ExamplePrompts from './components/ExamplePrompts.jsx';
+import CommentInput from './components/CommentInput.jsx';
+import PasswordInput from './components/PasswordInput.jsx';
+import FileInput from './components/FileInput.jsx';
+import SummaryToggle from './components/SummaryToggle.jsx';
+import ConfidenceChart from './components/ConfidenceChart.jsx';
+import BiasChart from './components/BiasChart.jsx';
+import Button from './components/common/Button.jsx';
+import ToggleButton from './components/common/ToggleButton.jsx';
 
 import {
   fetchAgents,
@@ -27,7 +27,7 @@ import {
   checkIfAuthenticated,
   readFile,
   fetchSummary,
-} from './api';
+} from './api.js';
 
 const App = () => {
   const [prompt, setPrompt] = useState('');

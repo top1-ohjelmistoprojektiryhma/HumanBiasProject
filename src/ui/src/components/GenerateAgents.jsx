@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
+import Button from './common/Button'
 
 const GenerateAgents = ({ onSubmit, perspectives, setPerspectives }) => {
-  const [numAgents, setNumAgents] = useState(3); // Default to 3 agents
+  const [numAgents, setNumAgents] = useState(3);
   const [perspective, setPerspective] = useState('');
 
   const handleSubmit = () => {
@@ -10,8 +11,6 @@ const GenerateAgents = ({ onSubmit, perspectives, setPerspectives }) => {
 
   const handleAddPerspective = async () => {
     if (perspective.trim() === '') return;
-
-    // Lisää uusi perspektiivi paikalliseen tilaan
     setPerspectives([...perspectives, perspective]);
 
     try {
@@ -25,7 +24,7 @@ const GenerateAgents = ({ onSubmit, perspectives, setPerspectives }) => {
       const result = await response.json();
       console.log('Added perspective:', result);
 
-      setPerspective(''); // Clear the input field after adding the perspective
+      setPerspective('');
     } catch (error) {
       console.error('Error adding perspective:', error);
     }
@@ -46,13 +45,7 @@ const GenerateAgents = ({ onSubmit, perspectives, setPerspectives }) => {
           </option>
         ))}
       </select>
-
-      {/* Button for generating agents */}
-      <button onClick={handleSubmit} className="generate-button">
-        Generate Agents
-      </button>
-
-      {/* Input field for adding new perspective */}
+      <Button text="Generate Agents" onClick={handleSubmit} />
       <input
         type="text"
         value={perspective}
@@ -60,11 +53,7 @@ const GenerateAgents = ({ onSubmit, perspectives, setPerspectives }) => {
         placeholder="Enter a new perspective"
         className="add-perspective-form"
       />
-
-      {/* Button to add the new perspective */}
-      <button onClick={handleAddPerspective} className="add-perspective-button">
-        Add Perspective
-      </button>
+      <Button text="Add Perspective" onClick={handleAddPerspective} />
     </div>
   );
 };
