@@ -6,15 +6,12 @@ import AgentStep from "./AgentStep";
 const MultiStepForm = ({ onGenerate, onSubmit, formData, setFormData }) => {
     const [currentStep, setCurrentStep] = useState(1);
 
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        setFormData({
-            ...formData,
-            [name]: value,
-        });
+    const nextStep = () => {
+        if (currentStep === 1) {
+            onGenerate(3, true);
+        }
+        setCurrentStep((prev) => prev + 1);
     };
-
-    const nextStep = () => setCurrentStep((prev) => prev + 1);
     const prevStep = () => setCurrentStep((prev) => prev - 1);
 
     const renderStep = () => {

@@ -233,8 +233,8 @@ const App = () => {
     }))
   };
 
-  const handleGenerateAgents = async (numAgents) => {
-    setLoading(true);
+  const handleGenerateAgents = async (numAgents, firstAgents = false) => {
+    firstAgents ? null : setLoading(true);
     if (formData.text === '' && !formData.file) {
       setError('Please enter a statement.');
       setLoading(false);
