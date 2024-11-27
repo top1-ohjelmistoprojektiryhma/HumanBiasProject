@@ -1,15 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import InputForm from './components/InputForm';
 import PerspectiveSelector from './components/PerspectiveSelector';
-import SubmitButton from './components/SubmitButton';
 import ResponseDisplay from './components/ResponseDisplay';
 import GenerateAgents from './components/GenerateAgents';
 import DialogsBar from './components/DialogsBar';
 import DialogDisplay from './components/DialogDisplay';
 import FormatSelector from './components/FormatSelector';
-import ContinueButton from './components/ContinueButton';
-import StopButton from './components/StopButton';
-import SummaryButton from './components/SummaryButton';
 import ExamplePrompts from './components/ExamplePrompts';
 import CommentInput from './components/CommentInput';
 import PasswordInput from './components/PasswordInput';
@@ -17,7 +13,8 @@ import ConfidenceChart from './components/ConfidenceChart';
 import FileInput from './components/FileInput';
 import SummaryToggle from './components/SummaryToggle';
 import BiasChart from './components/BiasChart';
-
+import Button from './components/common/Button';
+import ToggleButton from './components/common/ToggleButton';
 
 import {
   fetchAgents,
@@ -46,12 +43,12 @@ const App = () => {
   const [biases, setBiases] = useState('');
   const [error, setError] = useState("");
   const [formatOptions, setFormatOptions] = useState([]);
-  const [isDialogsBarVisible, setIsDialogsBarVisible] = useState(false); // New state for visibility
+  const [isDialogsBarVisible, setIsDialogsBarVisible] = useState(false);
   const [loading, setLoading] = useState(false);
   const [comment, setComment] = useState('');
   const [showInput, setShowInput] = useState(false);
-  const [password, setPassword] = useState(''); // New state for password
-  const [isAuthenticated, setIsAuthenticated] = useState(false); // New state for authentication
+  const [password, setPassword] = useState('');
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [chartData, setChartData] = useState({});
   const [showChart, setShowChart] = useState(false);
   const [file, setFile] = useState(null);
@@ -340,7 +337,7 @@ const App = () => {
             password={password}
             setPassword={setPassword}
           />
-          <button className="submit-button" onClick={handlePasswordSubmit}>Submit password</button>
+          <Button text="Submit password" onClick={handlePasswordSubmit} />
           {error && <div className="error-message">{error}</div>}
         </div>
       ) : (
@@ -396,7 +393,7 @@ const App = () => {
                     setSummaryEnabled={setSummaryEnabled}
                   />
                   <FormatSelector formatOptions={formatOptions} setSelectedFormat={setSelectedFormat} />
-                  <SubmitButton onSubmit={handleSubmit} />
+                  <Button text="Submit" onClick={handleSubmit} />
                   {loading ? (
                     <div className="spinner-container">
                       <div className="spinner"></div>
@@ -418,14 +415,12 @@ const App = () => {
                   {dialogStarted && (
                     <>
                       {showChart && <ConfidenceChart data={chartData} agents={selectedPerspectives} />}
-                      <button onClick={toggleChart}>
-                        {showChart ? "Hide Chart" : "Show Chart"}
-                      </button>
+                      <ToggleButton text1="Hide Chart" text2="Show Chart" condition={showChart} onClick={toggleChart} />
                       <CommentInput comment={comment} setComment={setComment} showInput={showInput} setShowInput={setShowInput} />
                       <div className='button-group'>
-                        <ContinueButton onSubmit={handleContinue} />
-                        <StopButton onSubmit={handleStop} />
-                        <SummaryButton onClick={handleSummaryClick} />
+                        <Button text="Continue" onClick={handleContinue} />
+                        <Button text="Stop" onClick={handleStop} />
+                        <Button text="Show Summary" onClick={handleSummaryClick} />
                         {summary && (
                           <div className="summary-section">
                             <BiasChart data={biasData} />
