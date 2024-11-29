@@ -28,18 +28,27 @@ const MultiStepForm = ({ onGenerate, onSubmit, formData, setFormData }) => {
     };
 
     return (
-        <div>
+        <div className="content-container">
             {renderStep()}
-            <div>
-                {currentStep > 1 && <button onClick={prevStep}>Back</button>}
+            <div className="button-container">
+                {currentStep > 1 && (
+                    <button className="back-btn" onClick={prevStep}>
+                        Back
+                    </button>
+                )}
                 {currentStep < 3 ? (
-                    <button onClick={nextStep}>Next</button>
+                    <button className="next-btn" onClick={nextStep}>
+                        Next
+                    </button>
                 ) : (
-                    <button onClick={onSubmit}>Submit</button>
+                    <button className="next-btn" onClick={onSubmit}>
+                        Submit
+                    </button>
                 )}
             </div>
         </div>
     );
+    
 };
 
 export default MultiStepForm;

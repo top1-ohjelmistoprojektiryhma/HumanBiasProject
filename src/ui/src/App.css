@@ -664,6 +664,44 @@ input[type="text"] {
   box-shadow: 0 0 5px #007bff; /* Highlight for focus state */
 }
 
+/* Back-napin tyyli */
+.back-btn {
+  background-color: #ccc;
+  color: #333;
+  margin-right: 10px;
+}
+
+.back-btn:hover {
+  background-color: #bbb;
+}
+
+/* Next-napin tyyli */
+.next-btn {
+  background-color: #007bff;
+  color: white;
+  justify-content: center;
+  align-items: center;
+}
+
+.next-btn:hover {
+  background-color: #0056b3;
+}
+
+.button-container {
+  display: flex;
+  justify-content: center; /* Keskittää napit vaakasuunnassa */
+  align-items: center; /* Keskittää napit pystysuunnassa */
+  height: 100px; /* Varmistaa tarpeeksi korkean tilan */
+}
+
+.content-container {
+  display: flex;
+  flex-direction: column; /* Varmistaa, että sisältö ja napit ovat pinottuina pystysuunnassa */
+  justify-content: center; /* Keskittää sisällön pystysuunnassa */
+  align-items: center; /* Keskittää sisällön vaakasuunnassa */
+  height: 100vh; /* Varmistaa, että koko näkymäkorkeus käytetään */
+  margin: 0; /* Poistaa ylimääräiset marginaalit */
+}
 
 
 
