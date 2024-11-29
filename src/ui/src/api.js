@@ -113,3 +113,22 @@ export const fetchSummary = async () => {
     }
     return response.json();
 };
+
+export const fetchPromptSummary = async (prompt) => {
+    try {
+        const response = await fetch(`${BASE_URL}/api/prompt-summary`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ prompt }),
+        });
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return response.json();
+    } catch (error) {
+        console.error("Error in getPromptSummary:", error);
+        throw new Error("Failed to fetch summary. Please try again later.");
+    }
+};

@@ -224,3 +224,20 @@ def initialize_routes(
             return error_response, status_code
         file_content = service_handler.read_file(file)
         return jsonify({"response": file_content})
+
+    @app.route("/api/prompt-summary", methods=["POST"])
+    def prompt_summary():
+        service_handler, error_response, status_code = get_service_handler()
+        if error_response:
+            return error_response, status_code
+
+        data = request.get_json()
+        if not data or "prompt" not in data:
+            return jsonify({"error": "Invalid request, 'prompt' is required"}), 400
+
+        try:
+            prompt = data["prompt"]
+            summary = service_handler.get_summarised_text(prompt, 500)
+            return jsonify({"response": summary})
+        except Exception as e:
+            return jsonify({"error": f"Internal Server Error: {str(e)}"}), 500

@@ -22,6 +22,7 @@ import {
   checkIfAuthenticated,
   readFile,
   fetchSummary,
+  fetchPromptSummary,
 } from './api.js';
 import FormatStep from './components/FormatStep.jsx';
 import InputStep from './components/InputStep.jsx';
@@ -50,6 +51,7 @@ const App = () => {
     text: '',
     file: null,
     fileName: '',
+    promptSummary: '',
     formatOptions: [],
     selectedFormat: '',
     agentOptions: [],
@@ -182,6 +184,41 @@ const App = () => {
     return scores;
   };
 
+  const getPromptSummary = async () => {
+    let promptContent = formData.text;
+    if (formData.file) {
+      const allowedExtensions = [".txt", ".pdf", ".docx", ".odt"];
+      const fileExtension = formData.fileName.slice(formData.fileName.lastIndexOf(".")).toLowerCase();
+
+      if (!allowedExtensions.includes(fileExtension)) {
+        setError("Invalid file type");
+        console.error("Invalid file type");
+        return;
+      }
+      const data = await readFile(formData.file);
+      promptContent = data.response;
+    }
+
+    const requestData = {
+      prompt: promptContent,
+    };
+
+    let summarizedPrompt;
+
+    try {
+      summarizedPrompt = await fetchPromptSummary(promptContent);
+    } catch (error) {
+      console.error('Error processing the statement:', error);
+    }
+    summarizedPrompt = summarizedPrompt.response
+    setFormData((prevState) => ({
+      ...prevState,
+      promptSummary: summarizedPrompt
+    }))
+  };
+
+
+
   const handleSubmit = async () => {
     setLoading(true)
     let promptContent = formData.text;
@@ -235,23 +272,13 @@ const App = () => {
 
   const handleGenerateAgents = async (numAgents, firstAgents = false) => {
     firstAgents ? null : setLoading(true);
-    if (formData.text === '' && !formData.file) {
+    if (formData.summary === '') {
       setError('Please enter a statement.');
       setLoading(false);
       return false;
     }
-    let promptContent = formData.text;
-    if (formData.file) {
-      const allowedExtensions = [".txt", ".pdf", ".docx", ".odt"];
-      const fileExtension = formData.fileName.slice(formData.fileName.lastIndexOf(".")).toLowerCase();
+    let promptContent = formData.promptSummary;
 
-      if (!allowedExtensions.includes(fileExtension)) {
-        setError("Invalid file type");
-        console.error("Invalid file type");
-        return;
-      }
-      promptContent = await readFile(formData.file);
-    }
     const requestData = {
       prompt: promptContent,
       num_agents: numAgents,
@@ -365,7 +392,7 @@ const App = () => {
           </div>
 
           <div className={`main-content ${isDialogsBarVisible ? 'main-content-shift' : ''}`}>
-            {!dialogStarted && <MultiStepForm onGenerate={handleGenerateAgents} onSubmit={handleSubmit} formData={formData} setFormData={setFormData} />}
+            {!dialogStarted && <MultiStepForm getPromptSummary={getPromptSummary} onGenerateAgents={handleGenerateAgents} onSubmit={handleSubmit} formData={formData} setFormData={setFormData} />}
             {/* centered-column alkaa tästä */}
             <div className="centered-column">
               {!dialogStarted && (

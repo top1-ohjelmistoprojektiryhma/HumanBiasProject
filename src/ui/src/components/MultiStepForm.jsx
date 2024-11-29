@@ -3,12 +3,15 @@ import InputStep from "./InputStep";
 import FormatStep from "./FormatStep";
 import AgentStep from "./AgentStep";
 
-const MultiStepForm = ({ onGenerate, onSubmit, formData, setFormData }) => {
+const MultiStepForm = ({ getPromptSummary, onGenerateAgents, onSubmit, formData, setFormData }) => {
     const [currentStep, setCurrentStep] = useState(1);
 
     const nextStep = () => {
         if (currentStep === 1) {
-            onGenerate(3, true);
+            getPromptSummary();
+        }
+        if (formData.agentOptions.length === 0) {
+            onGenerateAgents(3, true)
         }
         setCurrentStep((prev) => prev + 1);
     };
@@ -21,7 +24,7 @@ const MultiStepForm = ({ onGenerate, onSubmit, formData, setFormData }) => {
             case 2:
                 return <FormatStep formData={formData} setFormData={setFormData} />;
             case 3:
-                return <AgentStep onGenerate={onGenerate} formData={formData} setFormData={setFormData} />;
+                return <AgentStep onGenerate={onGenerateAgents} formData={formData} setFormData={setFormData} />;
             default:
                 return <InputStep formData={formData} setFormData={setFormData} />;
         }
@@ -48,7 +51,7 @@ const MultiStepForm = ({ onGenerate, onSubmit, formData, setFormData }) => {
             </div>
         </div>
     );
-    
+
 };
 
 export default MultiStepForm;
