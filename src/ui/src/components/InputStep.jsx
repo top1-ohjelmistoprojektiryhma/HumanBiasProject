@@ -4,7 +4,7 @@ import FileInput from './FileInput';
 
 const InputStep = ({ formData, setFormData }) => {
     return (
-        <div>
+        <div className='input-step'>
             <InputForm formData={formData} setFormData={setFormData} />
             <div className="file-drop-container">
                 <FileInput formData={formData} setFormData={setFormData} />

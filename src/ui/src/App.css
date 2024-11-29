@@ -52,7 +52,12 @@ select {
   box-shadow: inset 5px 5px 10px #0d141f, inset -5px -5px 10px #172036;
 }
 
+.input-step {
+  width: 100%;
+}
+
 .input-form-container {
+  width: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -71,8 +76,10 @@ select {
   font-size: 16px;
   border: none;
   box-shadow: inset 5px 5px 10px #0d141f, inset -5px -5px 10px #172036;
-  overflow-y: hidden; /* Hide vertical scrollbar */
-  resize: none; /* Prevent manual resizing */
+  overflow-y: hidden;
+  /* Hide vertical scrollbar */
+  resize: none;
+  /* Prevent manual resizing */
   font: inherit;
 }
 
@@ -548,7 +555,8 @@ input[type="text"] {
   width: 24px;
   height: 24px;
   margin-right: 8px;
-  filter: invert(1); /* Muuttaa mustan valkoiseksi */
+  filter: invert(1);
+  /* Muuttaa mustan valkoiseksi */
   vertical-align: middle;
 }
 
@@ -562,9 +570,11 @@ input[type="text"] {
 
 
 .drop-zone {
-  width: 100%; /* Täyttää parent divin leveyden */
+  width: 100%;
+  /* Täyttää parent divin leveyden */
   max-width: 400px;
-  height: 100%; /* Täyttää parent divin korkeuden */
+  height: 100%;
+  /* Täyttää parent divin korkeuden */
   border: 1px dashed #bdcff2;
   border-radius: 25px;
   padding: 20px;
@@ -572,23 +582,26 @@ input[type="text"] {
   cursor: pointer;
   transition: background-color 0.3s;
   box-sizing: border-box;
-  
+
   /* Keskittää .file-drop-containerin */
   display: flex;
   align-items: center;
   justify-content: center;
 
-  overflow: hidden; /* Estää sisältöä ylittämästä säilöä */
+  overflow: hidden;
+  /* Estää sisältöä ylittämästä säilöä */
 
   background-color: #01040C;
-  box-shadow: inset 0 4px 8px rgba(0, 0, 0, 0.6), /* Syvennysvarjo */
-              0 2px 4px rgba(0, 0, 0, 0.5); /* Ulkopuolinen varjo */
+  box-shadow: inset 0 4px 8px rgba(0, 0, 0, 0.6),
+    /* Syvennysvarjo */
+    0 2px 4px rgba(0, 0, 0, 0.5);
+  /* Ulkopuolinen varjo */
 }
 
 .drop-zone.drag-over {
   background-color: #1A1F2E;
   border-color: #B7C0D0;
-  box-shadow: inset 0 4px 8px rgba(0, 0, 0, 0.8); 
+  box-shadow: inset 0 4px 8px rgba(0, 0, 0, 0.8);
 }
 
 .drop-zone p {
@@ -602,16 +615,20 @@ input[type="text"] {
 }
 
 .file-input-hidden {
-  display: none; /* Piilottaa input-elementin */
+  display: none;
+  /* Piilottaa input-elementin */
 }
 
 .file-name {
-  margin-right: 10px; /* Tilaa tiedoston nimen ja poista-symbolin väliin */
+  margin-right: 10px;
+  /* Tilaa tiedoston nimen ja poista-symbolin väliin */
   display: inline-block;
-  max-width: 200px; /* Maksimileveys tiedoston nimelle */
+  max-width: 200px;
+  /* Maksimileveys tiedoston nimelle */
   white-space: nowrap;
   overflow: hidden;
-  text-overflow: ellipsis; /* Näyttää ... nimen keskellä */
+  text-overflow: ellipsis;
+  /* Näyttää ... nimen keskellä */
   vertical-align: middle;
   color: #ffffff;
   font-size: 16px;
@@ -619,7 +636,8 @@ input[type="text"] {
 
 .remove-file {
   cursor: pointer;
-  color: #d9534f; /* Korostusväri */
+  color: #d9534f;
+  /* Korostusväri */
   font-weight: bold;
   transition: color 0.3s;
 }
@@ -634,7 +652,8 @@ input[type="text"] {
   margin: 10px 0;
   font-family: 'Roboto', sans-serif;
   font-size: 14px;
-  color: #ffffff; /* Bright text for dark background */
+  color: #ffffff;
+  /* Bright text for dark background */
 }
 
 .summary-toggle label {
@@ -648,20 +667,25 @@ input[type="text"] {
   width: 20px;
   height: 20px;
   cursor: pointer;
-  accent-color: #007bff; /* Light blue toggle to match dark theme */
-  background-color: #121212; /* Dark background for checkbox */
-  border: 2px solid #ffffff; /* Visible border in dark mode */
+  accent-color: #007bff;
+  /* Light blue toggle to match dark theme */
+  background-color: #121212;
+  /* Dark background for checkbox */
+  border: 2px solid #ffffff;
+  /* Visible border in dark mode */
   border-radius: 4px;
 }
 
 .summary-toggle input[type="checkbox"]:checked {
-  accent-color: #28a745; /* Bright green for the checked state */
+  accent-color: #28a745;
+  /* Bright green for the checked state */
   border-color: #28a745;
 }
 
 .summary-toggle input[type="checkbox"]:focus {
   outline: none;
-  box-shadow: 0 0 5px #007bff; /* Highlight for focus state */
+  box-shadow: 0 0 5px #007bff;
+  /* Highlight for focus state */
 }
 
 /* Back-napin tyyli */
@@ -689,18 +713,26 @@ input[type="text"] {
 
 .button-container {
   display: flex;
-  justify-content: center; /* Keskittää napit vaakasuunnassa */
-  align-items: center; /* Keskittää napit pystysuunnassa */
-  height: 100px; /* Varmistaa tarpeeksi korkean tilan */
+  justify-content: center;
+  /* Keskittää napit vaakasuunnassa */
+  align-items: center;
+  /* Keskittää napit pystysuunnassa */
+  height: 100px;
+  /* Varmistaa tarpeeksi korkean tilan */
 }
 
 .content-container {
   display: flex;
-  flex-direction: column; /* Varmistaa, että sisältö ja napit ovat pinottuina pystysuunnassa */
-  justify-content: center; /* Keskittää sisällön pystysuunnassa */
-  align-items: center; /* Keskittää sisällön vaakasuunnassa */
-  height: 100vh; /* Varmistaa, että koko näkymäkorkeus käytetään */
-  margin: 0; /* Poistaa ylimääräiset marginaalit */
+  flex-direction: column;
+  /* Varmistaa, että sisältö ja napit ovat pinottuina pystysuunnassa */
+  justify-content: center;
+  /* Keskittää sisällön pystysuunnassa */
+  align-items: center;
+  /* Keskittää sisällön vaakasuunnassa */
+  height: 100vh;
+  /* Varmistaa, että koko näkymäkorkeus käytetään */
+  margin: 0;
+  /* Poistaa ylimääräiset marginaalit */
 }
 
 
@@ -731,11 +763,12 @@ input[type="text"] {
     transform: translateX(-100%);
     transition: transform 0.3s ease;
     z-index: 1000;
-    width: 80vw; /* Määrittää leveyden suhteessa näkymään */
+    width: 80vw;
+    /* Määrittää leveyden suhteessa näkymään */
     padding-top: 60px;
     padding-left: 10px;
   }
-  
+
 
   .dialogs-bar-open .dialogs-bar {
     transform: translateX(0);
