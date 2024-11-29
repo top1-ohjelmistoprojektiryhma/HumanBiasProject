@@ -1,17 +1,63 @@
+:root {
+  --background: #01040C;
+  --text: #B7C0D0;
+  --text-light: #ffffff;
+  --text-dark: #01040C;
+  --lines: #B7C0D0;
+  --colored-lines: #3d72de;
+  --input-background: #131B2C;
+  --light-button: #B7C0D0;
+  --colored-button: #3d72de;
+  --colored-button-hover: #335ebb;
+}
+
+/*common styles*/
+
 body {
   font-family: 'Istok Web', sans-serif;
   margin: 0;
-  background-color: #01040C;
-  color: #ffffff;
+  background-color: var(--background);
+  color: var(--text);
   white-space: pre-line;
   height: 100vh;
   overflow-x: hidden;
 }
 
 h1 {
-  color: #fff;
+  color: var(--text);
   font-size: 24px;
 }
+
+button {
+  background-color: var(--colored-button);
+  color: var(--text-light);
+  margin: 10px;
+  border-radius: 8px;
+  padding: 10px;
+  border: none;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: var(--colored-button-hover);
+}
+
+input {
+  border-radius: 30px;
+  padding: 14px;
+  border: none;
+  font-size: 16px;
+  background-color: var(--input-background);
+  color: var(--text);
+  box-shadow: inset 5px 5px 10px var(--shadow), inset -5px -5px 10px var(--shadow);
+}
+
+input::placeholder {
+  color: var(--text);
+}
+
+/*main containers*/
 
 .app-container {
   display: flex;
@@ -28,187 +74,40 @@ h1 {
   align-items: flex-start;
 }
 
-input,
-select,
-button {
-  margin: 10px 0;
-  border-radius: 8px;
-  padding: 10px;
-  border: none;
-  font-size: 16px;
-}
-
-input,
-select {
-  background-color: #131B2C;
-  color: #ffffff;
-  border-radius: 30px;
-  height: 35px;
-  padding: 10px;
-  padding-left: 30px;
-  padding-right: 30px;
-  border: none;
-  font-size: 16px;
-  box-shadow: inset 5px 5px 10px #0d141f, inset -5px -5px 10px #172036;
-}
-
-.input-step {
-  width: 100%;
-  margin: 30px;
-}
-
-/* src/styles.css */
-/* src/styles.css */
-
-/* Input-form-container-tyyli */
-.input-form-container {
-  position: relative;
-  /* Mahdollistaa upload-kuvakkeen ja tiedostonimen absolute sijoittelun */
-  width: 100%;
-  max-width: 600px;
-  margin: 20px auto;
-  /* Keskittää kontainerin */
-}
-
-/* Textarea-tyyli */
-.input-form {
-  width: 100%;
-  padding: 17px 50px 17px 25px;
-  /* Lisää tilaa oikealle upload-kuvakkeelle ja tiedostonimelle */
-  border-radius: 25px;
-  background-color: #131B2C;
-  color: white;
-  font-size: 16px;
-  border: none;
-  box-shadow: inset 5px 5px 10px #0d141f, inset -5px -5px 10px #172036;
-  overflow-y: hidden;
-  resize: none;
-  font: inherit;
-  box-sizing: border-box;
-  /* Sisällyttää paddingin leveyteen */
-}
-
-/* Upload-kuvake */
-.upload-icon {
-  position: absolute;
-  right: 15px;
-  /* Sijoittaa kuvakkeen tekstikentän oikeaan reunaan */
-  top: 50%;
-  transform: translateY(-50%);
-  width: 24px;
-  height: 24px;
-  cursor: pointer;
-  opacity: 0.7;
-  transition: opacity 0.3s ease;
-  filter: invert(1);
-}
-
-.upload-icon:hover {
-  opacity: 1;
-}
-
-/* Piilotettu tiedostonvalitsin */
-.file-input-hidden {
-  display: none;
-}
-
-/* Tiedoston nimen tyylit */
-.file-name-overlay {
-  position: absolute;
-  right: 50px;
-  /* Sijoittaa tiedostonimen ennen upload-kuvaketta */
-  top: 50%;
-  transform: translateY(-50%);
-  background-color: rgba(19, 27, 44, 0.8);
-  /* Tausta näkyväksi, mutta läpinäkyvä */
-  color: #ffffff;
-  padding: 5px 10px;
-  border-radius: 12px;
-  font-size: 14px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  max-width: 200px;
-  pointer-events: none;
-  /* Estää tiedostonimen klikkaamisen */
-}
-
-/* Responsiiviset tyylit */
-@media (max-width: 768px) {
-  .input-form-container {
-    max-width: 100%;
-    padding: 0 10px;
-  }
-
-  .upload-icon {
-    width: 20px;
-    height: 20px;
-    right: 10px;
-  }
-
-  .input-form {
-    padding: 15px 40px 15px 20px;
-    /* Säädä paddingia mobiililaitteille */
-  }
-
-  .file-name-overlay {
-    right: 40px;
-    /* Sijoittaa tiedostonimen ennen upload-kuvaketta mobiililaitteille */
-    max-width: 150px;
-    font-size: 12px;
-  }
-}
-
-
-
-/* Tiedoston nimen tyyli */
-.file-name {
-  margin-top: 10px;
-  color: #ffffff;
-  font-size: 14px;
-  word-break: break-all;
-  /* Salli rivinvaihto pitkissä tiedostonimissä */
-}
-
-
-textarea::placeholder {
-  color: #B7C0D0;
-}
-
-.password-container {
+.content-container {
   display: flex;
   flex-direction: column;
-  align-items: center;
   justify-content: center;
-  margin-top: 20px;
+  align-items: center;
+  height: 100vh;
 }
 
-.add-perspective-form {
-  width: 200px !important;
+.main-content {
+  flex-grow: 1;
+  transition: transform 0.3s ease;
+  padding: 20px;
+  width: 100%;
+  height: 100vh;
+  margin-left: 0;
+  box-sizing: border-box;
 }
 
-input::placeholder {
-  color: #B7C0D0;
-  opacity: 1;
+.main-content-shift {
+  transform: translateX(350px);
 }
 
-button {
-  background-color: #3d72de;
-  color: white;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
+.main-content-shift {
+  transform: translateX(350px);
 }
 
-button:hover {
-  background-color: #335ebb;
-}
+/*dialogs bar*/
 
 .menu-symbol {
   position: fixed;
   left: 30px;
   top: 20px;
   font-size: 30px;
-  color: white;
+  color: var(--text);
   cursor: pointer;
   z-index: 1000;
 }
@@ -235,7 +134,7 @@ button:hover {
 
 .dialogs-bar h2 {
   font-size: 18px;
-  color: #ffffff;
+  color: var(--text);
 }
 
 .dialogs-bar ul {
@@ -249,136 +148,141 @@ button:hover {
 
 .dialogs-bar li {
   margin-bottom: 5px;
-  color: #9b9bba;
+  color: var(--text);
 }
 
 .dialogs-bar strong {
   cursor: pointer;
-  color: #ffffff;
+  color: var(--text);
 }
 
-.main-content {
-  flex-grow: 1;
-  transition: transform 0.3s ease;
-  padding: 20px;
+/*login*/
+
+.password-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+/*multi step form*/
+
+/*input step*/
+
+.input-step {
   width: 100%;
-  height: 100vh;
-  margin-left: 0;
+}
+
+.input-form-container {
+  position: relative;
+  width: 100%;
+  max-width: 600px;
+  margin: 20px auto;
+}
+
+.input-form {
+  width: 100%;
+  padding: 17px 50px 17px 25px;
+  border-radius: 25px;
+  background-color: var(--input-background);
+  color: var(--text);
+  font-size: 16px;
+  border: none;
+  box-shadow: inset 5px 5px 10px var(--shadow), inset -5px -5px 10px var(--shadow);
+  overflow-y: hidden;
+  resize: none;
+  font: inherit;
   box-sizing: border-box;
 }
 
-.main-content-shift {
-  transform: translateX(350px);
-}
-
-.main-content h1 {
-  margin-bottom: 20px;
-}
-
-.error-message {
-  color: #ff6b6b;
-  font-size: 14px;
-  margin-top: 10px;
-}
-
-.input-container,
-.button-container {
-  margin: 20px 0;
-}
-
-input[type="text"] {
-  width: calc(100% - 20px);
-}
-
-.submit-button {
-  background-color: #3d72de;
-  color: white;
-  padding: 10px 20px;
-  font-size: 16px;
-  border-radius: 8px;
+.upload-icon {
+  position: absolute;
+  right: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 24px;
+  height: 24px;
   cursor: pointer;
+  opacity: 0.7;
+  transition: opacity 0.3s ease;
+  filter: invert(1);
 }
 
-.submit-button:hover {
-  background-color: #2a52b2;
+.upload-icon:hover {
+  opacity: 1;
 }
 
-.continue-button,
-.stop-button {
-  background-color: #2b2b3d;
-  color: #ffffff;
-  padding: 10px;
+.file-input-hidden {
+  display: none;
+}
+
+.file-name-overlay {
+  position: absolute;
+  right: 50px;
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: var(--input-background);
+  color: var(--text);
+  padding: 5px 10px;
+  border-radius: 12px;
   font-size: 14px;
-  border-radius: 8px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 200px;
+  pointer-events: none;
+}
+
+@media (max-width: 768px) {
+  .input-form-container {
+    max-width: 100%;
+    padding: 0 10px;
+  }
+
+  .upload-icon {
+    width: 20px;
+    height: 20px;
+    right: 10px;
+  }
+
+  .input-form {
+    padding: 15px 40px 15px 20px;
+  }
+
+  .file-name-overlay {
+    right: 40px;
+    max-width: 150px;
+    font-size: 12px;
+  }
+}
+
+/*format step*/
+
+.format-selector label {
+  display: flex;
+  align-items: center;
   cursor: pointer;
-  transition: background-color 0.3s ease;
-  margin: 10px;
-}
-
-.generate-button:hover,
-.continue-button:hover,
-.stop-button:hover {
-  background-color: #1e1e2f;
-}
-
-.summary-section {
-  background-color: #23233c;
   padding: 20px;
-  border-radius: 10px;
-  margin-top: 20px;
+  border: 1px solid var(--lines);
+  border-radius: 4px;
 }
 
-.summary-section h2 {
-  color: #ffffff;
+.format-selector label:hover {
+  border-color: #007BFF;
 }
 
-.example-prompts {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 20px;
+.format-selector input[type="radio"] {
+  margin-right: 16px;
+  vertical-align: middle;
+  box-shadow: none;
 }
 
-.example-prompts div {
-  background-color: #01040C;
-  color: #78808f;
-  padding: 30px;
-  border-radius: 25px;
-  text-align: left;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-  width: 110px;
-  height: 90px;
-  border: 1px solid #525864;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: 14px;
-}
-
-.example-prompts div:hover {
-  background-color: #1A1F2E;
-}
-
-
-.consensus-toggle {
-  display: flex;
-  align-items: center;
-  margin-top: 10px;
-}
-
-.consensus-toggle input {
-  margin-left: 10px;
-  cursor: pointer;
-}
-
-.submit-section {
-  margin-top: 20px;
-}
+/*agent step*/
 
 .agent-box {
   background-color: #2b2b3d;
-  color: #ffffff;
+  color: var(--text);
   padding: 10px;
   margin: 5px;
   border-radius: 8px;
@@ -389,8 +293,8 @@ input[type="text"] {
 }
 
 .agent-box.active {
-  background-color: #3d72de;
-  border-color: #ffffff;
+  background-color: var(--colored-lines);
+  border-color: var(--lines);
 }
 
 .agent-box:hover {
@@ -404,13 +308,6 @@ input[type="text"] {
   justify-content: left;
 }
 
-.select-dropdown {
-  padding: 8px;
-  border-radius: 5px;
-  border: 1px solid #ccc;
-  font-size: 16px;
-}
-
 .generate-agents-container {
   display: flex;
   align-items: center;
@@ -418,38 +315,10 @@ input[type="text"] {
 }
 
 .select-dropdown {
-  padding: 8px;
-  border-radius: 5px;
-  border: 1px solid #ccc;
   font-size: 16px;
-}
-
-.generate-button {
-  padding: 10px 15px;
-  border-radius: 5px;
-  background-color: #B7C0D0;
-  color: #01040C;
-  border: none;
-  cursor: pointer;
-  font-size: 16px;
-  border-radius: 30px;
-  height: 50px;
-  padding: 10px;
-  padding-left: 30px;
-  padding-right: 30px;
-  font-weight: bold;
-}
-
-.label {
-  color: #ffffff;
-  font-size: 16px;
-  margin-right: 10px;
-}
-
-.select-dropdown {
   padding: 10px;
   background-color: #2b2b3d;
-  color: #ffffff;
+  color: var(--text);
   border-radius: 8px;
   border: none;
 }
@@ -464,10 +333,10 @@ input[type="text"] {
 }
 
 .agent-box {
-  border: 1px solid #B7C0D0;
+  border: 1px solid var(--lines);
   position: relative;
-  background-color: #01040C;
-  color: #ffffff;
+  background-color: var(--background);
+  color: var(--text);
   margin: 5px;
   border-radius: 8px;
   cursor: pointer;
@@ -484,7 +353,7 @@ input[type="text"] {
 
 .agent-box.active {
   background-color: #131B2C;
-  color: #ffffff;
+  color: var(--text);
   border-color: #6499ff;
 }
 
@@ -511,41 +380,14 @@ input[type="text"] {
 
 .delete-button:hover {
   background-color: #ff4c4c;
-  color: white;
+  color: var(--text);
 }
 
-.format-selector {
-  font-family: Arial, sans-serif;
-}
-
-.format-selector h2 {
-  margin-bottom: 16px;
-  font-size: 1.5em;
-  color: #ffffff;
-}
-
-.format-selector label {
-  display: flex;
-  align-items: center;
-  cursor: pointer;
-  padding: 20px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-}
-
-.format-selector label:hover {
-  border-color: #007BFF;
-}
-
-.format-selector input[type="radio"] {
-  margin-right: 16px;
-  vertical-align: middle;
-  box-shadow: none;
-}
+/*dialog*/
 
 .dialog-container {
   background-color: #0A101C;
-  color: #ffffff;
+  color: var(--text);
   padding: 20px;
   border-radius: 10px;
   margin-bottom: 20px;
@@ -604,20 +446,32 @@ input[type="text"] {
   border: 1px solid #AEB5C0;
 }
 
+/*summary*/
+
+.summary-section {
+  background-color: #23233c;
+  padding: 20px;
+  border-radius: 10px;
+  margin-top: 20px;
+}
+
+.summary-section h2 {
+  color: var(--text);
+}
+
+/*loading spinner*/
+
 .spinner-container {
   display: flex;
   justify-content: center;
   align-items: center;
   width: 100%;
   margin-right: 20%;
-  /* Adjust this value to move the spinner further to the right */
 }
 
 .spinner {
   border: 16px solid #f3f3f3;
-  /* Light grey */
   border-top: 16px solid #3498db;
-  /* Blue */
   border-radius: 50%;
   width: 60px;
   height: 60px;
@@ -634,103 +488,7 @@ input[type="text"] {
   }
 }
 
-.button-group button {
-  margin-right: 10px;
-  /* Lisää marginaalia oikealle */
-}
-
-.button-group button:last-child {
-  margin-right: 0;
-  /* Poista marginaali viimeiseltä painikkeelta */
-}
-
-
-
-.file-drop-container {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 130px;
-  margin: 30px;
-}
-
-
-.drop-zone {
-  width: 100%;
-  /* Täyttää parent divin leveyden */
-  max-width: 400px;
-  height: 100%;
-  /* Täyttää parent divin korkeuden */
-  border: 1px dashed #bdcff2;
-  border-radius: 25px;
-  padding: 20px;
-  text-align: center;
-  cursor: pointer;
-  transition: background-color 0.3s;
-  box-sizing: border-box;
-
-  /* Keskittää .file-drop-containerin */
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  overflow: hidden;
-  /* Estää sisältöä ylittämästä säilöä */
-
-  background-color: #01040C;
-  box-shadow: inset 0 4px 8px rgba(0, 0, 0, 0.6),
-    /* Syvennysvarjo */
-    0 2px 4px rgba(0, 0, 0, 0.5);
-  /* Ulkopuolinen varjo */
-}
-
-.drop-zone.drag-over {
-  background-color: #1A1F2E;
-  border-color: #B7C0D0;
-  box-shadow: inset 0 4px 8px rgba(0, 0, 0, 0.8);
-}
-
-.drop-zone p {
-  margin: 20px;
-  font-size: 13px;
-  color: #B7C0D0;
-}
-
-.file-drop-container-hidden {
-  display: none;
-}
-
-.file-input-hidden {
-  display: none;
-  /* Piilottaa input-elementin */
-}
-
-.file-name {
-  margin-right: 10px;
-  /* Tilaa tiedoston nimen ja poista-symbolin väliin */
-  display: inline-block;
-  max-width: 200px;
-  /* Maksimileveys tiedoston nimelle */
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  /* Näyttää ... nimen keskellä */
-  vertical-align: middle;
-  color: #ffffff;
-  font-size: 16px;
-}
-
-.remove-file {
-  cursor: pointer;
-  color: #d9534f;
-  /* Korostusväri */
-  font-weight: bold;
-  transition: color 0.3s;
-}
-
-.remove-file:hover {
-  color: #c9302c;
-}
+/*improve performance toggle*/
 
 .summary-toggle {
   display: flex;
@@ -752,7 +510,7 @@ input[type="text"] {
   margin-right: 10px;
 }
 
-/* Piilotetaan oletusarvoinen checkbox */
+/* hide default checkbox */
 .toggle-label input[type="checkbox"] {
   opacity: 0;
   width: 0;
@@ -790,58 +548,17 @@ input[type="text"] {
   transform: translateX(26px);
 }
 
-.back-btn {
-  background-color: #ccc;
-  color: #333;
-  margin-right: 10px;
-}
+/*error message*/
 
-.back-btn:hover {
-  background-color: #bbb;
-}
-
-/* Next-napin tyyli */
-.next-btn {
-  background-color: #007bff;
-  color: white;
-  justify-content: center;
-  align-items: center;
-}
-
-.next-btn:hover {
-  background-color: #0056b3;
-}
-
-.button-container {
-  display: flex;
-  justify-content: center;
-  /* Keskittää napit vaakasuunnassa */
-  align-items: center;
-  /* Keskittää napit pystysuunnassa */
-  height: 100px;
-  /* Varmistaa tarpeeksi korkean tilan */
-}
-
-.content-container {
-  display: flex;
-  flex-direction: column;
-  /* Varmistaa, että sisältö ja napit ovat pinottuina pystysuunnassa */
-  justify-content: center;
-  /* Keskittää sisällön pystysuunnassa */
-  align-items: center;
-  /* Keskittää sisällön vaakasuunnassa */
-  height: 100vh;
-  /* Varmistaa, että koko näkymäkorkeus käytetään */
-  margin: 0;
-  /* Poistaa ylimääräiset marginaalit */
+.error-message {
+  color: #ff6b6b;
+  font-size: 14px;
+  margin-top: 10px;
 }
 
 
 
-
-
-
-/* Mobiilinäytöt */
+/* mobile screens */
 @media (max-width: 768px) {
   .app-container {
     flex-direction: column;
@@ -865,7 +582,6 @@ input[type="text"] {
     transition: transform 0.3s ease;
     z-index: 1000;
     width: 80vw;
-    /* Määrittää leveyden suhteessa näkymään */
     padding-top: 60px;
     padding-left: 10px;
   }
@@ -897,20 +613,9 @@ input[type="text"] {
     width: 100%;
   }
 
-  .main-content {
-    padding: 10px;
-    margin-left: 0;
-    width: 100%;
-  }
-
-  .example-prompts {
-    display: none;
-    /* flex-direction: column;
-    gap: 10px;
-    align-items: center; */
-  }
-
   .confidence-chart {
     white-space: pre-line;
   }
+
+
 }
