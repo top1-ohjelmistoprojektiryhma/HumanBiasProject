@@ -1,23 +1,9 @@
 import React, { useState } from 'react';
 
-const DialogsBar = ({ dialogs, expandedDialogs, toggleDialog }) => {
-  const [expandedRounds, setExpandedRounds] = useState({});
+const DialogsBar = ({ dialogs, toggleDialog }) => {
 
   const handleToggleDialog = (dialogId) => {
-    toggleDialog((prevState) => ({
-      ...prevState,
-      [dialogId]: !prevState[dialogId],
-    }));
-  };
-
-  const handleToggleRound = (dialogId, roundId) => {
-    setExpandedRounds((prevState) => ({
-      ...prevState,
-      [dialogId]: {
-        ...prevState[dialogId],
-        [roundId]: !prevState[dialogId]?.[roundId],
-      },
-    }));
+    toggleDialog(dialogId);
   };
 
   return (
@@ -30,37 +16,12 @@ const DialogsBar = ({ dialogs, expandedDialogs, toggleDialog }) => {
           Object.keys(dialogs).map((dialogId) => (
             <li key={dialogId}>
               <strong onClick={() => handleToggleDialog(dialogId)} style={{ cursor: 'pointer' }}>
-                Dialog {dialogId}: {dialogs[dialogId].initial_prompt}
+                Dialog {dialogId}: {dialogs[dialogId].initial_prompt.substring(0, 50)}...
               </strong>
-              {expandedDialogs[dialogId] && (
-                <ul>
-                  {Object.keys(dialogs[dialogId].rounds).map((roundId) => (
-                    <li key={roundId}>
-                      <strong onClick={() => handleToggleRound(dialogId, roundId)} style={{ cursor: 'pointer' }}>
-                        Round {roundId}
-                      </strong>
-
-                      {expandedRounds[dialogId]?.[roundId] && (
-                        <ul>
-                          {dialogs[dialogId].rounds[roundId].map((prompt, index) => (
-                            <li key={index}>
-                              <strong>Agent:</strong> {prompt.agent} <br />
-                              <strong>Model:</strong> {prompt.model} <br />
-                              <strong>Input:</strong> {prompt.input} <br />
-                              <strong>Output:</strong> {prompt.output}
-                            </li>
-                          ))}
-                        </ul>
-                      )}
-                    </li>
-                  ))}
-                </ul>
-              )}
             </li>
-          ))
-        )}
-      </ul>
-    </div>
+          )))}
+      </ul >
+    </div >
   );
 };
 

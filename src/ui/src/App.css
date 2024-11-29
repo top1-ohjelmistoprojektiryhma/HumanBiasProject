@@ -25,7 +25,11 @@ body {
 
 h1 {
   color: var(--text);
-  font-size: 24px;
+  font-size: 30px;
+  text-align: center;
+  position: fixed;
+  left: 100px;
+  top: 0px;
 }
 
 button {
@@ -79,7 +83,7 @@ input::placeholder {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  height: 100vh;
+  height: 60vh;
 }
 
 .main-content {

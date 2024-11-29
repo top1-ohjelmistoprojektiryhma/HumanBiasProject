@@ -29,7 +29,7 @@ const DialogDisplay = ({ dialogId, dialog }) => {
     }));
   };
 
-  const truncateText = (text, maxLength = 1000) => {
+  const truncateText = (text, maxLength = 70) => {
     if (text.length <= maxLength) {
       return text;
     }

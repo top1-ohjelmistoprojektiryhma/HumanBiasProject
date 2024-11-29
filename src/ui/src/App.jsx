@@ -31,8 +31,8 @@ import AgentStep from './components/AgentStep.jsx';
 const App = () => {
   const [response, setResponse] = useState('');
   const [dialogs, setDialogs] = useState({});
-  const [expandedDialogs, setExpandedDialogs] = useState({});
   const [displayedSession, setDisplayedSession] = useState(0);
+  const [openedDialog, setOpenedDialog] = useState(null);
   const [dialogStarted, setDialogStarted] = useState(false)
   const [summary, setSummary] = useState('');
   const [biases, setBiases] = useState('');
@@ -217,8 +217,6 @@ const App = () => {
     }))
   };
 
-
-
   const handleSubmit = async () => {
     setLoading(true)
     let promptContent = formData.text;
@@ -230,7 +228,7 @@ const App = () => {
       setLoading(false)
       return;
     }
-    setDisplayedSession(null);
+    setDisplayedSession(0);
     setSummary('');
     const requestData = {
       prompt: promptContent,
@@ -252,10 +250,7 @@ const App = () => {
         [newSessionId]: newDialog,
       }));
 
-      setExpandedDialogs((prevState) => ({
-        ...prevState,
-        [newSessionId]: true,
-      }));
+
 
       setDisplayedSession(newSessionId);
       setResponse('');
@@ -310,11 +305,6 @@ const App = () => {
         ...prevState,
         [newSessionId]: newDialog
       }));
-
-      setExpandedDialogs({
-        [newSessionId]: true
-      });
-
       setDisplayedSession(newSessionId);
       setResponse("");
       setComment("");
@@ -327,7 +317,8 @@ const App = () => {
 
   const handleStop = () => {
     setDialogStarted(false);
-    setDisplayedSession(0);
+    setDisplayedSession(null);
+    setOpenedDialog(null);
     setResponse("");
     setFormData({
       ...formData,
@@ -365,6 +356,14 @@ const App = () => {
     setShowChart((prevShowChart) => !prevShowChart);
   };
 
+  const toggleOpenedDialog = (dialogId) => {
+    if (openedDialog === dialogId) {
+      setOpenedDialog(null);
+    } else {
+      setOpenedDialog(dialogId);
+    }
+  }
+
 
   return (
     <div className="app-container">
@@ -379,6 +378,7 @@ const App = () => {
         </div>
       ) : (
         <>
+          <h1>AI Bias Analyzer</h1>
           <div className="menu-symbol" onClick={handleToggleDialogsBar}>
             &#9776; {/* Unicode character for the menu symbol */}
           </div>
@@ -386,21 +386,19 @@ const App = () => {
           <div className={`dialogs-bar ${isDialogsBarVisible ? '' : 'dialogs-bar-hidden'}`}>
             <DialogsBar
               dialogs={dialogs}
-              expandedDialogs={expandedDialogs}
-              toggleDialog={setExpandedDialogs}
+              toggleDialog={toggleOpenedDialog}
             />
           </div>
 
           <div className={`main-content ${isDialogsBarVisible ? 'main-content-shift' : ''}`}>
-            {!dialogStarted && <MultiStepForm getPromptSummary={getPromptSummary} onGenerateAgents={handleGenerateAgents} onSubmit={handleSubmit} formData={formData} setFormData={setFormData} />}
+            {!dialogStarted && (
+              openedDialog ? <DialogDisplay dialogId={openedDialog} dialog={dialogs[openedDialog]} />
+                : <MultiStepForm getPromptSummary={getPromptSummary} onGenerateAgents={handleGenerateAgents} onSubmit={handleSubmit} formData={formData} setFormData={setFormData} />
+            )}
             {/* centered-column alkaa tästä */}
             <div className="centered-column">
               {!dialogStarted && (
                 <>
-                  <SummaryToggle
-                    summaryEnabled={summaryEnabled}
-                    setSummaryEnabled={setSummaryEnabled}
-                  />
                   {loading ? (
                     <div className="spinner-container">
                       <div className="spinner"></div>
@@ -413,14 +411,18 @@ const App = () => {
               {response && <ResponseDisplay response={response} />}
               {displayedSession !== null && dialogs[displayedSession] && (
                 <>
-                  <DialogDisplay dialogId={displayedSession} dialog={dialogs[displayedSession]} />
-                  {loading ? (
-                    <div className="spinner-container">
-                      <div className="spinner"></div>
-                    </div>
-                  ) : null}
                   {dialogStarted && (
                     <>
+                      <SummaryToggle
+                        summaryEnabled={summaryEnabled}
+                        setSummaryEnabled={setSummaryEnabled}
+                      />
+                      <DialogDisplay dialogId={displayedSession} dialog={dialogs[displayedSession]} />
+                      {loading ? (
+                        <div className="spinner-container">
+                          <div className="spinner"></div>
+                        </div>
+                      ) : null}
                       {showChart && <ConfidenceChart data={chartData} agents={formData.selectedAgents} />}
                       <ToggleButton text1="Hide Chart" text2="Show Chart" condition={showChart} onClick={toggleChart} />
                       <CommentInput comment={comment} setComment={setComment} showInput={showInput} setShowInput={setShowInput} />
