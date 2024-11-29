@@ -12,17 +12,19 @@ const FormatStep = ({ formData, setFormData }) => {
     <div className='format-selector'>
       <h2>Select Format</h2>
       {formData.formatOptions.length > 0 ? (
-        <select
-          value={formData.selectedFormat}
-          onChange={handleFormatChange}
-        >
+        <div className='format-selector'>
           {formData.formatOptions.map((option, index) => (
-            <option key={index} value={option}>
+            <label key={index} style={{ display: 'block', marginBottom: '8px' }}>
+              <input className='format-radio'
+                type="radio"
+                value={option}
+                checked={formData.selectedFormat === option}
+                onChange={handleFormatChange}
+              />
               {option}
-            </option>
+            </label>
           ))}
-        </select>
-      ) : (
+        </div>) : (
         <p>Loading formats...</p>
       )}
     </div>
