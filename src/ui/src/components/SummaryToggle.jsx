@@ -7,14 +7,15 @@ const SummaryToggle = ({ summaryEnabled, setSummaryEnabled }) => {
 
   return (
     <div className="summary-toggle">
-      <label htmlFor="summary-toggle-checkbox">
-        Enable Summary
+      <label className="toggle-label" htmlFor="summary-toggle-checkbox">
+        <span className="toggle-text">Improve performance by summarizing data</span>
         <input
           id="summary-toggle-checkbox"
           type="checkbox"
           checked={summaryEnabled}
           onChange={handleToggle}
         />
+        <span className="slider"></span>
       </label>
     </div>
   );
