@@ -1,15 +1,18 @@
+// src/components/InputForm.jsx
 import React, { useEffect, useRef } from 'react';
+import uploadIcon from '../icons/paperclip.png'; // Varmista, että polku on oikea
 
 /**
  * InputForm component allows users to enter a statement.
  * Expands as the user types.
  * 
  * @component
- * @param {string} prompt - The current value of the input field.
- * @param {Function} setPrompt - Function to update the value of the input field.
+ * @param {object} formData - The current form data.
+ * @param {Function} setFormData - Function to update the form data.
  */
 const InputForm = ({ formData, setFormData }) => {
   const textareaRef = useRef(null);
+  const fileInputRef = useRef(null);
 
   useEffect(() => {
     // Aseta alkuperäinen korkeus vastaamaan sisältöä, vaikka se olisi tyhjä.
@@ -28,6 +31,24 @@ const InputForm = ({ formData, setFormData }) => {
     }));
   };
 
+  const handleIconClick = () => {
+    if (fileInputRef.current) {
+      fileInputRef.current.click();
+    }
+  };
+
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setFormData((prevState) => ({
+        ...prevState,
+        file,
+        fileName: file.name,
+        text: prevState.text // Säilyttää nykyisen tekstin
+      }));
+    }
+  };
+
   return (
     <div className="input-form-container">
       <textarea
@@ -37,6 +58,24 @@ const InputForm = ({ formData, setFormData }) => {
         placeholder="Enter your statement"
         className="input-form"
         rows="1" // Start with one row
+      />
+      {formData.fileName && (
+        <span className="file-name-overlay">
+          {formData.fileName}
+        </span>
+      )}
+      <img
+        src={uploadIcon}
+        alt="Upload"
+        className="upload-icon"
+        onClick={handleIconClick}
+      />
+      <input
+        type="file"
+        ref={fileInputRef}
+        onChange={handleFileChange}
+        className="file-input-hidden"
+        accept=".txt,.pdf,.docx,.odt" // Rajoita tiedostotyyppiä tarpeen mukaan
       />
     </div>
   );

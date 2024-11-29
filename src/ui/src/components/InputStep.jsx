@@ -6,9 +6,6 @@ const InputStep = ({ formData, setFormData }) => {
     return (
         <div className='input-step'>
             <InputForm formData={formData} setFormData={setFormData} />
-            <div className="file-drop-container">
-                <FileInput formData={formData} setFormData={setFormData} />
-            </div>
         </div>
     )
 }

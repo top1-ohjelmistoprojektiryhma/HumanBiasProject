@@ -54,22 +54,24 @@ select {
 
 .input-step {
   width: 100%;
-}
-
-.input-form-container {
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
   margin: 30px;
 }
 
-.input-form {
+/* src/styles.css */
+/* src/styles.css */
+
+/* Input-form-container-tyyli */
+.input-form-container {
+  position: relative; /* Mahdollistaa upload-kuvakkeen ja tiedostonimen absolute sijoittelun */
   width: 100%;
   max-width: 600px;
-  padding: 17px 20px;
-  padding-left: 25px;
-  padding-right: 25px;
+  margin: 20px auto; /* Keskittää kontainerin */
+}
+
+/* Textarea-tyyli */
+.input-form {
+  width: 100%;
+  padding: 17px 50px 17px 25px; /* Lisää tilaa oikealle upload-kuvakkeelle ja tiedostonimelle */
   border-radius: 25px;
   background-color: #131B2C;
   color: white;
@@ -77,11 +79,86 @@ select {
   border: none;
   box-shadow: inset 5px 5px 10px #0d141f, inset -5px -5px 10px #172036;
   overflow-y: hidden;
-  /* Hide vertical scrollbar */
   resize: none;
-  /* Prevent manual resizing */
   font: inherit;
+  box-sizing: border-box; /* Sisällyttää paddingin leveyteen */
 }
+
+/* Upload-kuvake */
+.upload-icon {
+  position: absolute;
+  right: 15px; /* Sijoittaa kuvakkeen tekstikentän oikeaan reunaan */
+  top: 50%;
+  transform: translateY(-50%);
+  width: 24px;
+  height: 24px;
+  cursor: pointer;
+  opacity: 0.7;
+  transition: opacity 0.3s ease;
+  filter: invert(1);
+}
+
+.upload-icon:hover {
+  opacity: 1;
+}
+
+/* Piilotettu tiedostonvalitsin */
+.file-input-hidden {
+  display: none;
+}
+
+/* Tiedoston nimen tyylit */
+.file-name-overlay {
+  position: absolute;
+  right: 50px; /* Sijoittaa tiedostonimen ennen upload-kuvaketta */
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: rgba(19, 27, 44, 0.8); /* Tausta näkyväksi, mutta läpinäkyvä */
+  color: #ffffff;
+  padding: 5px 10px;
+  border-radius: 12px;
+  font-size: 14px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 200px;
+  pointer-events: none; /* Estää tiedostonimen klikkaamisen */
+}
+
+/* Responsiiviset tyylit */
+@media (max-width: 768px) {
+  .input-form-container {
+    max-width: 100%;
+    padding: 0 10px;
+  }
+
+  .upload-icon {
+    width: 20px;
+    height: 20px;
+    right: 10px;
+  }
+
+  .input-form {
+    padding: 15px 40px 15px 20px; /* Säädä paddingia mobiililaitteille */
+  }
+
+  .file-name-overlay {
+    right: 40px; /* Sijoittaa tiedostonimen ennen upload-kuvaketta mobiililaitteille */
+    max-width: 150px;
+    font-size: 12px;
+  }
+}
+
+
+
+/* Tiedoston nimen tyyli */
+.file-name {
+  margin-top: 10px;
+  color: #ffffff;
+  font-size: 14px;
+  word-break: break-all; /* Salli rivinvaihto pitkissä tiedostonimissä */
+}
+
 
 textarea::placeholder {
   color: #B7C0D0;
@@ -551,14 +628,7 @@ input[type="text"] {
   /* Poista marginaali viimeiseltä painikkeelta */
 }
 
-.upload-icon {
-  width: 24px;
-  height: 24px;
-  margin-right: 8px;
-  filter: invert(1);
-  /* Muuttaa mustan valkoiseksi */
-  vertical-align: middle;
-}
+
 
 .file-drop-container {
   display: flex;
