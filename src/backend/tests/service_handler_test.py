@@ -29,11 +29,14 @@ class ExampleObject:
         self.nested_object = InnerObject()
         self.roles = []
 
+
 class Role(BaseModel):
     role_description: str
 
+
 class NewRoles(BaseModel):
     roles: list[Role]
+
 
 class TestServiceHandler(unittest.TestCase):
     def setUp(self):
@@ -81,7 +84,10 @@ class TestServiceHandler(unittest.TestCase):
     def test_continue_session_no_api_keys(self):
         self._handler.api_manager.available_models.return_value = []
         session_id = 1
-        result = self._handler.continue_session(session_id, comment="comment")
+        summary_enabled = False
+        result = self._handler.continue_session(
+            session_id, summary_enabled, comment="comment"
+        )
 
         self.assertEqual(result, ("No API keys available", None))
 
@@ -104,7 +110,10 @@ class TestServiceHandler(unittest.TestCase):
         ]
         text = "prompt"
         id, result = self._handler.start_new_session(text, "dialog", 0)
-        response, session_dict = self._handler.continue_session(id, comment="comment")
+        summary_enabled = False
+        response, session_dict = self._handler.continue_session(
+            id, summary_enabled, comment="comment"
+        )
         self.assertEqual(response, "Success")
 
     def test_set_selected_agents_works(self):
@@ -115,16 +124,22 @@ class TestServiceHandler(unittest.TestCase):
     def test_generate_agents_with_no_api_key(self):
         test_text = "Generate new agents based on this input."
         self._mock_api_manager.available_models.return_value = []
-        self._mock_agent_manager.list_of_agents = [] 
+        self._mock_agent_manager.list_of_agents = []
         self._mock_api_manager.send_structured_prompt.return_value = ExampleObject()
         response = self._handler.generate_agents(test_text)
-        self.assertEqual(response, {'perspectives': [], 'response': "trying to add 0 agents"})
+        self.assertEqual(
+            response, {"perspectives": [], "response": "trying to add 0 agents"}
+        )
 
     def test_generate_agents_and_get_correct_num(self):
         test_text = "Generate new agents based on this input."
         self._mock_api_manager.gemini_key = "valid_key"
         self._mock_formatter.format_generate_agents_prompt.return_value = test_text
-        self._mock_agent_manager.list_of_agents = [ExampleAgent(), ExampleAgent(), ExampleAgent()] 
+        self._mock_agent_manager.list_of_agents = [
+            ExampleAgent(),
+            ExampleAgent(),
+            ExampleAgent(),
+        ]
         biases = ExampleObject()
         agent = InnerObject()
         agent.role_description = "Student"
@@ -140,7 +155,11 @@ class TestServiceHandler(unittest.TestCase):
         test_text = "Generate new agents based on this input."
         self._mock_api_manager.gemini_key = "valid_key"
         self._mock_formatter.format_generate_agents_prompt.return_value = test_text
-        self._mock_agent_manager.list_of_agents = [ExampleAgent(), ExampleAgent(), ExampleAgent()] 
+        self._mock_agent_manager.list_of_agents = [
+            ExampleAgent(),
+            ExampleAgent(),
+            ExampleAgent(),
+        ]
         biases = ExampleObject()
         agent = InnerObject()
         agent.role_description = "Student"
@@ -156,7 +175,7 @@ class TestServiceHandler(unittest.TestCase):
     def test_generate_agents_and_get_bad_output(self):
         test_text = "Generate new agents based on this input."
         self._mock_api_manager.gemini_key = "valid_key"
-        self._mock_agent_manager.list_of_agents = [] 
+        self._mock_agent_manager.list_of_agents = []
         self._mock_formatter.format_generate_agents_prompt.return_value = test_text
         self._mock_api_manager.send_prompts.return_value = [{"output": ""}]
 
