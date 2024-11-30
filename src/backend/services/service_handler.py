@@ -40,7 +40,7 @@ class ServiceHandler:
 
         return new_session_id, True
 
-    def continue_session(self, session_id, comment):
+    def continue_session(self, session_id, summary_enabled, comment):
         """Continue a session with the input prompts.
 
         Args:
@@ -50,7 +50,9 @@ class ServiceHandler:
         Returns:
             The session as a dict.
         """
-        print(f"\nSERVICE HANDLER: User comment: {comment} Session ID: {session_id}")
+        print(
+            f"\nSERVICE HANDLER: Summary enabled: {summary_enabled} User comment: {comment} Session ID: {session_id}"
+        )
         if self.api_manager.available_models():
             # Get the prompts from session
             api_input_list = self.session_manager.get_session_prompts(session_id)
@@ -83,15 +85,22 @@ class ServiceHandler:
                 {"response": str, "perspectives": list}
         """
         text = str(text)
-        agent_class_prompt = formatter.format_generate_agents_class_prompt(text, self.get_all_agent_roles_as_list(), desired_number_of_agents)
+        agent_class_prompt = formatter.format_generate_agents_class_prompt(
+            text, self.get_all_agent_roles_as_list(), desired_number_of_agents
+        )
 
         api_response = self.api_manager.send_structured_prompt(agent_class_prompt)
         print(api_response)
-        role_list = formatter.new_roles_to_list_of_roles(api_response, desired_number_of_agents)
+        role_list = formatter.new_roles_to_list_of_roles(
+            api_response, desired_number_of_agents
+        )
         print(role_list)
         response = self.add_generated_agents(role_list, desired_number_of_agents)
 
-        return {"response": response, "perspectives": self.get_all_agent_roles_as_list()}
+        return {
+            "response": response,
+            "perspectives": self.get_all_agent_roles_as_list(),
+        }
 
     def add_generated_agents(self, role_list, desired_number_of_agents):
         """
@@ -111,8 +120,8 @@ class ServiceHandler:
                 self.add_multiple_agents(role_list[:desired_number_of_agents])
                 # Extract agents from agent manager
                 return str(self.get_all_agent_roles_as_list())
-                #return "new agents added"
-            #handle error with incorrect formatting here
+                # return "new agents added"
+            # handle error with incorrect formatting here
             return "API returned less agents than desired"
         return "trying to add 0 agents"
 

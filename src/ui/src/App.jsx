@@ -295,7 +295,7 @@ const App = () => {
   const handleContinue = async () => {
     setLoading(true);
     try {
-      const data = await continueSession(displayedSession, comment);
+      const data = await continueSession(displayedSession, summaryEnabled, comment);
       const newSessionId = data.session_id;
       const newDialog = data.dialog;
       const scores = collectScores(newDialog, chartData);
