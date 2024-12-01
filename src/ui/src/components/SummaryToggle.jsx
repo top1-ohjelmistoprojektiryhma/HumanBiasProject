@@ -8,7 +8,7 @@ const SummaryToggle = ({ summaryEnabled, setSummaryEnabled }) => {
   return (
     <div className="summary-toggle">
       <label className="toggle-label" htmlFor="summary-toggle-checkbox">
-        <span className="toggle-text">Improve performance by summarizing data</span>
+        <span className="toggle-text">Summarise text to decrease token usage</span>
         <input
           id="summary-toggle-checkbox"
           type="checkbox"

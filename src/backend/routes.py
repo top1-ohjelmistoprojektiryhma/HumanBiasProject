@@ -99,7 +99,7 @@ def initialize_routes(
         format = data.get("format")
         perspectives = data.get("perspective")
         summary_enabled = data.get("summaryEnabled", False)  # Retrieve the toggle value
-        character_limit = 0 if not summary_enabled else 500  # Example character limit
+        character_limit = 0 if not summary_enabled else 5000 # Example character limit
         print(
             f"\nROUTES.PY: Prompt: {prompt}, Perspective: {perspectives}, Format: {format}, Summary Enabled: {summary_enabled}"
         )
