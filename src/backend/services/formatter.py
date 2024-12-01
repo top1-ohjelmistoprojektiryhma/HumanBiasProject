@@ -52,7 +52,10 @@ def new_roles_to_list_of_roles(new_roles, desired_lenght):
 
     output_list = []
 
-    if isinstance(new_roles, object) and hasattr(new_roles, 'roles') and isinstance(new_roles.roles, list):
+    if (isinstance(new_roles, object)
+        and hasattr(new_roles, 'roles')
+        and isinstance(new_roles.roles, list)):
+
         for role in new_roles.roles:
             name = agent_class_to_str(role)
             if name:
@@ -72,7 +75,9 @@ def agent_class_to_str(role):
             name = None
     return name
 
-def format_generate_agents_class_prompt(user_input, current_agents=[], desired_number_of_agents=3, session_format="bias finder"):
+def format_generate_agents_class_prompt(user_input, current_agents=[],
+                                        desired_number_of_agents=3,
+                                        session_format="bias finder"):
 
     class Role(BaseModel):
         role_description: str
@@ -80,7 +85,9 @@ def format_generate_agents_class_prompt(user_input, current_agents=[], desired_n
     class NewRoles(BaseModel):
         roles: list[Role]
 
-    system_prompt = PROMPTS["format_generate_agents"][session_format].format(desired_number_of_agents = str(desired_number_of_agents), current_agents = str(current_agents))
+    system_prompt = PROMPTS["format_generate_agents"][session_format].format(
+        desired_number_of_agents = str(desired_number_of_agents),
+        current_agents = str(current_agents))
 
     prompt = format_structured_prompt(system_prompt, user_input, NewRoles)
 
