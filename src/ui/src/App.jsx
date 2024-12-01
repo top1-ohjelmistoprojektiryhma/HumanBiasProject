@@ -185,6 +185,7 @@ const App = () => {
   };
 
   const getPromptSummary = async () => {
+    setLoading(true);
     let promptContent = formData.text;
     if (formData.file) {
       const allowedExtensions = [".txt", ".pdf", ".docx", ".odt"];
@@ -215,6 +216,8 @@ const App = () => {
       ...prevState,
       promptSummary: summarizedPrompt
     }))
+    setLoading(false);
+    return summarizedPrompt;
   };
 
   const handleSubmit = async () => {
@@ -265,17 +268,15 @@ const App = () => {
     }))
   };
 
-  const handleGenerateAgents = async (numAgents, firstAgents = false) => {
-    firstAgents ? null : setLoading(true);
-    if (formData.summary === '') {
+  const handleGenerateAgents = async (numAgents, promptSummary = '', firstAgents = false) => {
+    setLoading(true);
+    if (promptSummary === '') {
       setError('Please enter a statement.');
       setLoading(false);
       return false;
     }
-    let promptContent = formData.promptSummary;
-
     const requestData = {
-      prompt: promptContent,
+      prompt: promptSummary,
       num_agents: numAgents,
     };
 
@@ -292,6 +293,7 @@ const App = () => {
     }
     setLoading(false);
   };
+
   const handleContinue = async () => {
     setLoading(true);
     try {
@@ -393,17 +395,12 @@ const App = () => {
           <div className={`main-content ${isDialogsBarVisible ? 'main-content-shift' : ''}`}>
             {!dialogStarted && (
               openedDialog ? <DialogDisplay dialogId={openedDialog} dialog={dialogs[openedDialog]} />
-                : <MultiStepForm getPromptSummary={getPromptSummary} onGenerateAgents={handleGenerateAgents} onSubmit={handleSubmit} formData={formData} setFormData={setFormData} />
+                : <MultiStepForm getPromptSummary={getPromptSummary} onGenerateAgents={handleGenerateAgents} onSubmit={handleSubmit} formData={formData} setFormData={setFormData} loading={loading} />
             )}
             {/* centered-column alkaa tästä */}
             <div className="centered-column">
               {!dialogStarted && (
                 <>
-                  {loading ? (
-                    <div className="spinner-container">
-                      <div className="spinner"></div>
-                    </div>
-                  ) : null}
                   {error && <div className="error-message">{error}</div>}
                 </>
               )}

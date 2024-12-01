@@ -84,6 +84,7 @@ input::placeholder {
   justify-content: center;
   align-items: center;
   height: 60vh;
+  margin-top: 70px;
 }
 
 .main-content {
@@ -467,6 +468,7 @@ input::placeholder {
 
 .spinner-container {
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
   width: 100%;

@@ -6,7 +6,7 @@ const GenerateAgents = ({ onGenerate, formData, setFormData }) => {
   const [perspective, setPerspective] = useState('');
 
   const handleSubmit = () => {
-    onGenerate(numAgents); // Pass the number of agents to the parent component
+    onGenerate(numAgents, formData.promptSummary); // Pass the number of agents to the parent component
   };
 
   const handleAddPerspective = async () => {
