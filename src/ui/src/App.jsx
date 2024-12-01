@@ -401,19 +401,18 @@ const App = () => {
             <div className="centered-column">
               {!dialogStarted && (
                 <>
+                  <SummaryToggle
+                    summaryEnabled={summaryEnabled}
+                    setSummaryEnabled={setSummaryEnabled}
+                  />
                   {error && <div className="error-message">{error}</div>}
                 </>
               )}
-
               {response && <ResponseDisplay response={response} />}
               {displayedSession !== null && dialogs[displayedSession] && (
                 <>
                   {dialogStarted && (
                     <>
-                      <SummaryToggle
-                        summaryEnabled={summaryEnabled}
-                        setSummaryEnabled={setSummaryEnabled}
-                      />
                       <DialogDisplay dialogId={displayedSession} dialog={dialogs[displayedSession]} />
                       {loading ? (
                         <div className="spinner-container">
