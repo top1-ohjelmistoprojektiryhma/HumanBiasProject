@@ -198,6 +198,22 @@ class TestServiceHandler(unittest.TestCase):
         expected = "['Student', 'Student']"
         self.assertEqual(result, expected)
 
+    def test_get_summarized_text(self):
+        test_text = "This is a sentence."
+        self.assertIsNone(self._handler.get_summarised_text(test_text, 100))
+
+        self._mock_api_manager.available_models.side_effect = [["gemini"], ["gemini", "openai"]]
+        self._mock_api_manager.send_prompts.return_value = [{"output": "summarized output"}]
+        self.assertIsNone(self._handler.get_summarised_text(test_text, 10))
+
+        call_arg = [{
+            "text": "Summarize the following document to a shorter length of around 2 words. Aim to convey the original tone of the author and the main points of the text. This is a sentence.",
+            "model": "openai",
+            "history": None
+            }]
+        self._handler.get_summarised_text(test_text, 10)
+        self._mock_api_manager.send_prompts.assert_called_once_with(call_arg)
+
     def test_get_latest_dialog_summary(self):
         self._mock_session_manager.get_latest_session_id.return_value = "session123"
         dialog_mock = Mock()
