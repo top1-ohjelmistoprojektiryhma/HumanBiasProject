@@ -119,18 +119,7 @@ class Dialog:
             )
             output = re.sub(r"<\s*.*?\s*>", "", response["output"]).strip()
             output = re.sub(r"\|\d+/10\||\|\|.*?\|\|", "", output).strip()
-            # Store the response and add to history
-            prompts.append(
-                {
-                    "agent": response["prompt"]["agent_object"],
-                    "model": response["model"],
-                    "input": response["prompt"]["text"],
-                    "output": output,
-                    "summary": summary,
-                    "conf_score": score,
-                    "score_summary": score_summary,
-                }
-            )
+
             # Change history input to summarised prompt if needed
             if len(self.rounds) == 0 and self.summarised_prompt:
                 api_input = self.initial_prompts(
@@ -139,6 +128,19 @@ class Dialog:
                 )[0]["text"]
             else:
                 api_input = response["prompt"]["text"]
+                
+            # Store the response and add to history
+            prompts.append(
+                {
+                    "agent": response["prompt"]["agent_object"],
+                    "model": response["model"],
+                    "input": api_input,
+                    "output": output,
+                    "summary": summary,
+                    "conf_score": score,
+                    "score_summary": score_summary,
+                }
+            )
             response["prompt"]["agent_object"].add_chat_to_history(
                 [
                     {"role": "user", "text": api_input},
