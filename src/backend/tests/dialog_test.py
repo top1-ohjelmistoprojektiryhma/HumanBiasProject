@@ -69,8 +69,8 @@ class TestDialog(unittest.TestCase):
         for agent ...]
         """
         result = self.dialog.get_prompts()
-        self.assertIsNone(result[0]["model"])
-        self.assertEqual(result[1]["model"], "gemini")
+        self.assertEqual(result[0]["model"], (None, None))
+        self.assertEqual(result[1]["model"], ("gemini", None))
         self.assertListEqual(result[0]["history"], ["history"])
         self.assertListEqual(result[1]["history"], ["history"])
         self.assertEqual(result[0]["agent_object"], self.test_agents[0])
@@ -79,7 +79,7 @@ class TestDialog(unittest.TestCase):
     def test_get_prompts_works_after_first_round(self):
         self.dialog.rounds["2"] = ["test"]
         result = self.dialog.get_prompts()
-        self.assertIsNone(result[0]["model"])
+        self.assertEqual(result[0]["model"], (None, None))
         self.assertListEqual(result[0]["history"], ["history"])
         self.assertEqual(result[0]["agent_object"], self.test_agents[0])
 

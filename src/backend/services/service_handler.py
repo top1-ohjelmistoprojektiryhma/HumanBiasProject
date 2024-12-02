@@ -144,7 +144,7 @@ class ServiceHandler:
             # Check if OpenAI model is available for summarization
             if "openai" in self.api_manager.available_models():
                 input_list = [
-                    {"text": summary_api_input, "model": "openai", "history": None}
+                    {"text": summary_api_input, "model": ("openai", None), "history": None}
                 ]
                 return self.api_manager.send_prompts(input_list)[0]["output"]
         return None
@@ -186,7 +186,7 @@ class ServiceHandler:
         prompt_list = [
             {
                 "text": formatter.format_output_summary(dialog_data, session_format),
-                "model": None,
+                "model": (None, None),
                 "history": None,
                 "agent_object": None,
             }
@@ -211,7 +211,7 @@ class ServiceHandler:
         prompt_list = [
             {
                 "text": formatter.format_bias(dialog_data),
-                "model": None,
+                "model": (None, None),
                 "history": None,
                 "agent_object": None,
             }

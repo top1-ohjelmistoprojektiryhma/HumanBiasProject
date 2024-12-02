@@ -17,7 +17,7 @@ class TestApiManager(unittest.TestCase):
 
     def test_send_prompts_works_with_model_chosen(self):
         agent = Agent("student")
-        prompt_list = [{"text": "123", "model": "gemini", "agent_object": agent, "history": None}]
+        prompt_list = [{"text": "123", "model": ("gemini", None), "agent_object": agent, "history": None}]
         self._api_manager.gemini_api.get_chat_response = Mock(return_value="Response1")
         self._api_manager.openai_api.get_chat_response = Mock(return_value="Response2")
         self._api_manager.anthropic_api.get_chat_response = Mock(return_value="Response3")
@@ -26,7 +26,7 @@ class TestApiManager(unittest.TestCase):
             response_list,
             [
                 {
-                    "prompt": {"text": "123", "model": "gemini", "agent_object": agent, "history": None},
+                    "prompt": {"text": "123", "model": ("gemini", None), "agent_object": agent, "history": None},
                     "model": "gemini",
                     "output": "Response1"
                 }
@@ -35,7 +35,7 @@ class TestApiManager(unittest.TestCase):
 
     def test_send_prompts_works_with_no_model_chosen(self):
         agent = Agent("student")
-        prompt_list = [{"text": "123", "model": None, "agent_object": agent, "history": None}]
+        prompt_list = [{"text": "123", "model": (None, None), "agent_object": agent, "history": None}]
         self._api_manager.gemini_api.get_chat_response = Mock(return_value="Response1")
         self._api_manager.openai_api.get_chat_response = Mock(return_value="Response2")
         self._api_manager.anthropic_api.get_chat_response = Mock(return_value="Response3")
@@ -44,7 +44,7 @@ class TestApiManager(unittest.TestCase):
             response_list,
             [
                 {
-                    "prompt": {"text": "123", "model": None, "agent_object": agent, "history": None},
+                    "prompt": {"text": "123", "model": (None, None), "agent_object": agent, "history": None},
                     "model": "gemini",
                     "output": "Response1"
                 }

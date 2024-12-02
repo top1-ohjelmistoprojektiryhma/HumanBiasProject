@@ -4,12 +4,12 @@ import google.generativeai as genai
 class GeminiApi:
     """Class for managing interaction with the Gemini API"""
 
-    def __init__(self, gemini_key=None, model="gemini-1.5-flash") -> None:
+    def __init__(self, gemini_key=None, default_model="gemini-1.5-flash") -> None:
         self.key = gemini_key
+        self.default_model = default_model
         genai.configure(api_key=self.key)
-        self.model = genai.GenerativeModel(model)
 
-    def get_chat_response(self, prompt, history=None):
+    def get_chat_response(self, prompt, history=None, version=None):
         """Sends a prompt to the Gemini API and returns the response
 
         Args:
@@ -25,7 +25,8 @@ class GeminiApi:
         if history:
             chat_history = self.format_history(history)
         text_responses = []
-        chat = self.model.start_chat(history=chat_history)
+        model = self.init_model(version)
+        chat = model.start_chat(history=chat_history)
         responses = chat.send_message(prompt)
         for chunk in responses:
             text_responses.append(chunk.text)
@@ -48,3 +49,8 @@ class GeminiApi:
                 }
             )
         return formatted_history
+
+    def init_model(self, version=None):
+        if version:
+            return genai.GenerativeModel(version)
+        return genai.GenerativeModel(self.default_model)

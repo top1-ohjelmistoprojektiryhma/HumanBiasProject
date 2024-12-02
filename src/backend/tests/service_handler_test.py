@@ -208,7 +208,7 @@ class TestServiceHandler(unittest.TestCase):
 
         call_arg = [{
             "text": "Summarize the following document to a shorter length of around 2 words. Aim to convey the original tone of the author and the main points of the text. This is a sentence.",
-            "model": "openai",
+            "model": ("openai", None),
             "history": None
             }]
         self._handler.get_summarised_text(test_text, 10)

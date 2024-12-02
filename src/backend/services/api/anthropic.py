@@ -2,12 +2,12 @@ import anthropic
 
 
 class AnthropicApi:
-    def __init__(self, anthropic_key=None, model="claude-3-haiku-20240307"):
+    def __init__(self, anthropic_key=None, default_model="claude-3-5-sonnet-latest"):
         self.key = anthropic_key
-        self.model = model
+        self.default_model = default_model
         self.client = anthropic.Anthropic(api_key=self.key)
 
-    def get_chat_response(self, prompt, history=None):
+    def get_chat_response(self, prompt, history=None, version=None):
         """Sends a prompt to the OpenAI API and returns the response
 
         Args:
@@ -23,8 +23,12 @@ class AnthropicApi:
             chat_history = self.format_history(history)
         # Add the user's prompt to the chat history
         chat_history.append({"role": "user", "content": [{"text": prompt, "type": "text"}]})
+        if version:
+            model = version
+        else:
+            model = self.default_model
         message = self.client.messages.create(
-            model=self.model,
+            model=model,
             messages=chat_history,
             max_tokens=1000,
             system = """

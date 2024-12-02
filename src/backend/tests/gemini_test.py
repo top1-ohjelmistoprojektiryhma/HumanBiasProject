@@ -14,7 +14,6 @@ class TestGeminiApi(unittest.TestCase):
     def test_get_chat_response_works(self):
         prompt = "123"
         history = [{"role": "user", "text": "456"}]
-        self._gemini_api.model.start_chat = Mock()
-        self._gemini_api.model.start_chat.return_value.send_message = Mock(return_value=[Response("123")])
+        self._gemini_api.init_model = Mock(return_value=Mock(start_chat=Mock(return_value=Mock(send_message=Mock(return_value=[Response("123")])))))
         response = self._gemini_api.get_chat_response(prompt, history)
         self.assertEqual(response, "123")

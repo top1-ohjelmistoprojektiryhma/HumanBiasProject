@@ -62,7 +62,7 @@ class Dialog:
         api_input_list = [
             {
                 "text": prompt["text"],
-                "model": self.agents[prompt["agent"]]["model"],
+                "model": (self.agents[prompt["agent"]]["model"], None),
                 "history": prompt["agent"].get_chat_history(),
                 "agent_object": prompt["agent"],
             }

@@ -4,13 +4,13 @@ import openai
 class OpenAiApi:
     """Class for managing interaction with OpenAI API"""
 
-    def __init__(self, openai_key=None, model="gpt-4o-mini"):
+    def __init__(self, openai_key=None, default_model="gpt-4o"):
         self.key = openai_key
-        self.model = model
+        self.default_model = default_model
         self.client = openai
         self.client.api_key = self.key
 
-    def get_chat_response(self, prompt, history=None):
+    def get_chat_response(self, prompt, history=None, version=None):
         """Sends a prompt to the OpenAI API and returns the response
 
         Args:
@@ -26,8 +26,12 @@ class OpenAiApi:
             chat_history = self.format_history(history)
         # Add the user's prompt to the chat history
         chat_history.append({"role": "user", "content": prompt})
+        if version:
+            model = version
+        else:
+            model = self.default_model
         completion = self.client.chat.completions.create(
-            model=self.model, messages=chat_history
+            model=model, messages=chat_history
         )
         return completion.choices[0].message.content
 
