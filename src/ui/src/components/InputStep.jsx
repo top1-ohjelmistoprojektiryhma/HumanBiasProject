@@ -60,9 +60,21 @@ const InputStep = ({ formData, setFormData }) => {
         rows="1" // Start with one row
       />
       {formData.fileName && (
-        <span className="file-name-overlay">
-          {formData.fileName}
-        </span>
+        <div className="file-name-overlay">
+        <span>{formData.fileName}</span>
+        <button
+          className="delete-file-button"
+          onClick={() => {
+            setFormData((prevState) => ({
+              ...prevState,
+              file: null,
+              fileName: null,
+            }));
+          }}
+        >
+          &times;
+        </button>
+      </div>
       )}
       <img
         src={uploadIcon}

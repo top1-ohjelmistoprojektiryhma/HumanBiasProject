@@ -11,7 +11,7 @@
   --colored-button-hover: #335ebb;
 }
 
-/*common styles*/
+/*common styles #2B061E*/
 
 body {
   font-family: 'Istok Web', sans-serif;
@@ -213,6 +213,7 @@ input::placeholder {
 }
 
 .input-form {
+  height: 80px; /* Korkeus sisältäen paddingin */
   width: 100%;
   padding: 17px 50px 17px 25px;
   border-radius: 25px;
@@ -225,19 +226,22 @@ input::placeholder {
   resize: none;
   font: inherit;
   box-sizing: border-box;
+  box-sizing: border-box; /* Sisällyttää paddingin korkeuteen */
 }
+
 
 .upload-icon {
   position: absolute;
   right: 15px;
   top: 50%;
   transform: translateY(-50%);
-  width: 24px;
-  height: 24px;
+  width: 19px;
+  height: 19px;
   cursor: pointer;
   opacity: 0.7;
   transition: opacity 0.3s ease;
   filter: invert(1);
+  padding: 7px;
 }
 
 .upload-icon:hover {
@@ -253,17 +257,39 @@ input::placeholder {
   right: 50px;
   top: 50%;
   transform: translateY(-50%);
-  background-color: var(--input-background);
+  background-color: #4d4d63;
   color: var(--text);
   padding: 5px 10px;
   border-radius: 12px;
-  font-size: 14px;
+  font-size: 16px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
   max-width: 200px;
-  pointer-events: none;
+  display: flex; /* Jotta tiedostonimi ja nappi näkyvät vierekkäin */
+  align-items: center; /* Kohdista pystysuunnassa */
 }
+.delete-file-button {
+  background: none;
+  border: none;
+  color: #ffffff;
+  font-size: 16px;
+  margin: 0px;
+  margin-left: 10px;
+  cursor: pointer;
+  padding: 0;
+  line-height: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.delete-file-button:hover {
+  color: #ffffff;
+  transform: scale(1.2); /* Hieman suurempi hover-efekti */
+  transition: transform 0.2s ease, color 0.2s ease;
+}
+
 
 @media (max-width: 768px) {
   .input-form-container {
