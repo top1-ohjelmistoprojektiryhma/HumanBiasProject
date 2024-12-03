@@ -265,10 +265,19 @@ input::placeholder {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  max-width: 200px;
   display: flex; /* Jotta tiedostonimi ja nappi näkyvät vierekkäin */
   align-items: center; /* Kohdista pystysuunnassa */
+  max-width: 300px; /* Aseta maksimi leveys */
+  box-sizing: border-box; /* Sisällyttää paddingin */
 }
+
+.file-name-text {
+  flex-grow: 1; /* Tekstin leveys mukautuu saatavilla olevaan tilaan */
+  overflow: hidden;
+  text-overflow: ellipsis; /* Lisää "..." jos nimi on liian pitkä */
+  white-space: nowrap;
+}
+
 .delete-file-button {
   background: none;
   border: none;

@@ -61,7 +61,7 @@ const InputStep = ({ formData, setFormData }) => {
       />
       {formData.fileName && (
         <div className="file-name-overlay">
-        <span>{formData.fileName}</span>
+        <span className="file-name-text">{formData.fileName}</span>
         <button
           className="delete-file-button"
           onClick={() => {
