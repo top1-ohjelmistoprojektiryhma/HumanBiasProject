@@ -380,7 +380,9 @@ const App = () => {
         </div>
       ) : (
         <>
+          <div className={`header ${isDialogsBarVisible ? 'header-shift' : ''}`}>
           <h1>AI Bias Analyzer</h1>
+          </div>
           <div className="menu-symbol" onClick={handleToggleDialogsBar}>
             &#9776; {/* Unicode character for the menu symbol */}
           </div>

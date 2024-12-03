@@ -23,14 +23,39 @@ body {
   overflow-x: hidden;
 }
 
-h1 {
-  color: var(--text);
-  font-size: 30px;
-  text-align: center;
+.header {
   position: fixed;
-  left: 100px;
-  top: 0px;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 85px;
+  background-color: rgba(1, 4, 12, 0.80);
+  z-index: 1000;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Lisää hienovarainen varjo */
+  transition: transform 0.3s ease; /* Sama siirtymä kuin main-content */
 }
+.header-shift {
+  transform: translateX(350px); /* Sama määrä kuin dialogs-bar leveys */
+}
+
+
+.header h1 {
+  color: var(--text); /* Muuta väri teemasi mukaan */
+  font-size: 30px;
+  text-align: left;
+  margin: 10px 0; /* Lisää hieman tilaa */
+  padding: 11px;
+  padding-left: 100px;
+}
+
+/* App content styles */
+.app-container {
+  margin-top: 70px; /* Lisää marginaali, joka vastaa headerin korkeutta */
+  /* Main content styles */
+  padding-top: 60px; /* Sama arvo kuin .header:n korkeus */
+
+}
+
 
 button {
   background-color: var(--colored-button);
@@ -88,6 +113,7 @@ input::placeholder {
 }
 
 .main-content {
+  margin-top: 60px; /* Sama arvo kuin .header:n korkeus */
   flex-grow: 1;
   transition: transform 0.3s ease;
   padding: 20px;
