@@ -128,7 +128,7 @@ class Dialog:
                 )[0]["text"]
             else:
                 api_input = response["prompt"]["text"]
-                
+
             # Store the response and add to history
             prompts.append(
                 {

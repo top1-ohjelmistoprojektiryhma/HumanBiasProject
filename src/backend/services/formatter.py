@@ -93,6 +93,23 @@ def format_generate_agents_class_prompt(user_input, current_agents=[],
 
     return prompt
 
+def format_opening_statement_class_prompt(user_input, role, session_format):
+
+    return format_statement_class_prompt(user_input, role, session_format, "format_single_structured_opening_statement", None)
+
+def format_statement_class_prompt(user_input, role, session_format, statement_type = "format_single_structured_opening_statement", history = None):
+
+    class Statement(BaseModel):
+        statement: str
+        score: int
+        reasoning: str
+
+    system_prompt = PROMPTS[statement_type][session_format].format(role = str(role))
+
+    prompt = format_structured_prompt(system_prompt, user_input, Statement, history)
+
+    return prompt
+
 def format_bias_class_prompt(user_input):
 
     class Bias(BaseModel):
