@@ -100,7 +100,7 @@ def format_opening_statement_class_prompt(user_input, role, session_format):
 def format_statement_class_prompt(user_input, role, session_format, statement_type = "format_single_structured_opening_statement", history = None):
 
     class Statement(BaseModel):
-        statement: str
+        response: str
         score: int
         reasoning: str
 
