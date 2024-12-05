@@ -12,16 +12,16 @@ def format_multiple(role_list, prompt, session_format):
     return response_list
 
 
-def format_single(role, prompt, session_format):
+def format_single(role, prompt, session_format, structure='raw'):
     role = role if role not in (None, "") else "Yourself"
     formatted_prompt = PROMPTS["format_single_opening_statement"][
         session_format
-    ].format(role=str(role), prompt=str(prompt))
+    ][structure].format(role=str(role), prompt=str(prompt))
 
     return formatted_prompt
 
 
-def format_dialog_prompt_with_unseen(agent, unseen_prompts, session_format):
+def format_dialog_prompt_with_unseen(agent, unseen_prompts, session_format, structure='raw'):
     unseen = []
     for prompt in unseen_prompts:
         unseen.append(
@@ -32,7 +32,7 @@ def format_dialog_prompt_with_unseen(agent, unseen_prompts, session_format):
 
     formatted_prompt = PROMPTS["format_dialog_prompt_with_unseen"][
         session_format
-    ].format(role=str(agent.role), unseen=str(unseen))
+    ][structure].format(role=str(agent.role), unseen=str(unseen))
     return formatted_prompt
 
 def format_output_summary(dialog_data, session_format):
@@ -104,7 +104,7 @@ def format_statement_class_prompt(user_input, role, session_format, statement_ty
         score: int
         reasoning: str
 
-    system_prompt = PROMPTS[statement_type][session_format].format(role = str(role))
+    system_prompt = PROMPTS[statement_type][session_format]["structured"].format(role = str(role))
 
     prompt = format_structured_prompt(system_prompt, user_input, Statement, history)
 
