@@ -96,15 +96,9 @@ class Dialog:
             unseen = [{"agent": agent.Agent("User"), "text": comment}]
             agent_obj.add_unseen_prompts(unseen)
 
-    def update_with_responses(self, responses):
-        """Update the dialog with responses
-
-        Args:
-            responses (list): A list of responses
-        """
-
-        prompts = []
-        for response in responses:
+    def extract_response_elements(self, response):
+        # if response is str
+        if isinstance(response["output"], str):
             # find the summary text from <>
             summary = re.search(r"<.*?>", response["output"])
             summary = summary.group(0)[1:-1].strip() if summary else None
@@ -119,7 +113,25 @@ class Dialog:
             )
             output = re.sub(r"<\s*.*?\s*>", "", response["output"]).strip()
             output = re.sub(r"\|\d+/10\||\|\|.*?\|\|", "", output).strip()
+        else:
+            structured_output = response["output"]
+            output = structured_output.response
+            summary = structured_output.main_point_summary
+            score = structured_output.score
+            score_summary = structured_output.score_summary
+        return output, summary, score, score_summary
 
+
+    def update_with_responses(self, responses):
+        """Update the dialog with responses
+
+        Args:
+            responses (list): A list of responses
+        """
+
+        prompts = []
+        for response in responses:
+            output, summary, score, score_summary = self.extract_response_elements(response)
             # Change history input to summarised prompt if needed
             if len(self.rounds) == 0 and self.summarised_prompt:
                 api_input = self.initial_prompts(
