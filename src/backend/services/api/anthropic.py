@@ -19,14 +19,14 @@ class AnthropicApi:
             str: The response from the API
         """
         history = prompt["history"]
-        input = prompt["text"]
+        api_input = prompt["text"]
         version = prompt["model"][1]
 
         chat_history = []
         if history:
             chat_history = self.format_history(history)
         # Add the user's prompt to the chat history
-        chat_history.append({"role": "user", "content": [{"text": input, "type": "text"}]})
+        chat_history.append({"role": "user", "content": [{"text": api_input, "type": "text"}]})
         if version:
             model = version
         else:

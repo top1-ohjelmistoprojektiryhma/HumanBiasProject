@@ -22,14 +22,14 @@ class OpenAiApi:
             str: The response from the API
         """
         history = prompt["history"]
-        input = prompt["text"]
+        api_input = prompt["text"]
         version = prompt["model"][1]
 
         chat_history = []
         if history:
             chat_history = self.format_history(history)
         # Add the user's input to the chat history
-        chat_history.append({"role": "user", "content": input})
+        chat_history.append({"role": "user", "content": api_input})
         if version:
             model = version
         else:

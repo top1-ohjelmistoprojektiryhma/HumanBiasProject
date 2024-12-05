@@ -27,10 +27,11 @@ class TestOpenAiApi(unittest.TestCase):
         self.assertEqual(formatted_history, [{"role": "user", "content": "123"}])
     
     def test_get_chat_response_works(self):
-        prompt = "123"
+        text = "123"
         history = [{"role": "user", "text": "456"}]
+        prompt = {"text": text, "model": (None, None), "history": history}
         self._openai_api.client.chat.completions.create = Mock(return_value=Completion("123"))
-        response = self._openai_api.get_chat_response(prompt, history)
+        response = self._openai_api.get_chat_response(prompt)
         self.assertEqual(response, "123")
 
     def test_get_structured_response_works(self):

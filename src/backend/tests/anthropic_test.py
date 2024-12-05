@@ -17,8 +17,9 @@ class TestAnthropicApi(unittest.TestCase):
         self.assertEqual(formatted_history, expected)
 
     def test_get_chat_response_works(self):
-        prompt = "123"
+        text = "123"
         history = [{"role": "user", "text": "456"}]
+        prompt = {"text": text, "model": (None, None), "history": history}
         self._anthropic_api.client.messages.create = Mock(return_value=Mock(content=[Mock(text="123")]))
-        response = self._anthropic_api.get_chat_response(prompt, history)
+        response = self._anthropic_api.get_chat_response(prompt)
         self.assertEqual(response, "123")
