@@ -121,7 +121,6 @@ class Dialog:
             score_summary = structured_output.score_summary
         return output, summary, score, score_summary
 
-
     def update_with_responses(self, responses):
         """Update the dialog with responses
 

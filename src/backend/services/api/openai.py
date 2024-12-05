@@ -10,7 +10,7 @@ class OpenAiApi:
         self.client = openai
         self.client.api_key = self.key
 
-    def get_chat_response(self, prompt, history=None, version=None):
+    def get_chat_response(self, prompt):
         """Sends a prompt to the OpenAI API and returns the response
 
         Args:
@@ -21,11 +21,15 @@ class OpenAiApi:
         Returns:
             str: The response from the API
         """
+        history = prompt["history"]
+        input = prompt["text"]
+        version = prompt["model"][1]
+
         chat_history = []
         if history:
             chat_history = self.format_history(history)
-        # Add the user's prompt to the chat history
-        chat_history.append({"role": "user", "content": prompt})
+        # Add the user's input to the chat history
+        chat_history.append({"role": "user", "content": input})
         if version:
             model = version
         else:

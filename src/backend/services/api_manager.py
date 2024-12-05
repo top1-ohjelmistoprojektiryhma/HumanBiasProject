@@ -69,12 +69,11 @@ class ApiManager:
         model_names = list(model_map.keys())
         for i, prompt in enumerate(prompt_list):
             model = prompt["model"][0]
-            model_version = prompt["model"][1]
             if not model:
                 model_name = model_names[i % len(model_names)]
             else:
                 model_name = model
-            response = model_map[model_name](prompt["text"], prompt["history"], model_version)
+            response = model_map[model_name](prompt)
             response_list.append(
                 {
                     "prompt": prompt,

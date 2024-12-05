@@ -7,7 +7,7 @@ class AnthropicApi:
         self.default_model = default_model
         self.client = anthropic.Anthropic(api_key=self.key)
 
-    def get_chat_response(self, prompt, history=None, version=None):
+    def get_chat_response(self, prompt):
         """Sends a prompt to the OpenAI API and returns the response
 
         Args:
@@ -18,11 +18,15 @@ class AnthropicApi:
         Returns:
             str: The response from the API
         """
+        history = prompt["history"]
+        input = prompt["text"]
+        version = prompt["model"][1]
+
         chat_history = []
         if history:
             chat_history = self.format_history(history)
         # Add the user's prompt to the chat history
-        chat_history.append({"role": "user", "content": [{"text": prompt, "type": "text"}]})
+        chat_history.append({"role": "user", "content": [{"text": input, "type": "text"}]})
         if version:
             model = version
         else:

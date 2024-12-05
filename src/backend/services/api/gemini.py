@@ -9,7 +9,7 @@ class GeminiApi:
         self.default_model = default_model
         genai.configure(api_key=self.key)
 
-    def get_chat_response(self, prompt, history=None, version=None):
+    def get_chat_response(self, prompt):
         """Sends a prompt to the Gemini API and returns the response
 
         Args:
@@ -20,6 +20,9 @@ class GeminiApi:
         Returns:
             str: The response from the API
         """
+        history = prompt["history"]
+        input = prompt["text"]
+        version = prompt["model"][1]
 
         chat_history = []
         if history:
@@ -27,7 +30,7 @@ class GeminiApi:
         text_responses = []
         model = self.init_model(version)
         chat = model.start_chat(history=chat_history)
-        responses = chat.send_message(prompt)
+        responses = chat.send_message(input)
         for chunk in responses:
             text_responses.append(chunk.text)
         return "".join(text_responses)
