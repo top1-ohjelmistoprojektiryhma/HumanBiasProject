@@ -11,15 +11,18 @@ def format_multiple(role_list, prompt, session_format):
         response_list.append(format_single(role, prompt, session_format))
     return response_list
 
-
 def format_single(role, prompt, session_format, structure='raw'):
     role = role if role not in (None, "") else "Yourself"
-    formatted_prompt = PROMPTS["format_single_opening_statement"][
-        session_format
-    ][structure].format(role=str(role), prompt=str(prompt))
 
-    return formatted_prompt
+    if structure == "raw":
+        formatted_prompt = PROMPTS["format_single_opening_statement"][
+            session_format
+        ][structure].format(role=str(role), prompt=str(prompt))
 
+        return formatted_prompt
+    if structure == "structured":
+        return format_statement_class_prompt(prompt, role, session_format, "format_single_opening_statement", None)
+    return "unkown structure"
 
 def format_dialog_prompt_with_unseen(agent, unseen_prompts, session_format, structure='raw'):
     unseen = []
@@ -92,10 +95,6 @@ def format_generate_agents_class_prompt(user_input, current_agents=[],
     prompt = format_structured_prompt(system_prompt, user_input, NewRoles)
 
     return prompt
-
-def format_opening_statement_class_prompt(user_input, role, session_format):
-
-    return format_statement_class_prompt(user_input, role, session_format, "format_single_structured_opening_statement", None)
 
 def format_statement_class_prompt(user_input, role, session_format, statement_type = "format_single_structured_opening_statement", history = None):
 
