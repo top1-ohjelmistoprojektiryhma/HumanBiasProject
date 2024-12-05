@@ -100,8 +100,9 @@ def format_statement_class_prompt(user_input, role, session_format, statement_ty
 
     class Statement(BaseModel):
         response: str
+        main_points_summary: str
         score: int
-        reasoning: str
+        score_summary: str
 
     system_prompt = PROMPTS[statement_type][session_format]["structured"].format(role = str(role))
 

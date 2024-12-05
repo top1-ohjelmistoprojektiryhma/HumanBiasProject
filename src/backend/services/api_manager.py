@@ -40,7 +40,7 @@ class ApiManager:
         self.anthropic_api = anthropic_api
 
     @rate_limiter(500, 86400)
-    def send_prompts(self, prompt_list):
+    def send_prompts(self, prompt_list, structure = "raw"):
         """Sends any number of prompts to available or selected models
 
         Args:
@@ -50,11 +50,17 @@ class ApiManager:
         Returns:
             list: List of dictionaries containing given prompt, model name, and the model's response
         """
-        model_functions = {
-            "gemini": self.gemini_api.get_chat_response if self.gemini_key else None,
-            "openai": self.openai_api.get_chat_response if self.openai_key else None,
-            "anthropic": self.anthropic_api.get_chat_response if self.anthropic_key else None
-        }
+
+        if structure == "structured":
+            model_functions = {
+                "openai": self.openai_api.get_structured_response if self.openai_key else None,
+            }
+        if structure == "raw":
+            model_functions = {
+                "gemini": self.gemini_api.get_chat_response if self.gemini_key else None,
+                "openai": self.openai_api.get_chat_response if self.openai_key else None,
+                "anthropic": self.anthropic_api.get_chat_response if self.anthropic_key else None
+            }
         # Filter out None values
         model_map = {model: func for model, func in model_functions.items() if func is not None}
         if not model_map:
