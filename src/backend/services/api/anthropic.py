@@ -1,4 +1,5 @@
 import anthropic
+from .helpers import get_prompt_fields
 
 
 class AnthropicApi:
@@ -17,21 +18,9 @@ class AnthropicApi:
         Returns:
             str: The response from the API
         """
-        history = prompt["history"]
-        api_input = prompt["text"]
-        version = prompt["model"][1]
-
-        chat_history = []
-        if history:
-            chat_history = self.format_history(history)
-        # Add the user's prompt to the chat history
-        chat_history.append({"role": "user", "content": [{"text": api_input, "type": "text"}]})
-        if version:
-            model = version
-        else:
-            model = self.default_model
+        version, chat_history = self.extract_prompt_elements(prompt)
         message = self.client.messages.create(
-            model=model,
+            model=version,
             messages=chat_history,
             max_tokens=1000,
             system = """
@@ -68,3 +57,25 @@ class AnthropicApi:
             )
         return formatted_history
         #pylint: enable=duplicate-code
+
+    def extract_prompt_elements(self, prompt):
+        """Extracts the prompt elements from the prompt dictionary
+
+        Args:
+            prompt (dict): The prompt dictionary
+
+        Returns:
+            tuple: The model, system prompt, user input, response format, and history
+        """
+        version, system_prompt, user_input, response_format, history = get_prompt_fields(prompt)
+        if not version:
+            version = self.default_model
+
+        # if history exists, format it and add system prompt and user input
+        if history:
+            history = self.format_history(history)
+        else:
+            history = []
+        history.append({"role": "user", "content": [{"text": user_input, "type": "text"}]})
+
+        return version, history

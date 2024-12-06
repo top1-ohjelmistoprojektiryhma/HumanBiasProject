@@ -1,4 +1,5 @@
 import openai
+from .helpers import get_prompt_fields
 
 
 class OpenAiApi:
@@ -88,16 +89,9 @@ class OpenAiApi:
         Returns:
             tuple: The model, system prompt, user input, response format, and history
         """
-        # check if model, system_prompt, user_input, response_format, and history are in the prompt
-        model = prompt.get("model", None)
-        if model and model[1]:
-            version = model[1]
-        else:
+        version, system_prompt, user_input, response_format, history = get_prompt_fields(prompt)
+        if not version:
             version = self.default_model
-        system_prompt = prompt.get("system_prompt", None)
-        user_input = prompt.get("text", "")
-        response_format = prompt.get("response_format", None)
-        history = prompt.get("history", None)
 
         # if history exists, format it and add system prompt and user input
         if history:

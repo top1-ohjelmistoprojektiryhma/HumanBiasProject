@@ -1,4 +1,5 @@
 import google.generativeai as genai
+from .helpers import get_prompt_fields
 
 
 class GeminiApi:
@@ -19,16 +20,10 @@ class GeminiApi:
         Returns:
             str: The response from the API
         """
-        history = prompt["history"]
-        api_input = prompt["text"]
-        version = prompt["model"][1]
-
-        chat_history = []
-        if history:
-            chat_history = self.format_history(history)
+        version, history, api_input = self.extract_prompt_elements(prompt)
         text_responses = []
         model = self.init_model(version)
-        chat = model.start_chat(history=chat_history)
+        chat = model.start_chat(history=history)
         responses = chat.send_message(api_input)
         for chunk in responses:
             text_responses.append(chunk.text)
@@ -56,3 +51,24 @@ class GeminiApi:
         if version:
             return genai.GenerativeModel(version)
         return genai.GenerativeModel(self.default_model)
+
+    def extract_prompt_elements(self, prompt):
+        """Extracts the prompt elements from the prompt dictionary
+
+        Args:
+            prompt (dict): The prompt dictionary
+
+        Returns:
+            tuple: The model, system prompt, user input, response format, and history
+        """
+        version, system_prompt, user_input, response_format, history = get_prompt_fields(prompt)
+        if not version:
+            version = self.default_model
+
+        # if history exists, format it and add system prompt and user input
+        if history:
+            history = self.format_history(history)
+        else:
+            history = []
+
+        return version, history, user_input
