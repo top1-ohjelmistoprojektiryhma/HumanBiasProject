@@ -114,6 +114,7 @@ class Dialog:
             output = re.sub(r"<\s*.*?\s*>", "", response["output"]).strip()
             output = re.sub(r"\|\d+/10\||\|\|.*?\|\|", "", output).strip()
         else:
+            # if response is structured (not yet implemented)
             structured_output = response["output"]
             output = structured_output.response
             summary = structured_output.main_point_summary

@@ -116,7 +116,7 @@ class ServiceHandler:
         """
         if role_list:
             if len(role_list) >= desired_number_of_agents:
-                # If there are more generated agents than requested, truncate to the requested number
+                # If more agents are generated than needed, add only the desired number
                 self.add_multiple_agents(role_list[:desired_number_of_agents])
                 # Extract agents from agent manager
                 return str(self.get_all_agent_roles_as_list())

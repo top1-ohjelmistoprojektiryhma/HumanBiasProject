@@ -15,12 +15,12 @@ class GeminiApi:
         Args:
             prompt (dict): parameters related to prompt:
             {"text": prompt, "model": (model, version), "history": history, "agent_object": agent}
-            
+
         Returns:
             str: The response from the API
         """
         history = prompt["history"]
-        input = prompt["text"]
+        api_input = prompt["text"]
         version = prompt["model"][1]
 
         chat_history = []
@@ -29,7 +29,7 @@ class GeminiApi:
         text_responses = []
         model = self.init_model(version)
         chat = model.start_chat(history=chat_history)
-        responses = chat.send_message(input)
+        responses = chat.send_message(api_input)
         for chunk in responses:
             text_responses.append(chunk.text)
         return "".join(text_responses)

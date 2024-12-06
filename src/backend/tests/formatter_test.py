@@ -118,9 +118,9 @@ class TestFormatter(unittest.TestCase):
         system_prompt = "Your job is from a neutral perspective to categorize the biases found in the following summary. Aim to find multiple distinct biases and provide differing severity ratings on a scale of 1 to 10 based on how severe the social impact of the given bias would be. Avoid giving the same rating for multiple biases."
         
         expected_output = {
-            "model": "gpt-4o-2024-08-06",
+            "model": ("openai", "gpt-4o-2024-08-06"),
             "system_prompt": system_prompt,
-            "user_input": user_input,
+            "text": user_input,
             "response_format": dict_output["response_format"],
             "history": None,
         }

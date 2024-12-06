@@ -21,7 +21,12 @@ def format_single(role, prompt, session_format, structure='raw'):
 
         return formatted_prompt
     if structure == "structured":
-        return format_statement_class_prompt(prompt, role, session_format, "format_single_opening_statement", None)
+        return format_statement_class_prompt(
+            prompt,
+            role, session_format,
+            "format_single_opening_statement",
+            None
+        )
     return "unkown structure"
 
 def format_dialog_prompt_with_unseen(agent, unseen_prompts, session_format, structure='raw'):
@@ -42,7 +47,6 @@ def format_output_summary(dialog_data, session_format):
     return PROMPTS["format_output_summary"][session_format].format(
         dialog_data=str(dialog_data)
     )
-
 
 def format_bias(dialog_data):
     return PROMPTS["format_get_bias"].format(dialog_data=str(dialog_data))
@@ -96,7 +100,12 @@ def format_generate_agents_class_prompt(user_input, current_agents=[],
 
     return prompt
 
-def format_statement_class_prompt(user_input, role, session_format, statement_type = "format_single_structured_opening_statement", history = None):
+def format_statement_class_prompt(
+        user_input,
+        role,
+        session_format,
+        statement_type = "format_single_structured_opening_statement",
+        history = None):
 
     class Statement(BaseModel):
         response: str
@@ -129,7 +138,7 @@ def format_bias_class_prompt(user_input):
 def format_structured_prompt(system_prompt,
                              user_input,
                              response_format,
-                             model="gpt-4o-2024-08-06",
+                             model=("openai", "gpt-4o-2024-08-06"),
                              history=None):
     """
     Formats a prompt for the OpenAI API with structured response
@@ -152,7 +161,7 @@ def format_structured_prompt(system_prompt,
     prompt = {
         "model": model,
         "system_prompt": system_prompt,
-        "user_input": user_input,
+        "text": user_input,
         "response_format": response_format,
         "history": history,
     }

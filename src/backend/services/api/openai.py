@@ -19,21 +19,9 @@ class OpenAiApi:
         Returns:
             str: The response from the API
         """
-        history = prompt["history"]
-        api_input = prompt["text"]
-        version = prompt["model"][1]
-
-        chat_history = []
-        if history:
-            chat_history = self.format_history(history)
-        # Add the user's input to the chat history
-        chat_history.append({"role": "user", "content": api_input})
-        if version:
-            model = version
-        else:
-            model = self.default_model
+        version, history, _ = self.extract_prompt_elements(prompt)
         completion = self.client.chat.completions.create(
-            model=model, messages=chat_history
+            model=version, messages=history
         )
         return completion.choices[0].message.content
 
@@ -77,18 +65,47 @@ class OpenAiApi:
         Returns:
             class: KnownBiases{Baias: {bias_name: str, bias_severity: int, reasoning: str}}
         """
+        version, history, response_format = self.extract_prompt_elements(prompt)
 
         client = self.client.OpenAI()
 
         completion = client.beta.chat.completions.parse(
-        model=prompt["model"],
-        messages=[
-            {"role": "system", "content": prompt["system_prompt"]},
-            {"role": "user", "content": prompt["user_input"]}
-        ],
-        response_format=prompt["response_format"],
+        model=version,
+        messages=history,
+        response_format=response_format,
         )
 
         biases = completion.choices[0].message.parsed
 
         return biases
+
+    def extract_prompt_elements(self, prompt):
+        """Extracts the prompt elements from the prompt dictionary
+
+        Args:
+            prompt (dict): The prompt dictionary
+
+        Returns:
+            tuple: The model, system prompt, user input, response format, and history
+        """
+        # check if model, system_prompt, user_input, response_format, and history are in the prompt
+        model = prompt.get("model", None)
+        if model and model[1]:
+            version = model[1]
+        else:
+            version = self.default_model
+        system_prompt = prompt.get("system_prompt", None)
+        user_input = prompt.get("text", "")
+        response_format = prompt.get("response_format", None)
+        history = prompt.get("history", None)
+
+        # if history exists, format it and add system prompt and user input
+        if history:
+            history = self.format_history(history)
+        else:
+            history = []
+        if system_prompt:
+            history.append({"role": "system", "content": system_prompt})
+        history.append({"role": "user", "content": user_input})
+
+        return version, history, response_format
