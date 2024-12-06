@@ -13,10 +13,9 @@ class GeminiApi:
         """Sends a prompt to the Gemini API and returns the response
 
         Args:
-            prompt (str): The prompt to send to the API
-            history (list, optional): A list of previous messages of form:
-            {"parts": [{"text": message}], "role": user/model}
-
+            prompt (dict): parameters related to prompt:
+            {"text": prompt, "model": (model, version), "history": history, "agent_object": agent}
+            
         Returns:
             str: The response from the API
         """

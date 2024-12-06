@@ -11,9 +11,8 @@ class AnthropicApi:
         """Sends a prompt to the OpenAI API and returns the response
 
         Args:
-            prompt (str): The prompt to send to the API
-            history (list, optional): A list of previous messages of form:
-            {"role": user/assistant, "content": [{"text": message, "type": "text"}]}
+            prompt (dict): parameters related to prompt:
+            {"text": prompt, "model": (model, version), "history": history, "agent_object": agent}
 
         Returns:
             str: The response from the API

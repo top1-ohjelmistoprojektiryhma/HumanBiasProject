@@ -45,7 +45,8 @@ class ApiManager:
 
         Args:
             prompt_list (list): List of dictionaries: 
-            [{"text": prompt, "model": model_name, "history": history, "agent_object": agent}]
+            [{"text": prompt, "model": (model, version), "history": history, "agent_object": agent}]
+            structure (str): "raw" or "structured" to specify the type of response (raw text / structured output)
 
         Returns:
             list: List of dictionaries containing given prompt, model name, and the model's response
