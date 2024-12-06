@@ -65,7 +65,7 @@ class AnthropicApi:
             prompt (dict): The prompt dictionary
 
         Returns:
-            tuple: The model, system prompt, user input, response format, and history
+            tuple: The model and history
         """
         version, system_prompt, user_input, response_format, history = get_prompt_fields(prompt)
         if not version:

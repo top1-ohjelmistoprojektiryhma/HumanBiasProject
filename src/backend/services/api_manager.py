@@ -55,12 +55,12 @@ class ApiManager:
 
         if structure == "structured":
             model_functions = {
-                "openai": self.openai_api.get_structured_response if self.openai_key else None,
+                "openai": self.openai_api.get_response if self.openai_key else None,
             }
         if structure == "raw":
             model_functions = {
                 "gemini": self.gemini_api.get_chat_response if self.gemini_key else None,
-                "openai": self.openai_api.get_chat_response if self.openai_key else None,
+                "openai": self.openai_api.get_response if self.openai_key else None,
                 "anthropic": self.anthropic_api.get_chat_response if self.anthropic_key else None
             }
         # Filter out None values
@@ -85,24 +85,6 @@ class ApiManager:
             )
 
         return response_list
-
-    def send_structured_prompt(self, prompt):
-        """"
-        Sends a prompt to the OpenAI API and returns the response structured as a Class object
-
-        Args:
-            prompt (dict): The structured prompt to send to the API:
-                {"text": prompt, "model": model_name, "history": history, "agent_object": agent}
-
-        Returns:
-            dict: The response from the API structured as a Class object
-        """
-        if "openai" not in self.available_models():
-            return None
-
-        biases = self.openai_api.get_structured_response(prompt)
-
-        return biases
 
     def available_models(self):
         """Returns a list of available models"""

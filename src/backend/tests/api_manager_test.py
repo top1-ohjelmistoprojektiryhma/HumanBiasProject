@@ -70,12 +70,3 @@ class TestApiManager(unittest.TestCase):
         self._api_manager.openai_key = None
         self._api_manager.anthropic_key = None
         self.assertEqual(self._api_manager.available_models(), [])
-
-    def test_send_structured_prompt_works(self):
-        self._api_manager.openai_api.get_structured_response.return_value = "Works"
-        result = self._api_manager.send_structured_prompt({"text": "prompt"})
-        self.assertEqual(result, "Works")
-
-    def test_send_structured_prompt_returns_none_if_no_openai_key(self):
-        self._api_manager.openai_key = None
-        self.assertIsNone(self._api_manager.send_structured_prompt({"text": "prompt"}))

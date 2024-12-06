@@ -59,8 +59,7 @@ class GeminiApi:
             prompt (dict): The prompt dictionary
 
         Returns:
-            tuple: The model, system prompt, user input, response format, and history
-        """
+            tuple: The model, history, and user input"""
         version, system_prompt, user_input, response_format, history = get_prompt_fields(prompt)
         if not version:
             version = self.default_model

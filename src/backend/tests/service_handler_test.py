@@ -125,7 +125,7 @@ class TestServiceHandler(unittest.TestCase):
         test_text = "Generate new agents based on this input."
         self._mock_api_manager.available_models.return_value = []
         self._mock_agent_manager.list_of_agents = []
-        self._mock_api_manager.send_structured_prompt.return_value = ExampleObject()
+        self._mock_api_manager.send_prompts.return_value = [{"output": ExampleObject()}]
         response = self._handler.generate_agents(test_text)
         self.assertEqual(
             response, {"perspectives": [], "response": "trying to add 0 agents"}
@@ -145,8 +145,7 @@ class TestServiceHandler(unittest.TestCase):
         agent.role_description = "Student"
 
         biases.roles = [agent, agent, agent]
-        self._mock_api_manager.send_structured_prompt.return_value = biases
-
+        self._mock_api_manager.send_prompts.return_value = [{"output": biases}]
         response = self._handler.generate_agents(test_text)
         self.assertEqual(response["response"], "['Student', 'Student', 'Student']")
         self.assertEqual(response["perspectives"], ["Student"] * 3)
@@ -165,7 +164,7 @@ class TestServiceHandler(unittest.TestCase):
         agent.role_description = "Student"
 
         biases.roles = [agent, agent, agent]
-        self._mock_api_manager.send_structured_prompt.return_value = biases
+        self._mock_api_manager.send_prompts.return_value = [{"output": biases}]
 
         response = self._handler.generate_agents(test_text, 1)
         self._mock_agent_manager.add_agent.assert_called_with("Student")
@@ -208,7 +207,7 @@ class TestServiceHandler(unittest.TestCase):
 
         call_arg = [{
             "text": "Summarize the following document to a shorter length of around 2 words. Aim to convey the original tone of the author and the main points of the text. This is a sentence.",
-            "model": ("openai", None),
+            "model": ("openai", "gpt-4o-mini"),
             "history": None
             }]
         self._handler.get_summarised_text(test_text, 10)
@@ -263,7 +262,7 @@ class TestServiceHandler(unittest.TestCase):
 
     def test_get_bias_class_from_ai(self):
         text = "Test text"
-        self._mock_api_manager.send_structured_prompt.return_value = "Response text"
+        self._mock_api_manager.send_prompts.return_value = [{"output": "Response text"}]
         result = self._handler.get_bias_class_from_ai(text)
         self.assertEqual("Response text", result)
 

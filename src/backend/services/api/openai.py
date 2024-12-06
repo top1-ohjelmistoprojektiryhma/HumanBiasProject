@@ -11,20 +11,37 @@ class OpenAiApi:
         self.client = openai
         self.client.api_key = self.key
 
-    def get_chat_response(self, prompt):
+    def get_response(self, prompt):
         """Sends a prompt to the OpenAI API and returns the response
 
         Args:
-            prompt (dict): parameters related to prompt:
-            {"text": prompt, "model": (model, version), "history": history, "agent_object": agent}
+            prompt (dict): The structured prompt to send to the API:
+            {
+            "model": (model, version),
+            "system_prompt": str (optional),
+            "user_input": str,
+            "response_format": class (optional),
+            "history": list of previous messages (optional)
+            }
+
         Returns:
-            str: The response from the API
+            str or class: The response from the API, either as a string or a structured class
         """
-        version, history, _ = self.extract_prompt_elements(prompt)
-        completion = self.client.chat.completions.create(
-            model=version, messages=history
-        )
-        return completion.choices[0].message.content
+        version, history, response_format = self.extract_prompt_elements(prompt)
+
+        if response_format:
+            completion = self.client.beta.chat.completions.parse(
+                model=version,
+                messages=history,
+                response_format=response_format,
+            )
+            return completion.choices[0].message.parsed
+        else:
+            completion = self.client.chat.completions.create(
+                model=version,
+                messages=history,
+            )
+            return completion.choices[0].message.content
 
     def format_history(self, history):
         """Formats the chat history
@@ -50,36 +67,6 @@ class OpenAiApi:
         return formatted_history
         #pylint: enable=duplicate-code
 
-    def get_structured_response(self, prompt):
-        """Sends a structured prompt to the OpenAI API and returns the response
-
-        Args:
-            prompt (dict): The structured prompt to send to the API:
-            {
-            "model": "gpt-4o-2024-08-06",
-            "system_prompt": str,
-            "user_input": str,
-            "response_format": class
-            "history": None (for initial implementation)
-            }
-    }
-        Returns:
-            class: KnownBiases{Baias: {bias_name: str, bias_severity: int, reasoning: str}}
-        """
-        version, history, response_format = self.extract_prompt_elements(prompt)
-
-        client = self.client.OpenAI()
-
-        completion = client.beta.chat.completions.parse(
-        model=version,
-        messages=history,
-        response_format=response_format,
-        )
-
-        biases = completion.choices[0].message.parsed
-
-        return biases
-
     def extract_prompt_elements(self, prompt):
         """Extracts the prompt elements from the prompt dictionary
 
@@ -87,7 +74,7 @@ class OpenAiApi:
             prompt (dict): The prompt dictionary
 
         Returns:
-            tuple: The model, system prompt, user input, response format, and history
+            tuple: Version of the model, history, and response format
         """
         version, system_prompt, user_input, response_format, history = get_prompt_fields(prompt)
         if not version:

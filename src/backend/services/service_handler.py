@@ -85,12 +85,11 @@ class ServiceHandler:
                 {"response": str, "perspectives": list}
         """
         text = str(text)
-        agent_class_prompt = formatter.format_generate_agents_class_prompt(
+        openai_prompts = [formatter.format_generate_agents_class_prompt(
             text, self.get_all_agent_roles_as_list(), desired_number_of_agents
-        )
-
-        api_response = self.api_manager.send_structured_prompt(agent_class_prompt)
-        print(api_response)
+        )]
+        api_response = self.api_manager.send_prompts(openai_prompts)[0]["output"]
+        print(f"GENERATED AGENTS WITH SEND PROMPTS RESPONSE: {api_response}")
         role_list = formatter.new_roles_to_list_of_roles(
             api_response, desired_number_of_agents
         )
@@ -144,7 +143,7 @@ class ServiceHandler:
             # Check if OpenAI model is available for summarization
             if "openai" in self.api_manager.available_models():
                 input_list = [
-                    {"text": summary_api_input, "model": ("openai", None), "history": None}
+                    {"text": summary_api_input, "model": ("openai", "gpt-4o-mini"), "history": None}
                 ]
                 return self.api_manager.send_prompts(input_list)[0]["output"]
         return None
@@ -235,10 +234,10 @@ class ServiceHandler:
         Returns:
             class: KnownBiases: {Bias: {bias_name: str, bias_severity: int, reasoning: str}}
         """
-        prompt = formatter.format_bias_class_prompt(text)
+        api_prompts = [formatter.format_bias_class_prompt(text)]
 
-        response = self.api_manager.send_structured_prompt(prompt)
-        return response
+        api_response = self.api_manager.send_prompts(api_prompts)[0]["output"]
+        return api_response
 
     def add_multiple_agents(self, list_of_roles):
         for role in list_of_roles:
