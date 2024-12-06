@@ -10,7 +10,7 @@ def get_prompt_fields(prompt):
     # check if model, system_prompt, user_input, response_format, and history are in the prompt
     model = prompt.get("model", None)
     version = None
-    if model:
+    if isinstance(model, tuple):
         version = model[1]
     system_prompt = prompt.get("system_prompt", None)
     user_input = prompt.get("text", "")
