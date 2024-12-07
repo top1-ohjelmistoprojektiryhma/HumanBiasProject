@@ -101,8 +101,9 @@ class TestDialog(unittest.TestCase):
                 "prompt": {
                     "agent_object": self.test_agents[0],
                     "text": "This is the prompt text",
+                    "structure": "raw"
                 },
-                "model": "openai",
+                "model": ("openai", "version"),
                 "output": "This is the model output",
                 "summary": "This is the model summary",
             },
@@ -110,8 +111,9 @@ class TestDialog(unittest.TestCase):
                 "prompt": {
                     "agent_object": self.test_agents[1],
                     "text": "This is the prompt text",
+                    "structure": "raw"
                 },
-                "model": "gemini",
+                "model": ("gemini", "version"),
                 "output": "This is the model output",
                 "summary": "This is the model summary",
             },
@@ -129,16 +131,18 @@ class TestDialog(unittest.TestCase):
                 "prompt": {
                     "agent_object": self.test_agents[0],
                     "text": "This is the prompt text",
+                    "structure": "raw"
                 },
-                "model": "openai",
+                "model": ("openai", "version"),
                 "output": "This is the model output |2/10| ||summary||",
             },
             {
                 "prompt": {
                     "agent_object": self.test_agents[1],
                     "text": "This is the prompt text",
+                    "structure": "raw"
                 },
-                "model": "gemini",
+                "model": ("gemini", "version"),
                 "output": "This is the model output |8/10| ||summary||",
             },
         ]
