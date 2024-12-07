@@ -28,22 +28,19 @@ class OpenAiApi:
             str or class: The response from the API, either as a string or a structured class
         """
         version, history, response_format = self.extract_prompt_elements(prompt)
-        print(f"history: {history}")
         if response_format:
             completion = self.client.beta.chat.completions.parse(
                 model=version,
                 messages=history,
                 response_format=response_format,
             )
-            print(f"structured response: {completion.choices[0].message.parsed}")
-            return completion.choices[0].message.parsed
+            return completion.choices[0].message.parsed, version
         else:
             completion = self.client.chat.completions.create(
                 model=version,
                 messages=history,
             )
-            print(f"raw response: {completion.choices[0].message.content}")
-            return completion.choices[0].message.content
+            return completion.choices[0].message.content, version
 
     def format_history(self, history):
         """Formats the chat history
@@ -59,8 +56,10 @@ class OpenAiApi:
         for message in history:
             if message["role"] == "user":
                 role = "user"
-            else:
+            elif message["role"] == "model":
                 role = "assistant"
+            else:
+                role = "system"
             formatted_history.append(
                 {
                     "role": role, "content": message["text"]

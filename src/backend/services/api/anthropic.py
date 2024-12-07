@@ -31,7 +31,7 @@ class AnthropicApi:
             temperature=1.0
         )
         response = "".join([content.text for content in message.content])
-        return response
+        return response, version
 
     def format_history(self, history):
         """Formats the chat history

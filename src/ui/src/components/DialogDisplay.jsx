@@ -101,7 +101,7 @@ const DialogDisplay = ({ dialogId, dialog }) => {
                     </span>
                     {expandedInfo[roundId]?.[index] && (
                       <div>
-                        <strong>Model:</strong> {prompt.model} <br />
+                        <strong>Model:</strong> {prompt.model[0]}, {prompt.model[1]} <br />
                         <strong>Input:</strong> {formatText(prompt.input)}
                       </div>
                     )}

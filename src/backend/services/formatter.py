@@ -5,10 +5,10 @@ with open("prompts.json", "r", encoding="utf-8") as file:
     PROMPTS = json.load(file)
 
 
-def format_multiple(role_list, prompt, session_format):
+def format_multiple(role_list, prompt, session_format, structure='structured'):
     response_list = []
     for role in role_list:
-        response_list.append(format_single(role, prompt, session_format))
+        response_list.append(format_single(role, prompt, session_format, structure))
     return response_list
 
 def format_single(role, prompt, session_format, structure='structured'):
@@ -20,6 +20,7 @@ def format_single(role, prompt, session_format, structure='structured'):
         ][structure].format(role=str(role), prompt=str(prompt))
         prompt = {
             "text": formatted_prompt,
+            "structure": "raw"
         }
         return prompt
 
@@ -46,7 +47,8 @@ def format_dialog_prompt_with_unseen(agent, unseen_prompts, session_format, stru
 
     if structure == "raw":
         return  {
-            "text": raw_prompt
+            "text": raw_prompt,
+            "structure": "raw"
         }
     
     if structure == "structured":
@@ -57,7 +59,6 @@ def format_dialog_prompt_with_unseen(agent, unseen_prompts, session_format, stru
             unseen
         )
     return "unknown structure"
-        
 
 def format_output_summary(dialog_data, session_format):
     return PROMPTS["format_output_summary"][session_format].format(
@@ -90,7 +91,6 @@ def new_roles_to_list_of_roles(new_roles, desired_lenght):
     return output_list
 
 def agent_class_to_str(role):
-
     name = None
     if hasattr(role, 'role_description'):
         name = str(role.role_description)
@@ -202,6 +202,7 @@ def format_structured_prompt(system_prompt,
         "system_prompt": system_prompt,
         "text": user_input,
         "response_format": response_format,
+        "structure": "structured"
     }
 
     return prompt

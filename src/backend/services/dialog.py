@@ -31,7 +31,7 @@ class Dialog:
         self.session_format = session_format
         self.history = []
 
-    def initial_prompts(self, text, agent_list=None):
+    def initial_prompts(self, text, agent_list=None, structure="structured"):
         """Get the initial prompts for the dialog
 
         Args:
@@ -39,7 +39,7 @@ class Dialog:
         if not agent_list:
             agent_list = list(self.agents.keys())
         input_list = formatter.format_multiple(
-            [agent.role for agent in agent_list], text, self.session_format
+            [agent.role for agent in agent_list], text, self.session_format, structure=structure
         )
         prompt_list = []
         # Format the prompts into a list of dictionaries with agent roles and prompts
@@ -53,19 +53,20 @@ class Dialog:
                 "system_prompt": system_prompt,
                 "response_format": response_format,
                 "agent": agent_list[i],
+                "structure": prompt["structure"]
             })
         return prompt_list
 
-    def get_prompts(self):
+    def get_prompts(self, structure="structured"):
         """Get the prompts for the next round of the dialog"""
         if not self.rounds:
-            prompts_list = self.initial_prompts(self.initial_prompt)
+            prompts_list = self.initial_prompts(self.initial_prompt, structure=structure)
         else:
             next_agent = self.get_next_agent()
             unseen_prompts = next_agent.get_unseen_prompts()
             next_agent.reset_unseen_list()
             prompts_list = [formatter.format_dialog_prompt_with_unseen(
-                next_agent, unseen_prompts, self.session_format, structure="structured"
+                next_agent, unseen_prompts, self.session_format, structure=structure
             )]
             prompts_list[0]["agent"] = next_agent
         api_input_list = []
@@ -83,6 +84,7 @@ class Dialog:
                     "response_format": response_format,
                     "history": prompt["agent"].get_chat_history(),
                     "agent_object": prompt["agent"],
+                    "structure": prompt["structure"]
                 }
             )
         return api_input_list
@@ -137,6 +139,30 @@ class Dialog:
             score = structured_output.score
             score_summary = structured_output.score_summary
         return output, summary, score, score_summary
+    
+    def get_summarised_initial_prompt(self, response):
+        """Get the summarised initial prompt for the dialog
+
+        Args:
+            response (dict): prompt, model and output from the API
+
+        Returns:
+            str: The summarised initial prompt for the dialog"""
+        
+        structure = response["prompt"]["structure"]
+        if structure == "structured":
+            if response["prompt"]["model"][0] == "openai":
+                api_input = self.initial_prompts(
+                    self.summarised_prompt,
+                    [response["prompt"]["agent_object"]],
+                    structure="structured"
+                )[0]["system_prompt"]
+        else:
+            api_input = self.initial_prompts(
+                self.summarised_prompt,
+                [response["prompt"]["agent_object"]]
+            )[0]["text"]
+        return api_input
 
     def update_with_responses(self, responses):
         """Update the dialog with responses
@@ -148,14 +174,18 @@ class Dialog:
         prompts = []
         for response in responses:
             output, summary, score, score_summary = self.extract_response_elements(response)
+            system_prompt = response["prompt"].get("system_prompt", None)
+            user_input = response["prompt"].get("text", "")
+            structure = response["prompt"]["structure"]
             # Change history input to summarised prompt if needed
             if len(self.rounds) == 0 and self.summarised_prompt:
-                api_input = self.initial_prompts(
-                    self.summarised_prompt,
-                    [response["prompt"]["agent_object"]]
-                )[0]["text"]
+                api_input = self.get_summarised_initial_prompt(response)
             else:
-                api_input = response["prompt"]["text"]
+                if structure == "structured":
+                    if response["prompt"]["model"][0] == "openai":
+                        api_input = response["prompt"]["system_prompt"]
+                else:
+                    api_input = response["prompt"]["text"]
 
             # Store the response and add to history
             prompts.append(
@@ -169,18 +199,24 @@ class Dialog:
                     "score_summary": score_summary,
                 }
             )
-            response["prompt"]["agent_object"].add_chat_to_history(
-                [
+            # Form the history based on the structure and model
+            if structure == "raw":
+                history = [
                     {"role": "user", "text": api_input},
                     {"role": "model", "text": str(response["output"])},
                 ]
-            )
+            elif response["model"][0] == "openai":
+                history = [
+                    {"role": "system", "text": system_prompt},
+                    {"role": "user", "text": user_input},
+                    {"role": "model", "text": str(response["output"])},
+                ]
+            response["prompt"]["agent_object"].add_chat_to_history(history)
 
             # Set model if unset
             if self.agents[response["prompt"]["agent_object"]]["model"] is None:
                 self.agents[response["prompt"]["agent_object"]]["model"] = response[
-                    "model"
-                ]
+                    "model"][0]
 
         self.add_round(len(self.rounds) + 1, prompts)
         for agent_obj in self.agents:

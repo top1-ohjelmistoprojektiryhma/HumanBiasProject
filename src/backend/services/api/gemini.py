@@ -27,7 +27,7 @@ class GeminiApi:
         responses = chat.send_message(api_input)
         for chunk in responses:
             text_responses.append(chunk.text)
-        return "".join(text_responses)
+        return "".join(text_responses), version
 
     def format_history(self, history):
         """Formats the chat history
