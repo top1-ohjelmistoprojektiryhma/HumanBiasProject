@@ -24,9 +24,6 @@ import {
   fetchSummary,
   fetchPromptSummary,
 } from './api.js';
-import FormatStep from './components/FormatStep.jsx';
-import InputStep from './components/InputStep.jsx';
-import AgentStep from './components/AgentStep.jsx';
 
 const App = () => {
   const [response, setResponse] = useState('');
@@ -45,7 +42,6 @@ const App = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [chartData, setChartData] = useState({});
   const [showChart, setShowChart] = useState(false);
-  const [summaryEnabled, setSummaryEnabled] = useState(false);
   const [biasData, setBiasData] = useState({});
   const [formData, setFormData] = useState({
     text: '',
@@ -55,7 +51,8 @@ const App = () => {
     formatOptions: [],
     selectedFormat: '',
     agentOptions: [],
-    selectedAgents: []
+    selectedAgents: [],
+    summaryEnabled: false,
   });
 
 
@@ -233,6 +230,7 @@ const App = () => {
     }
     setDisplayedSession(0);
     setSummary('');
+    let summaryEnabled = formData.summaryEnabled;
     const requestData = {
       prompt: promptContent,
       perspective: formData.selectedAgents,
@@ -300,7 +298,7 @@ const App = () => {
   const handleContinue = async () => {
     setLoading(true);
     try {
-      const data = await continueSession(displayedSession, summaryEnabled, comment);
+      const data = await continueSession(displayedSession, formData.summaryEnabled, comment);
       const newSessionId = data.session_id;
       const newDialog = data.dialog;
       const scores = collectScores(newDialog, chartData);
@@ -397,10 +395,6 @@ const App = () => {
             <div className="centered-column">
               {!dialogStarted && (
                 <>
-                  <SummaryToggle
-                    summaryEnabled={summaryEnabled}
-                    setSummaryEnabled={setSummaryEnabled}
-                  />
                   {error && <div className="error-message">{error}</div>}
                 </>
               )}

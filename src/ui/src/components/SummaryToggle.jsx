@@ -1,8 +1,11 @@
 import React from 'react';
 
-const SummaryToggle = ({ summaryEnabled, setSummaryEnabled }) => {
+const SummaryToggle = ({ formData, setFormData }) => {
   const handleToggle = () => {
-    setSummaryEnabled((prev) => !prev);
+    setFormData({
+      ...formData,
+      summaryEnabled: !formData.summaryEnabled,
+    });
   };
 
   return (
@@ -12,7 +15,7 @@ const SummaryToggle = ({ summaryEnabled, setSummaryEnabled }) => {
         <input
           id="summary-toggle-checkbox"
           type="checkbox"
-          checked={summaryEnabled}
+          checked={formData.summaryEnabled}
           onChange={handleToggle}
         />
         <span className="slider"></span>
