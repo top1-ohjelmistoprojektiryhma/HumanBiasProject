@@ -11,25 +11,27 @@ def format_multiple(role_list, prompt, session_format):
         response_list.append(format_single(role, prompt, session_format))
     return response_list
 
-def format_single(role, prompt, session_format, structure='raw'):
+def format_single(role, prompt, session_format, structure='structured'):
     role = role if role not in (None, "") else "Yourself"
 
     if structure == "raw":
         formatted_prompt = PROMPTS["format_single_opening_statement"][
             session_format
         ][structure].format(role=str(role), prompt=str(prompt))
+        prompt = {
+            "text": formatted_prompt,
+        }
+        return prompt
 
-        return formatted_prompt
     if structure == "structured":
         return format_statement_class_prompt(
             prompt,
             role, session_format,
-            "format_single_opening_statement",
-            None
+            "format_single_opening_statement"
         )
-    return "unkown structure"
+    return "unknown structure"
 
-def format_dialog_prompt_with_unseen(agent, unseen_prompts, session_format, structure='raw'):
+def format_dialog_prompt_with_unseen(agent, unseen_prompts, session_format, structure='structured'):
     unseen = []
     for prompt in unseen_prompts:
         unseen.append(
@@ -38,10 +40,24 @@ def format_dialog_prompt_with_unseen(agent, unseen_prompts, session_format, stru
             )
         )
 
-    formatted_prompt = PROMPTS["format_dialog_prompt_with_unseen"][
+    raw_prompt = PROMPTS["format_dialog_prompt_with_unseen"][
         session_format
-    ][structure].format(role=str(agent.role), unseen=str(unseen))
-    return formatted_prompt
+    ]["raw"].format(role=str(agent.role), unseen=str(unseen))
+
+    if structure == "raw":
+        return  {
+            "text": raw_prompt
+        }
+    
+    if structure == "structured":
+        return format_unseen_class_prompt(
+            agent.role,
+            session_format,
+            "format_dialog_prompt_with_unseen",
+            unseen
+        )
+    return "unknown structure"
+        
 
 def format_output_summary(dialog_data, session_format):
     return PROMPTS["format_output_summary"][session_format].format(
@@ -104,19 +120,44 @@ def format_statement_class_prompt(
         user_input,
         role,
         session_format,
-        statement_type = "format_single_structured_opening_statement",
-        history = None):
+        statement_type = "format_single_opening_statement"):
 
     class Statement(BaseModel):
         response: str
-        main_points_summary: str
+        main_point_summary: str
         score: int
         score_summary: str
 
     system_prompt = PROMPTS[statement_type][session_format]["structured"].format(role = str(role))
 
-    prompt = format_structured_prompt(system_prompt, user_input, Statement, history)
+    prompt = format_structured_prompt(system_prompt=system_prompt,
+                                        user_input=user_input,
+                                        response_format=Statement)
 
+    return prompt
+
+def format_unseen_class_prompt(
+        role,
+        session_format,
+        statement_type = "format_dialog_prompt_with_unseen",
+        unseen = None):
+
+    if unseen is None:
+        unseen = []
+
+    class Statement(BaseModel):
+        response: str
+        main_point_summary: str
+        score: int
+        score_summary: str
+
+    system_prompt = PROMPTS[statement_type][session_format]["structured"].format(
+        role = str(role), unseen = str(unseen))
+
+    prompt = format_structured_prompt(system_prompt=system_prompt,
+                                        user_input="",
+                                        response_format=Statement,
+                                        model=("openai", "gpt-4o-2024-08-06"))
     return prompt
 
 def format_bias_class_prompt(user_input):
@@ -138,8 +179,7 @@ def format_bias_class_prompt(user_input):
 def format_structured_prompt(system_prompt,
                              user_input,
                              response_format,
-                             model=("openai", "gpt-4o-2024-08-06"),
-                             history=None):
+                             model=("openai", "gpt-4o-2024-08-06")):
     """
     Formats a prompt for the OpenAI API with structured response
 
@@ -154,7 +194,6 @@ def format_structured_prompt(system_prompt,
             "system_prompt": str,
             "user_input": str,
             "response_format": class
-            "history": None (for initial implementation)
         }
     """
 
@@ -163,7 +202,6 @@ def format_structured_prompt(system_prompt,
         "system_prompt": system_prompt,
         "text": user_input,
         "response_format": response_format,
-        "history": history,
     }
 
     return prompt

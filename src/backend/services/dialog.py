@@ -38,12 +38,22 @@ class Dialog:
             text (str): The initial prompt text"""
         if not agent_list:
             agent_list = list(self.agents.keys())
-        prompt_list = formatter.format_multiple(
+        input_list = formatter.format_multiple(
             [agent.role for agent in agent_list], text, self.session_format
         )
+        prompt_list = []
         # Format the prompts into a list of dictionaries with agent roles and prompts
-        for i, prompt in enumerate(prompt_list):
-            prompt_list[i] = {"agent": agent_list[i], "text": prompt}
+        for i, prompt in enumerate(input_list):
+            model = prompt.get("model", (self.agents[agent_list[i]]["model"], None))
+            system_prompt = prompt.get("system_prompt", None) # for openai
+            response_format = prompt.get("response_format", None) # for openai
+            prompt_list.append({
+                "text": prompt["text"],
+                "model": model,
+                "system_prompt": system_prompt,
+                "response_format": response_format,
+                "agent": agent_list[i],
+            })
         return prompt_list
 
     def get_prompts(self):
@@ -54,21 +64,27 @@ class Dialog:
             next_agent = self.get_next_agent()
             unseen_prompts = next_agent.get_unseen_prompts()
             next_agent.reset_unseen_list()
-            prompt = formatter.format_dialog_prompt_with_unseen(
-                next_agent, unseen_prompts, self.session_format
+            prompts_list = [formatter.format_dialog_prompt_with_unseen(
+                next_agent, unseen_prompts, self.session_format, structure="structured"
+            )]
+            prompts_list[0]["agent"] = next_agent
+        api_input_list = []
+        for prompt in prompts_list:
+            # I suggest filling the input list with fields necessary for all models
+            # so it can be used for any model if wanted
+            model = prompt.get("model", (self.agents[prompt["agent"]]["model"], None))
+            system_prompt = prompt.get("system_prompt", None) # for openai
+            response_format = prompt.get("response_format", None)
+            api_input_list.append(
+                {
+                    "text": prompt["text"],
+                    "model": model,
+                    "system_prompt": system_prompt,
+                    "response_format": response_format,
+                    "history": prompt["agent"].get_chat_history(),
+                    "agent_object": prompt["agent"],
+                }
             )
-            prompts_list = [{"agent": next_agent, "text": prompt}]
-
-        api_input_list = [
-            {
-                "text": prompt["text"],
-                "model": (self.agents[prompt["agent"]]["model"], None),
-                "history": prompt["agent"].get_chat_history(),
-                "agent_object": prompt["agent"],
-            }
-            for prompt in prompts_list
-        ]
-
         return api_input_list
 
     def update_with_comment(self, comment):
@@ -97,8 +113,8 @@ class Dialog:
             agent_obj.add_unseen_prompts(unseen)
 
     def extract_response_elements(self, response):
-        # if response is str
         if isinstance(response["output"], str):
+            # if response is unstructured
             # find the summary text from <>
             summary = re.search(r"<.*?>", response["output"])
             summary = summary.group(0)[1:-1].strip() if summary else None
@@ -114,7 +130,7 @@ class Dialog:
             output = re.sub(r"<\s*.*?\s*>", "", response["output"]).strip()
             output = re.sub(r"\|\d+/10\||\|\|.*?\|\|", "", output).strip()
         else:
-            # if response is structured (not yet implemented)
+            # if response is structured
             structured_output = response["output"]
             output = structured_output.response
             summary = structured_output.main_point_summary
@@ -156,7 +172,7 @@ class Dialog:
             response["prompt"]["agent_object"].add_chat_to_history(
                 [
                     {"role": "user", "text": api_input},
-                    {"role": "model", "text": response["output"]},
+                    {"role": "model", "text": str(response["output"])},
                 ]
             )
 

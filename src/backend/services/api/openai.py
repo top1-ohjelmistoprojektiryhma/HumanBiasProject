@@ -28,19 +28,21 @@ class OpenAiApi:
             str or class: The response from the API, either as a string or a structured class
         """
         version, history, response_format = self.extract_prompt_elements(prompt)
-
+        print(f"history: {history}")
         if response_format:
             completion = self.client.beta.chat.completions.parse(
                 model=version,
                 messages=history,
                 response_format=response_format,
             )
+            print(f"structured response: {completion.choices[0].message.parsed}")
             return completion.choices[0].message.parsed
         else:
             completion = self.client.chat.completions.create(
                 model=version,
                 messages=history,
             )
+            print(f"raw response: {completion.choices[0].message.content}")
             return completion.choices[0].message.content
 
     def format_history(self, history):
