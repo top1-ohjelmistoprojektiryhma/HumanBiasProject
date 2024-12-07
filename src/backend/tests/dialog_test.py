@@ -1,4 +1,5 @@
 import unittest
+from unittest.mock import Mock
 from backend.services.dialog import Dialog
 
 
@@ -42,6 +43,18 @@ class TestDialog(unittest.TestCase):
             },
             "dialog - no consensus",
         )
+
+    def test_init_summarized_prompt_works(self):
+        self.dialog = Dialog(
+            "Initial prompt",
+            {
+                self.test_agents[0]: {"model": None},
+                self.test_agents[1]: {"model": "gemini"},
+            },
+            "dialog - no consensus",
+            "Summarized prompt"
+        )
+        self.assertEqual(self.dialog.summarised_prompt, "Summarized prompt")
 
     def test_initial_prompts_works(self):
         """Result should look like:
@@ -94,6 +107,18 @@ class TestDialog(unittest.TestCase):
         for agent in self.dialog.agents:
             self.assertEqual(agent.unseen[0]["agent"].role, "User")
             self.assertEqual(agent.unseen[0]["text"], "This is a comment")
+
+    def test_extract_response_elements_from_structured_output(self):
+        response = {"output": Mock(
+            response="Output",
+            main_point_summary="Summary",
+            score=10,
+            score_summary=8
+        )}
+        self.assertTupleEqual(
+            self.dialog.extract_response_elements(response),
+            ("Output", "Summary", 10, 8)
+        )
 
     def test_update_with_responses_works_without_conf_scores(self):
         test_responses = [
