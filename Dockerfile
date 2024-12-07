@@ -25,6 +25,9 @@ RUN pip install poetry \
     && poetry config virtualenvs.create false \
     && poetry install --no-interaction --no-ansi
 
+# Install Gunicorn
+RUN pip install gunicorn
+
 # Copy backend files
 COPY prompts.json ./
 COPY src/backend ./src/backend
@@ -32,6 +35,9 @@ COPY src/backend ./src/backend
 # Copy the built frontend files from the frontend-builder stage
 COPY --from=frontend-builder /app/build ./src/ui/build
 
+# Set the PYTHONPATH environment variable
+ENV PYTHONPATH=/app/src/backend
+
 # Expose port and start the application in src/backend/main.py
 EXPOSE 8000
-CMD ["python", "src/backend/main.py"]
+CMD ["gunicorn", "-w", "1", "-b", "0.0.0.0:8000", "main:app"]
