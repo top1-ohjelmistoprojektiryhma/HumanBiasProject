@@ -300,7 +300,10 @@ const App = () => {
     try {
       const data = await continueSession(displayedSession, formData.summaryEnabled, comment);
       const newSessionId = data.session_id;
-      const newDialog = data.dialog;
+      const newDialog = {
+        ...data.dialog,
+        format: formData.selectedFormat,
+      };
       const scores = collectScores(newDialog, chartData);
       setChartData(scores);
 
