@@ -126,3 +126,22 @@ class TestFormatter(unittest.TestCase):
         }
 
         self.assertEqual(dict_output, expected_output)
+
+    def test_format_unseen_class_prompt(self):
+        
+        role = "role"
+        session_format = "dialog - no consensus"
+        statement_type = "format_dialog_prompt_with_unseen"
+        unseen = ["unseen"]
+
+        dict_output = formatter.format_unseen_class_prompt(role, session_format, statement_type, unseen)
+        
+        system_prompt = "Speak from the following perspective: {role}. Stay grounded and true to character. Given the dialogue history, debate these new statements and hold your ground. {unseen} Give a response of around 250 words. After that, tell your main point in one sentence. Reflect on the initial prompt: provide a score from 0 to 10 on how much you agree with the statement. Give in a few sentences a summary of why you gave this score and what influenced you to change/keep it.".format(role = role, unseen = unseen)
+
+        expected_output = {
+            "model": ("openai", "gpt-4o-2024-08-06"),
+            "system_prompt": system_prompt,
+            "text": "",
+            "response_format": dict_output["response_format"],
+            "structure": "structured"
+        }

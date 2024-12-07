@@ -50,7 +50,7 @@ def format_dialog_prompt_with_unseen(agent, unseen_prompts, session_format, stru
             "text": raw_prompt,
             "structure": "raw"
         }
-    
+
     if structure == "structured":
         return format_unseen_class_prompt(
             agent.role,
@@ -98,9 +98,11 @@ def agent_class_to_str(role):
             name = None
     return name
 
-def format_generate_agents_class_prompt(user_input, current_agents=[],
+def format_generate_agents_class_prompt(user_input, current_agents=None,
                                         desired_number_of_agents=3,
                                         session_format="bias finder"):
+
+    current_agents = current_agents if current_agents else []
 
     class Role(BaseModel):
         role_description: str

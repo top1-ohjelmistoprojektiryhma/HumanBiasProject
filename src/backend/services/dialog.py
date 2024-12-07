@@ -139,7 +139,7 @@ class Dialog:
             score = structured_output.score
             score_summary = structured_output.score_summary
         return output, summary, score, score_summary
-    
+
     def get_summarised_initial_prompt(self, response):
         """Get the summarised initial prompt for the dialog
 
@@ -148,7 +148,7 @@ class Dialog:
 
         Returns:
             str: The summarised initial prompt for the dialog"""
-        
+        api_input = ""
         structure = response["prompt"]["structure"]
         if structure == "structured":
             if response["prompt"]["model"][0] == "openai":
@@ -164,6 +164,29 @@ class Dialog:
             )[0]["text"]
         return api_input
 
+    def format_history(self, response, user_input, api_input, structure):
+        """Format the chat history
+
+        Args:
+            response (dict): The response from the API
+            user_input (str): The user input
+            api_input (str): The API input
+            structure (str): raw/structured"""
+
+        history = []
+        if structure == "raw":
+            history = [
+                {"role": "user", "text": api_input},
+                {"role": "model", "text": str(response["output"])},
+            ]
+        elif response["model"][0] == "openai":
+            history = [
+                {"role": "system", "text": api_input},
+                {"role": "user", "text": user_input},
+                {"role": "model", "text": str(response["output"])},
+            ]
+        return history
+
     def update_with_responses(self, responses):
         """Update the dialog with responses
 
@@ -178,6 +201,7 @@ class Dialog:
             user_input = response["prompt"].get("text", "")
             structure = response["prompt"]["structure"]
             # Change history input to summarised prompt if needed
+            api_input = ""
             if len(self.rounds) == 0 and self.summarised_prompt:
                 api_input = self.get_summarised_initial_prompt(response)
             else:
@@ -200,17 +224,7 @@ class Dialog:
                 }
             )
             # Form the history based on the structure and model
-            if structure == "raw":
-                history = [
-                    {"role": "user", "text": api_input},
-                    {"role": "model", "text": str(response["output"])},
-                ]
-            elif response["model"][0] == "openai":
-                history = [
-                    {"role": "system", "text": system_prompt},
-                    {"role": "user", "text": user_input},
-                    {"role": "model", "text": str(response["output"])},
-                ]
+            history = self.format_history(response, user_input, api_input, structure)
             response["prompt"]["agent_object"].add_chat_to_history(history)
 
             # Set model if unset

@@ -35,12 +35,11 @@ class OpenAiApi:
                 response_format=response_format,
             )
             return completion.choices[0].message.parsed, version
-        else:
-            completion = self.client.chat.completions.create(
-                model=version,
-                messages=history,
-            )
-            return completion.choices[0].message.content, version
+        completion = self.client.chat.completions.create(
+            model=version,
+            messages=history,
+        )
+        return completion.choices[0].message.content, version
 
     def format_history(self, history):
         """Formats the chat history
