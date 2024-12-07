@@ -1,8 +1,8 @@
 import React, { useState } from "react";
-import { Doughnut } from "react-chartjs-2";
-import { Chart as ChartJS, Tooltip, Legend, ArcElement } from "chart.js";
+import { Bar } from "react-chartjs-2";
+import { Chart as ChartJS, Tooltip, Legend, CategoryScale, LinearScale, BarElement } from "chart.js";
 
-ChartJS.register(Tooltip, Legend, ArcElement);
+ChartJS.register(Tooltip, Legend, CategoryScale, LinearScale, BarElement);
 
 const BiasChart = ({ data }) => {
   data = JSON.parse(data);
@@ -10,9 +10,10 @@ const BiasChart = ({ data }) => {
   const [hoveredIndex, setHoveredIndex] = useState(null);
 
   const chartData = {
-    labels: biases.map((item) => item.bias_name),
+    labels: biases.map((item) => item.bias_name), 
     datasets: [
       {
+        label: "Severity",
         data: biases.map((item) => item.bias_severity),
         backgroundColor: [
           "#2F99DA",
@@ -44,17 +45,37 @@ const BiasChart = ({ data }) => {
 
   const options = {
     responsive: true,
+    maintainAspectRatio: false,
     plugins: {
+      legend: {
+        position: "top",
+        labels: {
+          generateLabels: (chart) => {
+            const legendLabels = biases.map((item, index) => ({
+              text: item.bias_name,
+              fillStyle: chartData.datasets[0].backgroundColor[index],
+              strokeStyle: chartData.datasets[0].backgroundColor[index],
+            }));
+            return legendLabels;
+          },
+        },
+      },
       tooltip: {
         callbacks: {
           label: function (tooltipItem) {
             const index = tooltipItem.dataIndex;
-            return ` severity: ${biases[index].bias_severity}`;
+            return `Severity: ${biases[index].bias_severity}`;
           },
         },
       },
-      legend: {
-        position: "top",
+    },
+    scales: {
+      x: {
+        display: false,
+      },
+      y: {
+        min:0,
+        max:10,
       },
     },
     onHover: (event, chartElement) => {
@@ -72,8 +93,8 @@ const BiasChart = ({ data }) => {
 
   return (
     <div>
-      <div style={{ width: "400px", margin: "auto" }}>
-        <Doughnut data={chartData} options={options} />
+      <div style={{ width: "600px", height: "400px", margin: "auto" }}>
+        <Bar data={chartData} options={options} />
       </div>
       <div style={{ marginTop: "20px", height: "140px" }}>
         {hoveredIndex !== null && (
