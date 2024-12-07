@@ -8,21 +8,21 @@ class ExampleAgent:
 
 class TestFormatter(unittest.TestCase):
 
-    def test_format_single(self):
+    def test_format_single_raw(self):
         role = "22-year-old CS student"
         prompt = "Python is the best language"
         current_format = "dialog - no consensus"
-        api_prompt = formatter.format_single(role, prompt, current_format)
-        result = role in api_prompt and prompt in api_prompt
+        api_prompt = formatter.format_single(role, prompt, current_format, "raw")
+        result = role in api_prompt["text"] and prompt in api_prompt["text"]
         self.assertEqual(result, True)
 
-    def test_format_multiple(self):
+    def test_format_multiple_raw(self):
         role_list = ["22-year-old CS student", "CS Professor"]
         prompt = "Python is the best language"
         current_format = "dialog - no consensus"
-        api_prompt_list = formatter.format_multiple(role_list, prompt, current_format)
+        api_prompt_list = formatter.format_multiple(role_list, prompt, current_format, "raw")
         result = (
-            role_list[0] in api_prompt_list[0] and role_list[1] in api_prompt_list[1]
+            role_list[0] in api_prompt_list[0]["text"] and role_list[1] in api_prompt_list[1]["text"]
         )
         self.assertEqual(result, True)
 
@@ -30,32 +30,32 @@ class TestFormatter(unittest.TestCase):
         role = ""
         prompt = "Python is the best language"
         current_format = "dialog - no consensus"
-        api_prompt = formatter.format_single(role, prompt, current_format)
-        result = role in api_prompt
+        api_prompt = formatter.format_single(role, prompt, current_format, "raw")
+        result = role in api_prompt["text"] 
         self.assertEqual(result, True)
 
     def test_format_single_none_role(self):
         role = None
         prompt = "Python is the best language"
         current_format = "dialog - no consensus"
-        api_prompt = formatter.format_single(role, prompt, current_format)
-        result = "Yourself" in api_prompt
+        api_prompt = formatter.format_single(role, prompt, current_format, "raw")
+        result = "Yourself" in api_prompt["text"] 
         self.assertEqual(result, True)
 
     def test_format_single_empty_prompt(self):
         role = "CS Professor"
         prompt = ""
         current_format = "dialog - no consensus"
-        api_prompt = formatter.format_single(role, prompt, current_format)
-        self.assertEqual(prompt in api_prompt, True)
+        api_prompt = formatter.format_single(role, prompt, current_format, "raw")
+        self.assertEqual(prompt in api_prompt["text"] , True)
 
     def test_format_multiple_with_none(self):
         role_list = [None, "CS Professor"]
         prompt = "Python is the best language"
         current_format = "dialog - no consensus"
-        api_prompt_list = formatter.format_multiple(role_list, prompt, current_format)
+        api_prompt_list = formatter.format_multiple(role_list, prompt, current_format, "raw")
         result = (
-            "Yourself" in api_prompt_list[0] and "CS Professor" in api_prompt_list[1]
+            "Yourself" in api_prompt_list[0]["text"]  and "CS Professor" in api_prompt_list[1]["text"] 
         )
         self.assertEqual(result, True)
 
@@ -63,9 +63,9 @@ class TestFormatter(unittest.TestCase):
         role_list = ["", "CS Professor"]
         prompt = "Python is the best language"
         current_format = "dialog - no consensus"
-        api_prompt_list = formatter.format_multiple(role_list, prompt, current_format)
+        api_prompt_list = formatter.format_multiple(role_list, prompt, current_format, "raw")
         result = (
-            "Yourself" in api_prompt_list[0] and "CS Professor" in api_prompt_list[1]
+            "Yourself" in api_prompt_list[0]["text"] and "CS Professor" in api_prompt_list[1]["text"]
         )
         self.assertEqual(result, True)
     """ 
@@ -88,7 +88,7 @@ class TestFormatter(unittest.TestCase):
         expected += "agent1|agent2|agent3"
         self.assertEqual(result, expected) """
 
-    def test_format_dialog_prompt_with_unseen(self):
+    def test_format_dialog_prompt_with_unseen_raw(self):
         agent = ExampleAgent()
         unseen_prompts = [
             {
@@ -98,9 +98,9 @@ class TestFormatter(unittest.TestCase):
                 "text": "output"
             }
         ]
-        result = formatter.format_dialog_prompt_with_unseen(agent, unseen_prompts, "dialog - no consensus")
+        result = formatter.format_dialog_prompt_with_unseen(agent, unseen_prompts, "dialog - no consensus", "raw")
         expected = f"""['student has given the following response: output']"""
-        self.assertIn(expected, result)
+        self.assertIn(expected, result["text"])
 
     def test_format_input_summary(self):
         word = "Hello"
@@ -122,7 +122,7 @@ class TestFormatter(unittest.TestCase):
             "system_prompt": system_prompt,
             "text": user_input,
             "response_format": dict_output["response_format"],
-            "history": None,
+            "structure": "structured"
         }
 
         self.assertEqual(dict_output, expected_output)

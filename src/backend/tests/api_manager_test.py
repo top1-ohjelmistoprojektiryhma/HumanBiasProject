@@ -18,17 +18,17 @@ class TestApiManager(unittest.TestCase):
     def test_send_prompts_works_with_model_chosen(self):
         agent = Agent("student")
         prompt_list = [{"text": "123", "model": ("gemini", None), "agent_object": agent, "history": None}]
-        self._api_manager.gemini_api.get_chat_response = Mock(return_value="Response1")
-        self._api_manager.openai_api.get_chat_response = Mock(return_value="Response2")
-        self._api_manager.anthropic_api.get_chat_response = Mock(return_value="Response3")
+        self._api_manager.gemini_api.get_chat_response = Mock(return_value=("Response2", "version"))
+        self._api_manager.openai_api.get_response = Mock(return_value=("Response2", "version"))
+        self._api_manager.anthropic_api.get_chat_response = Mock(return_value=("Response2", "version"))
         response_list = self._api_manager.send_prompts(prompt_list)
         self.assertEqual(
             response_list,
             [
                 {
                     "prompt": {"text": "123", "model": ("gemini", None), "agent_object": agent, "history": None},
-                    "model": "gemini",
-                    "output": "Response1"
+                    "model": ("gemini", "version"),
+                    "output": "Response2"
                 }
             ],
         )
