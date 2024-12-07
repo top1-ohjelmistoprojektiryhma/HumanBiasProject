@@ -17,14 +17,13 @@ class TestGeminiApi(unittest.TestCase):
         prompt = {"text": text, "model": (None, None), "history": history}
         self._gemini_api.init_model = Mock(return_value=Mock(start_chat=Mock(return_value=Mock(send_message=Mock(return_value=[Response("123")])))))
         response = self._gemini_api.get_chat_response(prompt)
-        self.assertEqual(response, "123")
+        self.assertEqual(response, ("123", self._gemini_api.default_model))
 
     def test_extract_prompt_elements_works_with_history_and_model(self):
         prompt = {"text": "123", "model": (None, "model"), "history": [{"role": "model", "text": "456"}]}
         version, history, user_input = self._gemini_api.extract_prompt_elements(prompt)
         self.assertEqual(version, "model")
             
-
     def test_extract_prompt_elements_works_without_history_or_model(self):
         prompt = {"text": "123", "model": (None, None)}
         version, history, user_input = self._gemini_api.extract_prompt_elements(prompt)

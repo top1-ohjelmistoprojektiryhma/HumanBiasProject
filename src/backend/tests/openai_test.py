@@ -32,7 +32,7 @@ class TestOpenAiApi(unittest.TestCase):
         prompt = {"text": text, "model": (None, None), "history": history}
         self._openai_api.client.chat.completions.create = Mock(return_value=Completion("123"))
         response = self._openai_api.get_response(prompt)
-        self.assertEqual(response, "123")
+        self.assertEqual(response, ("123", self._openai_api.default_model))
 
     def test_get_structured_response_works(self):
         text = "123"
@@ -40,10 +40,10 @@ class TestOpenAiApi(unittest.TestCase):
         prompt = {"text": text, "model": (None, None), "history": history, "response_format": "This format"}
         self._openai_api.client.beta.chat.completions.parse = Mock(return_value=Mock(choices=[TextBlock("Parsed response")]))
         response = self._openai_api.get_response(prompt)
-        self.assertEqual(response, "Parsed response4")
+        self.assertEqual(response, ("Parsed response4", self._openai_api.default_model))
 
     def test_extract_prompt_elements_works(self):
-        history = [{"role": "assistant", "text": "000"}]
+        history = [{"role": "model", "text": "000"}]
         system_prompt = "System prompt"
         prompt = {"text": "123", "model": ("model", "version"), "history": history, "system_prompt": system_prompt}
         version, history, response_format = self._openai_api.extract_prompt_elements(prompt)
