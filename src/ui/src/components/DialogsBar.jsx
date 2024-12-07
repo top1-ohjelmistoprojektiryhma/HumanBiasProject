@@ -1,10 +1,14 @@
 import React, { useState } from 'react';
 
-const DialogsBar = ({ dialogs, toggleDialog }) => {
+const DialogsBar = ({ dialogs, openedDialog, setOpenedDialog }) => {
 
   const handleToggleDialog = (dialogId) => {
-    toggleDialog(dialogId);
-  };
+    if (openedDialog === dialogId) {
+      setOpenedDialog(null);
+    } else {
+      setOpenedDialog(dialogId);
+    }
+  }
 
   return (
     <div className="dialogs-bar">
@@ -15,9 +19,9 @@ const DialogsBar = ({ dialogs, toggleDialog }) => {
         ) : (
           Object.keys(dialogs).map((dialogId) => (
             <li key={dialogId}>
-              <strong onClick={() => handleToggleDialog(dialogId)} style={{ cursor: 'pointer' }}>
+              <p className={openedDialog === dialogId ? "bar-opened-dialog" : "bar-dialog"} onClick={() => handleToggleDialog(dialogId)} style={{ cursor: 'pointer' }}>
                 Dialog {dialogId}: {dialogs[dialogId].initial_prompt.substring(0, 50)}...
-              </strong>
+              </p>
             </li>
           )))}
       </ul >

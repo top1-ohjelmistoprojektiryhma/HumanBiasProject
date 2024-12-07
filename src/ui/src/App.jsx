@@ -361,15 +361,6 @@ const App = () => {
     setShowChart((prevShowChart) => !prevShowChart);
   };
 
-  const toggleOpenedDialog = (dialogId) => {
-    if (openedDialog === dialogId) {
-      setOpenedDialog(null);
-    } else {
-      setOpenedDialog(dialogId);
-    }
-  }
-
-
   return (
     <div className="app-container">
       {!isAuthenticated && process.env.NODE_ENV !== 'development' ? (
@@ -393,7 +384,8 @@ const App = () => {
           <div className={`dialogs-bar ${isDialogsBarVisible ? '' : 'dialogs-bar-hidden'}`}>
             <DialogsBar
               dialogs={dialogs}
-              toggleDialog={toggleOpenedDialog}
+              openedDialog={openedDialog}
+              setOpenedDialog={setOpenedDialog}
             />
           </div>
 

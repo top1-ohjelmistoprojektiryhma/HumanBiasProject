@@ -168,23 +168,8 @@ input::placeholder {
   color: var(--text);
 }
 
-.dialogs-bar ul {
-  list-style: none;
-  padding: 0;
-}
-
-.dialogs-bar ul ul {
-  padding-left: 20px;
-}
-
-.dialogs-bar li {
-  margin-bottom: 5px;
-  color: var(--text);
-}
-
-.dialogs-bar strong {
-  cursor: pointer;
-  color: var(--text);
+.bar-opened-dialog {
+  color: #ff4c4c;
 }
 
 /*login*/
