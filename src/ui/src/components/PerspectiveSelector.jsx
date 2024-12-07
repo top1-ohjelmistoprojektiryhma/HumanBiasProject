@@ -42,12 +42,15 @@ const PerspectiveSelector = ({ formData, setFormData }) => {
     <div className="perspective-selector-container">
       <div className="agent-box-container">
         {formData.agentOptions.map((perspective, index) => (
-          <div
-            key={index}
-            className={`agent-box ${formData.selectedAgents.includes(perspective) ? 'active' : ''}`}
-            onClick={() => handleAgentClick(perspective)}
-          >
-            {perspective}
+          <div key={index} className="agent-box">
+            <label>
+              <input className='agent-checkbox'
+                type="checkbox"
+                checked={formData.selectedAgents.includes(perspective)}
+                onChange={() => handleAgentClick(perspective)}
+              />
+              {perspective}
+            </label>
             <button
               className="delete-button"
               onClick={(e) => {
