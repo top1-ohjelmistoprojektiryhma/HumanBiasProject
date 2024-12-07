@@ -22,7 +22,8 @@ class TestAnthropicApi(unittest.TestCase):
         prompt = {"text": text, "model": (None, None), "history": history}
         self._anthropic_api.client.messages.create = Mock(return_value=Mock(content=[Mock(text="123")]))
         response = self._anthropic_api.get_chat_response(prompt)
-        self.assertEqual(response, "123")
+        self.assertEqual(response,
+                         ("123", "claude-3-5-sonnet-latest"))
 
     def test_extract_prompt_elements_works_with_history_and_model(self):
         prompt = {"text": "123", "model": (None, "model"), "history": [{"role": "assistant", "text": "456"}]}
