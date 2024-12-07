@@ -243,8 +243,11 @@ const App = () => {
     try {
       const data = await startNewSession(requestData);
       const newSessionId = data.session_id;
-      const newDialog = data.dialog;
-
+      let newDialog = data.dialog;
+      newDialog = {
+        ...newDialog,
+        format: formData.selectedFormat,
+      };
       const scores = collectScores(newDialog, chartData);
       setChartData(scores);
 
@@ -381,7 +384,7 @@ const App = () => {
       ) : (
         <>
           <div className={`header ${isDialogsBarVisible ? 'header-shift' : ''}`}>
-          <h1>AI Bias Analyzer</h1>
+            <h1>AI Bias Analyzer</h1>
           </div>
           <div className="menu-symbol" onClick={handleToggleDialogsBar}>
             &#9776; {/* Unicode character for the menu symbol */}
@@ -399,7 +402,6 @@ const App = () => {
               openedDialog ? <DialogDisplay dialogId={openedDialog} dialog={dialogs[openedDialog]} />
                 : <MultiStepForm getPromptSummary={getPromptSummary} onGenerateAgents={handleGenerateAgents} onSubmit={handleSubmit} formData={formData} setFormData={setFormData} loading={loading} />
             )}
-            {/* centered-column alkaa tästä */}
             <div className="centered-column">
               {!dialogStarted && (
                 <>

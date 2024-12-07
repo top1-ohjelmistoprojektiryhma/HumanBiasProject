@@ -76,6 +76,7 @@ const DialogDisplay = ({ dialogId, dialog }) => {
   return (
     <div className="dialog-container">
       <h3>Dialog ID: {dialogId}</h3>
+      <p>Format: {dialog.format}</p>
       <p>Initial Prompt: {formatText(truncateText(dialog.initial_prompt))}</p>
       <div>
         {Object.keys(dialog.rounds).map((roundId) => (
