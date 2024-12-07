@@ -47,7 +47,7 @@ class TestDialog(unittest.TestCase):
         """Result should look like:
         list = [{"agent": AgentObject, "text": "prompt"} for agent in ...]
         """
-        result = self.dialog.initial_prompts("initial prompt")
+        result = self.dialog.initial_prompts("initial prompt", structure="raw")
         self.assertEqual(len(result), 2)
         self.assertEqual(result[0]["agent"], self.test_agents[0])
         self.assertEqual(result[1]["agent"], self.test_agents[1])
@@ -68,7 +68,7 @@ class TestDialog(unittest.TestCase):
         "model": "modelname", "history": [history], "agent_object": AgentObject}
         for agent ...]
         """
-        result = self.dialog.get_prompts()
+        result = self.dialog.get_prompts("raw")
         self.assertEqual(result[0]["model"], (None, None))
         self.assertEqual(result[1]["model"], ("gemini", None))
         self.assertListEqual(result[0]["history"], ["history"])
@@ -78,7 +78,7 @@ class TestDialog(unittest.TestCase):
 
     def test_get_prompts_works_after_first_round(self):
         self.dialog.rounds["2"] = ["test"]
-        result = self.dialog.get_prompts()
+        result = self.dialog.get_prompts("raw")
         self.assertEqual(result[0]["model"], (None, None))
         self.assertListEqual(result[0]["history"], ["history"])
         self.assertEqual(result[0]["agent_object"], self.test_agents[0])
