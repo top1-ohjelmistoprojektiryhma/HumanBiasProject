@@ -109,11 +109,11 @@ class TestFormatter(unittest.TestCase):
         self.assertTrue("Hello" in result)
         self.assertTrue("World" in result)
 
-    def test_structured_output_bias_class(self):
+    def test_structured_output_bias_class_openai(self):
         
         user_input = "bias summary"
 
-        dict_output = formatter.format_bias_class_prompt(user_input)
+        dict_output = formatter.format_bias_class_prompt_openai(user_input)
         
         system_prompt = "Your job is from a neutral perspective to categorize the biases found in the following summary. Aim to find multiple distinct biases and provide differing severity ratings on a scale of 1 to 10 based on how severe the social impact of the given bias would be. Avoid giving the same rating for multiple biases."
         

@@ -168,8 +168,7 @@ class ServiceHandler:
         biases = self.get_bias_from_ai(history)
 
         # Get bias class for visualisation, disabled for now
-        bias_class = self.get_bias_class_from_ai(biases)
-        bias_json = formatter.class_to_json(bias_class)
+        bias_json = self.get_bias_class_from_ai(biases)
 
         return summary, biases, bias_json
 
@@ -236,10 +235,16 @@ class ServiceHandler:
         Returns:
             class: KnownBiases: {Bias: {bias_name: str, bias_severity: int, reasoning: str}}
         """
-        api_prompts = [formatter.format_bias_class_prompt(text)]
+        available_models = self.api_manager.available_models()
+        if "openai" in available_models:
+            api_prompts = [formatter.format_bias_class_prompt_openai(text)]
+        elif "anthropic" in available_models:
+            api_prompts = [formatter.format_bias_class_prompt_anthropic(text)]
+        else:
+            return "No API keys available"
 
-        api_response = self.api_manager.send_prompts(api_prompts)[0]["output"]
-        return api_response
+        api_response_output = self.api_manager.send_prompts(api_prompts)[0]["output"]
+        return formatter.convert_to_json(api_response_output)
 
     def add_multiple_agents(self, list_of_roles):
         for role in list_of_roles:

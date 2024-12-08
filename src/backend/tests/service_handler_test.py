@@ -262,9 +262,10 @@ class TestServiceHandler(unittest.TestCase):
 
     def test_get_bias_class_from_ai(self):
         text = "Test text"
-        self._mock_api_manager.send_prompts.return_value = [{"output": "Response text"}]
+        self._mock_api_manager.available_models.return_value = ["openai"]
+        self._mock_api_manager.send_prompts.return_value = [{"output": {"bias": "Response text"}}]
         result = self._handler.get_bias_class_from_ai(text)
-        self.assertEqual("Response text", result)
+        self.assertEqual('{"bias": "Response text"}', result)
 
     def test_get_all_formats(self):
         self._mock_session_manager.get_all_formats.return_value = "formats"

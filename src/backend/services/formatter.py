@@ -114,7 +114,7 @@ def format_generate_agents_class_prompt(user_input, current_agents=None,
         desired_number_of_agents = str(desired_number_of_agents),
         current_agents = str(current_agents))
 
-    prompt = format_structured_prompt(system_prompt, user_input, NewRoles)
+    prompt = format_structured_prompt_openai(system_prompt, user_input, NewRoles)
 
     return prompt
 
@@ -132,7 +132,7 @@ def format_statement_class_prompt(
 
     system_prompt = PROMPTS[statement_type][session_format]["structured"].format(role = str(role))
 
-    prompt = format_structured_prompt(system_prompt=system_prompt,
+    prompt = format_structured_prompt_openai(system_prompt=system_prompt,
                                         user_input=user_input,
                                         response_format=Statement)
 
@@ -156,13 +156,13 @@ def format_unseen_class_prompt(
     system_prompt = PROMPTS[statement_type][session_format]["structured"].format(
         role = str(role), unseen = str(unseen))
 
-    prompt = format_structured_prompt(system_prompt=system_prompt,
+    prompt = format_structured_prompt_openai(system_prompt=system_prompt,
                                         user_input="",
                                         response_format=Statement,
                                         model=("openai", "gpt-4o-2024-08-06"))
     return prompt
 
-def format_bias_class_prompt(user_input):
+def format_bias_class_prompt_openai(user_input):
 
     class Bias(BaseModel):
         bias_name: str
@@ -172,13 +172,35 @@ def format_bias_class_prompt(user_input):
     class KnownBiases(BaseModel):
         biases: list[Bias]
 
-    system_prompt = PROMPTS["format_bias_class"]
+    # Document is given in user_input instead of system prompt for openai
+    system_prompt = PROMPTS["format_bias_class"]["prompt"].format(document="")
 
-    prompt = format_structured_prompt(system_prompt, user_input, KnownBiases)
+    prompt = format_structured_prompt_openai(system_prompt, user_input, KnownBiases)
 
     return prompt
 
-def format_structured_prompt(system_prompt,
+def format_bias_class_prompt_anthropic(document):
+    tools = PROMPTS["format_bias_class"]["anthropic_tools"]
+
+    anthropic_prompt = PROMPTS["format_bias_class"]["prompt"].format(document=document)
+
+    prompt = format_structured_prompt_anthropic(anthropic_prompt, tools=tools)
+
+    return prompt
+
+def format_structured_prompt_anthropic(user_input,
+                                       tools, 
+                                       model=("anthropic", "claude-3-5-sonnet-latest")):
+    prompt = {
+        "model": model,
+        "text": user_input,
+        "tools": tools,
+        "structure": "structured"
+    }
+
+    return prompt
+
+def format_structured_prompt_openai(system_prompt,
                              user_input,
                              response_format,
                              model=("openai", "gpt-4o-2024-08-06")):
@@ -209,5 +231,8 @@ def format_structured_prompt(system_prompt,
 
     return prompt
 
-def class_to_json(python_class):
-    return json.dumps(python_class, default=lambda o: o.__dict__)
+def convert_to_json(python_data):
+    if isinstance(python_data, BaseModel):
+        return json.dumps(python_data, default=lambda o: o.__dict__)
+    elif isinstance(python_data, dict):
+        return json.dumps(python_data)
