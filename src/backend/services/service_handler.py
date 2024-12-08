@@ -165,8 +165,9 @@ class ServiceHandler:
         history = dialog.get_history()
         session_format = dialog.session_format
         summary = self.get_summary_from_ai(history, session_format)
+        summary = formatter.remove_unwanted_chars(summary)
         biases = self.get_bias_from_ai(history)
-
+        biases = formatter.remove_unwanted_chars(biases)
         # Get bias class for visualisation, disabled for now
         bias_class = self.get_bias_class_from_ai(biases)
         bias_json = formatter.class_to_json(bias_class)

@@ -1,5 +1,6 @@
 import json
 from pydantic import BaseModel
+import re
 
 with open("prompts.json", "r", encoding="utf-8") as file:
     PROMPTS = json.load(file)
@@ -211,3 +212,6 @@ def format_structured_prompt(system_prompt,
 
 def class_to_json(python_class):
     return json.dumps(python_class, default=lambda o: o.__dict__)
+
+def remove_unwanted_chars(text):
+    return re.sub(r'[^a-zäöA-ZÄÖ0-9\s/.,;,-]', '', text)
