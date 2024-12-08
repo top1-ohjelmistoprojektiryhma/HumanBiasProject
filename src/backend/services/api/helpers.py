@@ -15,6 +15,7 @@ def get_prompt_fields(prompt):
     system_prompt = prompt.get("system_prompt", None)
     user_input = prompt.get("text", "")
     response_format = prompt.get("response_format", None)
+    anthropic_tools = prompt.get("tools", [])
     history = prompt.get("history", None)
 
-    return version, system_prompt, user_input, response_format, history
+    return version, system_prompt, user_input, response_format, history, anthropic_tools

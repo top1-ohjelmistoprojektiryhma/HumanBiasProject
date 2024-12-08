@@ -13,15 +13,16 @@ class AnthropicApi:
 
         Args:
             prompt (dict): parameters related to prompt:
-            {"text": prompt, "model": (model, version), "history": history, "agent_object": agent}
+            {"text": prompt, "model": (model, version), "history": history, "agent_object": agent, "tools": tools}
 
         Returns:
             str: The response from the API
         """
-        version, chat_history = self.extract_prompt_elements(prompt)
+        version, chat_history, tools = self.extract_prompt_elements(prompt)
         message = self.client.messages.create(
             model=version,
             messages=chat_history,
+            tools=tools,
             max_tokens=1000,
             system = """
             Respond only with plain text dialogue. 
@@ -30,8 +31,12 @@ class AnthropicApi:
             At all costs avoid repeating yourself""",
             temperature=1.0
         )
-        response = "".join([content.text for content in message.content])
-        return response, version
+        # if response is of type tool_use, return the dictionary
+        for content in message.content:
+            if content.type == "tool_use":
+                return content.input, version
+        # return text response
+        return "".join([content.text for content in message.content]), version
 
     def format_history(self, history):
         """Formats the chat history
@@ -67,7 +72,7 @@ class AnthropicApi:
         Returns:
             tuple: The model and history
         """
-        version, system_prompt, user_input, response_format, history = get_prompt_fields(prompt)
+        version, system_prompt, user_input, response_format, history, tools = get_prompt_fields(prompt)
         if not version:
             version = self.default_model
 
@@ -78,4 +83,4 @@ class AnthropicApi:
             history = []
         history.append({"role": "user", "content": [{"text": user_input, "type": "text"}]})
 
-        return version, history
+        return version, history, tools

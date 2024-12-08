@@ -25,21 +25,23 @@ class TestAnthropicApi(unittest.TestCase):
         self.assertEqual(response,
                          ("123", "claude-3-5-sonnet-latest"))
 
-    def test_extract_prompt_elements_works_with_history_and_model(self):
-        prompt = {"text": "123", "model": (None, "model"), "history": [{"role": "assistant", "text": "456"}]}
-        version, history = self._anthropic_api.extract_prompt_elements(prompt)
+    def test_extract_prompt_elements_works_with_history_model_and_tools(self):
+        prompt = {"text": "123", "model": (None, "model"), "history": [{"role": "assistant", "text": "456"}], "tools": ["tool1", "tool2"]}
+        version, history, tools = self._anthropic_api.extract_prompt_elements(prompt)
         self.assertEqual(version, "model")
         expected = [
             {"role": "assistant", "content": [{"text": "456", "type": "text"}]},
             {"role": "user", "content": [{"text": "123", "type": "text"}]}
         ]
         self.assertEqual(history, expected)
+        self.assertEqual(tools, ["tool1", "tool2"])
 
-    def test_extract_prompt_elements_works_without_history_or_model(self):
+    def test_extract_prompt_elements_works_without_history_model_or_tools(self):
         prompt = {"text": "123", "model": (None, None)}
-        version, history = self._anthropic_api.extract_prompt_elements(prompt)
+        version, history, tools = self._anthropic_api.extract_prompt_elements(prompt)
         self.assertEqual(version,  self._anthropic_api.default_model)
         expected = [
             {"role": "user", "content": [{"text": "123", "type": "text"}]}
         ]
         self.assertEqual(history, expected)
+        self.assertEqual(tools, [])

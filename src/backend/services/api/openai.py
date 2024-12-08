@@ -76,7 +76,7 @@ class OpenAiApi:
         Returns:
             tuple: Version of the model, history, and response format
         """
-        version, system_prompt, user_input, response_format, history = get_prompt_fields(prompt)
+        version, system_prompt, user_input, response_format, history, tools = get_prompt_fields(prompt)
         if not version:
             version = self.default_model
 
