@@ -1,5 +1,5 @@
 import unittest
-from unittest.mock import Mock
+from unittest.mock import Mock, MagicMock, patch
 from backend.services.api.gemini import GeminiApi
 
 
@@ -28,3 +28,34 @@ class TestGeminiApi(unittest.TestCase):
         prompt = {"text": "123", "model": (None, None)}
         version, history, user_input = self._gemini_api.extract_prompt_elements(prompt)
         self.assertEqual(version,  self._gemini_api.default_model)
+
+    @patch("backend.services.api.gemini.genai.GenerativeModel")
+    def test_init_model_with_version(self, MockGenerativeModel):
+        # Mock the GenerativeModel
+        mock_model_instance = MagicMock()
+        MockGenerativeModel.return_value = mock_model_instance
+
+        # Call init_model with a specific version
+        version = "gemini-2.0"
+        model = self._gemini_api.init_model(version)
+
+        # Assert that the GenerativeModel was called with the correct version
+        MockGenerativeModel.assert_called_once_with(version)
+
+        # Assert that the returned model is the mock instance
+        self.assertEqual(model, mock_model_instance)
+
+    @patch("backend.services.api.gemini.genai.GenerativeModel")
+    def test_init_model_with_default_version(self, MockGenerativeModel):
+        # Mock the GenerativeModel
+        mock_model_instance = MagicMock()
+        MockGenerativeModel.return_value = mock_model_instance
+
+        # Call init_model without passing a version
+        model = self._gemini_api.init_model()
+
+        # Assert that the GenerativeModel was called with the default version
+        MockGenerativeModel.assert_called_once_with("gemini-1.5-flash")
+
+        # Assert that the returned model is the mock instance
+        self.assertEqual(model, mock_model_instance)
