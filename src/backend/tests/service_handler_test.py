@@ -1,5 +1,5 @@
 import unittest
-from unittest.mock import Mock
+from unittest.mock import Mock, patch
 from backend.services.service_handler import ServiceHandler
 from pydantic import BaseModel
 
@@ -271,3 +271,11 @@ class TestServiceHandler(unittest.TestCase):
         result = self._handler.get_all_formats()
         self._mock_session_manager.get_all_formats.assert_called_once()
         self.assertEqual(result, "formats")
+
+    @patch("backend.services.service_handler.file_reader.read_file")
+    def test_read_file(self, mock_read_file):
+        mock_read_file.return_value = "Mock file content"
+
+        result = self._handler.read_file("randomFile")
+        mock_read_file.assert_called_once_with("randomFile")
+        self.assertEqual(result, "Mock file content")
