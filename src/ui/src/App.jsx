@@ -4,12 +4,12 @@ import DialogsBar from './components/DialogsBar.jsx';
 import DialogDisplay from './components/DialogDisplay.jsx';
 import CommentInput from './components/CommentInput.jsx';
 import PasswordInput from './components/PasswordInput.jsx';
-import SummaryToggle from './components/SummaryToggle.jsx';
 import ConfidenceChart from './components/ConfidenceChart.jsx';
 import BiasChart from './components/BiasChart.jsx';
 import Button from './components/common/Button.jsx';
 import ToggleButton from './components/common/ToggleButton.jsx';
 import MultiStepForm from './components/MultiStepForm.jsx';
+import Summary from './components/Summary.jsx';
 
 import {
   fetchAgents,
@@ -422,8 +422,7 @@ const App = () => {
                         {summary && (
                           <div className="summary-section">
                             <BiasChart data={biasData} />
-                            <h2>Summary</h2>
-                            <p>{summary}</p>
+                            <Summary summary={summary} />
                             <h2>Biases</h2>
                             <p>{biases}</p>
                           </div>
