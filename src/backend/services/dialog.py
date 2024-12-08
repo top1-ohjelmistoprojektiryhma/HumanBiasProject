@@ -22,10 +22,7 @@ class Dialog:
             summarised_prompt=None
         ):
         self.initial_prompt = initial_prompt
-        if not summarised_prompt:
-            self.summarised_prompt = initial_prompt
-        else:
-            self.summarised_prompt = summarised_prompt
+        self.summarised_prompt = summarised_prompt
         self.agents = {} if agents is None else agents
         self.rounds = {}
         self.session_format = session_format
@@ -57,7 +54,7 @@ class Dialog:
             })
         return prompt_list
 
-    def get_prompts(self, structure="structured"):
+    def get_prompts(self, structure="raw"):
         """Get the prompts for the next round of the dialog"""
         if not self.rounds:
             prompts_list = self.initial_prompts(self.initial_prompt, structure=structure)
@@ -160,7 +157,8 @@ class Dialog:
         else:
             api_input = self.initial_prompts(
                 self.summarised_prompt,
-                [response["prompt"]["agent_object"]]
+                [response["prompt"]["agent_object"]],
+                structure="raw"
             )[0]["text"]
         return api_input
 
@@ -180,6 +178,8 @@ class Dialog:
                 {"role": "model", "text": str(response["output"])},
             ]
         elif response["model"][0] == "openai":
+            if self.summarised_prompt and len(self.rounds) == 0:
+                user_input = self.summarised_prompt
             history = [
                 {"role": "system", "text": api_input},
                 {"role": "user", "text": user_input},

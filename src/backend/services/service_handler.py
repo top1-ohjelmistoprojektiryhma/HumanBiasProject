@@ -28,7 +28,9 @@ class ServiceHandler:
             return error_message, False
 
         # Get summarized text if needed
-        summarised_prompt = self.get_summarised_text(text, character_limit)
+        summarised_prompt = None
+        if character_limit > 0:
+            summarised_prompt = self.get_summarised_text(text, character_limit)
 
         # Create a new session
         agents = {
