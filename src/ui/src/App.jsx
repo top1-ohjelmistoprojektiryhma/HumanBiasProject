@@ -272,7 +272,7 @@ const App = () => {
   const handleGenerateAgents = async (numAgents, promptSummary = '', firstAgents = false) => {
     setLoading(true);
     if (promptSummary === '') {
-      setError('Please enter a statement.');
+      setError('Failed to generate agents. Try to add your file or text input again.');
       setLoading(false);
       return false;
     }

@@ -9,9 +9,9 @@ const MultiStepForm = ({ getPromptSummary, onGenerateAgents, onSubmit, formData,
     const nextStep = async () => {
         let step = currentStep;
         setCurrentStep((prev) => prev + 1);
-        if (step === 1 && formData.agentOptions.length === 0) {
+        if (step === 1) {
             let promptSummary = await getPromptSummary();
-            console.log(promptSummary)
+            deleteAllPerspectives();
             onGenerateAgents(3, promptSummary, true)
         }
     };
@@ -29,6 +29,32 @@ const MultiStepForm = ({ getPromptSummary, onGenerateAgents, onSubmit, formData,
                 return <InputStep formData={formData} setFormData={setFormData} />;
         }
     };
+
+    const deleteAllPerspectives = async () => {
+        const agents = [];
+        const selectedAgents = [];
+        try {
+            for (const perspective of formData.agentOptions) {
+                const response = await fetch('/api/delete-perspective', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ perspective }),
+                });
+                const result = await response.json();
+            }
+            setFormData((prevState) => ({
+                ...prevState,
+                agentOptions: agents,
+                selectedAgents: selectedAgents,
+            }));
+        } catch (error) {
+            console.error('Error deleting perspective:', error);
+        }
+    };
+
+    if (!formData || !formData.agentOptions) {
+        return <div>No perspectives available.</div>;
+    }
 
     return (
         <div className="content-container">
