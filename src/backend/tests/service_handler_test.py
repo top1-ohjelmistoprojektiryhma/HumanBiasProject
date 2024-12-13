@@ -45,7 +45,6 @@ class TestServiceHandler(unittest.TestCase):
         self._mock_api_manager = Mock()
         self._mock_session_manager = Mock()
         self._handler = ServiceHandler(
-            io=None,
             agent_manager=self._mock_agent_manager,
             api_manager=self._mock_api_manager,
             session_manager=self._mock_session_manager,

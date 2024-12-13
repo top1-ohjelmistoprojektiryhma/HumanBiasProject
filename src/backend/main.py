@@ -44,7 +44,6 @@ def create_service_handler():
     agent_manager = AgentManager()
     session_manager = SessionManager()
     return ServiceHandler(
-        io=None,
         agent_manager=agent_manager,
         api_manager=api_manager,
         session_manager=session_manager,

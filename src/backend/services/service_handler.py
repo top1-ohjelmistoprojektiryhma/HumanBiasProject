@@ -3,8 +3,10 @@ from . import file_reader
 
 
 class ServiceHandler:
-    def __init__(self, io, agent_manager, api_manager, session_manager):
-        self.io = io
+    """Class for handling backend services:
+    AgentManager, ApiManager and SessionManager classes.
+    """
+    def __init__(self, agent_manager, api_manager, session_manager):
         self.agent_manager = agent_manager
         self.api_manager = api_manager
         self.session_manager = session_manager
