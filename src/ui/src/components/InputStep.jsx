@@ -1,6 +1,6 @@
 // src/components/InputForm.jsx
 import React, { useEffect, useRef } from 'react';
-import uploadIcon from '../icons/paperclip.png'; // Varmista, että polku on oikea
+import uploadIcon from '../icons/paperclip.png';
 
 /**
  * InputForm component allows users to enter a statement.
@@ -15,7 +15,6 @@ const InputStep = ({ formData, setFormData }) => {
   const fileInputRef = useRef(null);
 
   useEffect(() => {
-    // Aseta alkuperäinen korkeus vastaamaan sisältöä, vaikka se olisi tyhjä.
     if (textareaRef.current) {
       textareaRef.current.style.height = "auto";
       textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
@@ -44,7 +43,7 @@ const InputStep = ({ formData, setFormData }) => {
         ...prevState,
         file,
         fileName: file.name,
-        text: prevState.text // Säilyttää nykyisen tekstin
+        text: prevState.text
       }));
     }
   };
@@ -87,7 +86,7 @@ const InputStep = ({ formData, setFormData }) => {
         ref={fileInputRef}
         onChange={handleFileChange}
         className="file-input-hidden"
-        accept=".txt,.pdf,.docx,.odt" // Rajoita tiedostotyyppiä tarpeen mukaan
+        accept=".txt,.pdf,.docx,.odt"
       />
     </div>
   );
