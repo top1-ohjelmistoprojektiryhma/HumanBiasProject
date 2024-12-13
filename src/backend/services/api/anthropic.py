@@ -3,6 +3,8 @@ from .helpers import get_prompt_fields
 
 
 class AnthropicApi:
+    """Class for managing interaction with the Anthropic API
+    """
     def __init__(self, anthropic_key=None, default_model="claude-3-5-sonnet-latest"):
         self.key = anthropic_key
         self.default_model = default_model
@@ -16,7 +18,7 @@ class AnthropicApi:
             {"text": prompt, "model": (model, version), "history": history, "agent_object": agent}
 
         Returns:
-            str: The response from the API
+            tuple: The response from the API and the model version
         """
         version, chat_history = self.extract_prompt_elements(prompt)
         message = self.client.messages.create(
@@ -67,7 +69,7 @@ class AnthropicApi:
         Returns:
             tuple: The model and history
         """
-        version, system_prompt, user_input, response_format, history = get_prompt_fields(prompt)
+        version, _system_prompt, user_input, _response_format, history = get_prompt_fields(prompt)
         if not version:
             version = self.default_model
 

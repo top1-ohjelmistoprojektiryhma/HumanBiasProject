@@ -18,7 +18,7 @@ class GeminiApi:
             {"text": prompt, "model": (model, version), "history": history, "agent_object": agent}
 
         Returns:
-            str: The response from the API
+            tuple(str): The response from the API and the model version
         """
         version, history, api_input = self.extract_prompt_elements(prompt)
         text_responses = []
@@ -60,11 +60,10 @@ class GeminiApi:
 
         Returns:
             tuple: The model, history, and user input"""
-        version, system_prompt, user_input, response_format, history = get_prompt_fields(prompt)
+        version, _system_prompt, user_input, _response_format, history = get_prompt_fields(prompt)
         if not version:
             version = self.default_model
 
-        # if history exists, format it and add system prompt and user input
         if history:
             history = self.format_history(history)
         else:

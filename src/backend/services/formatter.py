@@ -1,6 +1,7 @@
 import json
-from pydantic import BaseModel
 import re
+from pydantic import BaseModel
+
 
 with open("prompts.json", "r", encoding="utf-8") as file:
     PROMPTS = json.load(file)

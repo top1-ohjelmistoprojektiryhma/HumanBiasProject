@@ -25,7 +25,8 @@ class OpenAiApi:
             }
 
         Returns:
-            str or class: The response from the API, either as a string or a structured class
+            tuple(str or class, str): The response from the API,
+            either as a string or a structured class and the model version
         """
         version, history, response_format = self.extract_prompt_elements(prompt)
         if response_format:
@@ -80,7 +81,6 @@ class OpenAiApi:
         if not version:
             version = self.default_model
 
-        # if history exists, format it and add system prompt and user input
         if history:
             history = self.format_history(history)
         else:

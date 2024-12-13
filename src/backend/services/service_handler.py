@@ -52,9 +52,7 @@ class ServiceHandler:
         Returns:
             The session as a dict.
         """
-        print(
-            f"\nSERVICE HANDLER: Summarize {summary_enabled} User comment: {comment} SessionID: {session_id}"
-        )
+
         if self.api_manager.available_models():
             # Get the prompts from session
             api_input_list = self.session_manager.get_session_prompts(session_id)

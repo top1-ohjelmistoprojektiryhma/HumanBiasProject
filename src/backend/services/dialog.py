@@ -8,6 +8,7 @@ class Dialog:
 
     Attributes:
         initial_prompt (str): The initial prompt for the dialog
+        summarised_prompt (str): The summarised propmpt for the dialog
         agents (list): A dictionary of agents {"AgentObj": {"model": modelname}}
         rounds (dict): A dictionary of rounds identified by round number
         session_format (str): The format of the dialog
@@ -68,10 +69,8 @@ class Dialog:
             prompts_list[0]["agent"] = next_agent
         api_input_list = []
         for prompt in prompts_list:
-            # I suggest filling the input list with fields necessary for all models
-            # so it can be used for any model if wanted
             model = prompt.get("model", (self.agents[prompt["agent"]]["model"], None))
-            system_prompt = prompt.get("system_prompt", None) # for openai
+            system_prompt = prompt.get("system_prompt", None)
             response_format = prompt.get("response_format", None)
             api_input_list.append(
                 {
@@ -169,7 +168,11 @@ class Dialog:
             response (dict): The response from the API
             user_input (str): The user input
             api_input (str): The API input
-            structure (str): raw/structured"""
+            structure (str): raw/structured
+
+        Returns:
+            list: Formatted hitory list.
+        """
 
         history = []
         if structure == "raw":
@@ -197,7 +200,6 @@ class Dialog:
         prompts = []
         for response in responses:
             output, summary, score, score_summary = self.extract_response_elements(response)
-            system_prompt = response["prompt"].get("system_prompt", None)
             user_input = response["prompt"].get("text", "")
             structure = response["prompt"]["structure"]
             # Change history input to summarised prompt if needed
