@@ -10,6 +10,12 @@
 - [Sovelluksen rakenne](./docs/rakenne.md)
 - [Käyttöohje](./docs/kayttoohje.md)
 
+### Structured Output branch
+OpenAI:lle on tehty structured output tuki main branchille. 
+Branchille structured-output on lisäksi kehitetty tuki Anthropicin 
+JSON mode outputille. Sille on toteutettu vain Bias-kaavion datan palauttaminen.
+Branchit voisi todennäköisesti mergetä ilman ongelmia.
+
 ## Definition of Done
 - User story toimii kuvauksen mukaisesti.
 - Pylint score vähintään (9.00).
