@@ -4,7 +4,7 @@
 
 Sovelluksen rakennetta kuvaa pakkausrakenne:
 
-![Pakkauskaavio](./pakkauskaavio.drawio.png)
+![Pakkauskaavio](./kuvat/pakkauskaavio.drawio.png)
 
 _UI_ sisältää selainkäyttöliittymän koodin. _Services_ sisältää sovelluslogiikan koodin ja erikseen kutsuu _API_-pakkauksen kielimallikutsuista vastaavia luokkia.
 
