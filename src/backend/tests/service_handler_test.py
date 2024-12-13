@@ -83,10 +83,7 @@ class TestServiceHandler(unittest.TestCase):
     def test_continue_session_no_api_keys(self):
         self._handler.api_manager.available_models.return_value = []
         session_id = 1
-        summary_enabled = False
-        result = self._handler.continue_session(
-            session_id, summary_enabled, comment="comment"
-        )
+        result = self._handler.continue_session(session_id, comment="comment")
 
         self.assertEqual(result, ("No API keys available", None))
 
@@ -109,10 +106,7 @@ class TestServiceHandler(unittest.TestCase):
         ]
         text = "prompt"
         id, result = self._handler.start_new_session(text, "dialog", 0)
-        summary_enabled = False
-        response, session_dict = self._handler.continue_session(
-            id, summary_enabled, comment="comment"
-        )
+        response, session_dict = self._handler.continue_session(id, comment="comment")
         self.assertEqual(response, "Success")
 
     def test_set_selected_agents_works(self):
@@ -200,15 +194,22 @@ class TestServiceHandler(unittest.TestCase):
         test_text = "This is a sentence."
         self.assertIsNone(self._handler.get_summarised_text(test_text, 100))
 
-        self._mock_api_manager.available_models.side_effect = [["gemini"], ["gemini", "openai"]]
-        self._mock_api_manager.send_prompts.return_value = [{"output": "summarized output"}]
+        self._mock_api_manager.available_models.side_effect = [
+            ["gemini"],
+            ["gemini", "openai"],
+        ]
+        self._mock_api_manager.send_prompts.return_value = [
+            {"output": "summarized output"}
+        ]
         self.assertIsNone(self._handler.get_summarised_text(test_text, 10))
 
-        call_arg = [{
-            "text": "Summarize the following document to a shorter length of around 2 words. Aim to convey the original tone of the author and the main points of the text. This is a sentence.",
-            "model": ("openai", "gpt-4o-mini"),
-            "history": None
-            }]
+        call_arg = [
+            {
+                "text": "Summarize the following document to a shorter length of around 2 words. Aim to convey the original tone of the author and the main points of the text. This is a sentence.",
+                "model": ("openai", "gpt-4o-mini"),
+                "history": None,
+            }
+        ]
         self._handler.get_summarised_text(test_text, 10)
         self._mock_api_manager.send_prompts.assert_called_once_with(call_arg)
 

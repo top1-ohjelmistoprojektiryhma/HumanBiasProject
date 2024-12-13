@@ -298,7 +298,7 @@ const App = () => {
   const handleContinue = async () => {
     setLoading(true);
     try {
-      const data = await continueSession(displayedSession, formData.summaryEnabled, comment);
+      const data = await continueSession(displayedSession, comment);
       const newSessionId = data.session_id;
       const newDialog = {
         ...data.dialog,

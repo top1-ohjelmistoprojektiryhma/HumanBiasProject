@@ -6,6 +6,7 @@ class ServiceHandler:
     """Class for handling backend services:
     AgentManager, ApiManager and SessionManager classes.
     """
+
     def __init__(self, agent_manager, api_manager, session_manager):
         self.agent_manager = agent_manager
         self.api_manager = api_manager
@@ -44,7 +45,7 @@ class ServiceHandler:
 
         return new_session_id, True
 
-    def continue_session(self, session_id, summary_enabled, comment):
+    def continue_session(self, session_id, comment):
         """Continue a session with the input prompts.
 
         Args:
@@ -87,9 +88,11 @@ class ServiceHandler:
                 {"response": str, "perspectives": list}
         """
         text = str(text)
-        openai_prompts = [formatter.format_generate_agents_class_prompt(
-            text, self.get_all_agent_roles_as_list(), desired_number_of_agents
-        )]
+        openai_prompts = [
+            formatter.format_generate_agents_class_prompt(
+                text, self.get_all_agent_roles_as_list(), desired_number_of_agents
+            )
+        ]
         api_response = self.api_manager.send_prompts(openai_prompts)[0]["output"]
         print(f"GENERATED AGENTS WITH SEND PROMPTS RESPONSE: {api_response}")
         role_list = formatter.new_roles_to_list_of_roles(
@@ -145,7 +148,11 @@ class ServiceHandler:
             # Check if OpenAI model is available for summarization
             if "openai" in self.api_manager.available_models():
                 input_list = [
-                    {"text": summary_api_input, "model": ("openai", "gpt-4o-mini"), "history": None}
+                    {
+                        "text": summary_api_input,
+                        "model": ("openai", "gpt-4o-mini"),
+                        "history": None,
+                    }
                 ]
                 return self.api_manager.send_prompts(input_list)[0]["output"]
         return None

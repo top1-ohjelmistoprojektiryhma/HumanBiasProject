@@ -99,7 +99,7 @@ def initialize_routes(
         format = data.get("format")
         perspectives = data.get("perspective")
         summary_enabled = data.get("summaryEnabled", False)  # Retrieve the toggle value
-        character_limit = 0 if not summary_enabled else 5000 # Example character limit
+        character_limit = 0 if not summary_enabled else 5000  # Example character limit
         print(
             f"\nROUTES.PY: Prompt: {prompt}, Perspective: {perspectives}, Format: {format}, Summary Enabled: {summary_enabled}"
         )
@@ -110,9 +110,7 @@ def initialize_routes(
         if not successful:
             return jsonify({"response": result})
         new_id = result
-        response, dialog_dict = service_handler.continue_session(
-            new_id, summary_enabled, comment=""
-        )
+        response, dialog_dict = service_handler.continue_session(new_id, comment="")
         if dialog_dict is None:
             return jsonify({"response": "Missing api keys"})
         print(f"\nROUTES.PY: Response {response}, Dialog ID: {new_id}")
@@ -132,11 +130,8 @@ def initialize_routes(
             return error_response, status_code
         data = request.json
         session_id = data.get("session_id")
-        summary_enabled = data.get("summary_enabled")
         comment = data.get("comment")
-        response, dialog_dict = service_handler.continue_session(
-            session_id, summary_enabled, comment
-        )
+        response, dialog_dict = service_handler.continue_session(session_id, comment)
         if dialog_dict is None:
             return jsonify({"response": response})
         print(f"\nROUTES.PY: Response: {response}, Dialog ID: {session_id}")

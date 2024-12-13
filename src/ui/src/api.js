@@ -74,13 +74,13 @@ export const generateAgents = async (requestData) => {
     return response.json();
 };
 
-export const continueSession = async (sessionId, summaryEnabled, comment) => {
+export const continueSession = async (sessionId, comment) => {
     const response = await fetch(`${BASE_URL}/api/continue-session`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ session_id: sessionId, summary_enabled: summaryEnabled, comment: comment }),
+        body: JSON.stringify({ session_id: sessionId, comment: comment }),
     });
     if (!response.ok) {
         throw new Error('Network response was not ok');
