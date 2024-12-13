@@ -167,7 +167,6 @@ class ServiceHandler:
         summary = self.get_summary_from_ai(history, session_format)
         biases = self.get_bias_from_ai(history)
 
-        # Get bias class for visualisation, disabled for now
         bias_json = self.get_bias_class_from_ai(biases)
 
         return summary, biases, bias_json
